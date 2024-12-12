@@ -11,6 +11,8 @@ import {
 } from "../../../redux/apiSlices/authSlice";
 import logo from "../../../assets/randomProfile2.jpg";
 import toast from "react-hot-toast";
+import rentMeLogo from "../../../assets/navLogo.png";
+
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const PersonalInfo = () => {
@@ -19,8 +21,12 @@ const PersonalInfo = () => {
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
 
-  const { data: fetchAdminProfile, isLoading } = useFetchAdminProfileQuery();
-  const [updateAdminProfile] = useUpdateAdminProfileMutation();
+  const isLoading = false;
+
+  // const { data: fetchAdminProfile, isLoading } = useFetchAdminProfileQuery();
+  // const [updateAdminProfile] = useUpdateAdminProfileMutation();
+
+  const fetchAdminProfile = [];
 
   const adminData = fetchAdminProfile?.data;
 
@@ -38,7 +44,11 @@ const PersonalInfo = () => {
   }, [form, adminData]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
 
   const onChangeImage = (e) => {
@@ -146,8 +156,8 @@ const PersonalInfo = () => {
                   width: 178,
                   height: 48,
                   fontWeight: "400px",
-                  background: "#FFD900",
-                  color: "black",
+                  background: "#5c2579cc",
+                  color: "white",
                 }}
                 className="roboto-medium mt-10 text-sm leading-4"
               >

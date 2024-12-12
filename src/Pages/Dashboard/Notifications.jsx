@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ConfigProvider, Pagination } from "antd";
 import Title from "../../components/common/Title";
 import { useNotificationQuery } from "../../redux/apiSlices/notificationSlice";
+import rentMeLogo from "../../assets/navLogo.png";
 
 const notificationsData = [
   {
@@ -73,13 +74,17 @@ const notificationsData = [
 const Notifications = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-
-  const { data: notifications, isLoading } = useNotificationQuery();
+  const isLoading = false;
+  // const { data: notifications, isLoading } = useNotificationQuery();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
-
+  const notifications = [];
   const notificationData = notifications.data;
 
   console.log(notificationData);
@@ -93,7 +98,9 @@ const Notifications = () => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <Title className="text-[22px]">All Notifications</Title>
-        <button className="bg-[#FFE133] h-10 px-4 rounded-md">Read All</button>
+        <button className="bg-[#5c2579cc] text-white h-10 px-4 rounded-md">
+          Read All
+        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-5 bg-white p-4 rounded-lg">

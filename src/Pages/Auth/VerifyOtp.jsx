@@ -68,14 +68,14 @@ const VerifyOtp = () => {
           <OTPInput
             value={otp}
             onChange={setOtp}
-            numInputs={4}
+            numInputs={6}
             inputStyle={{
               height: 50,
               width: 50,
               borderRadius: "8px",
               margin: "16px",
               fontSize: "20px",
-              border: "1px solid #ffd900",
+              border: "1px solid #5c2579cc",
               color: "#2B2A2A",
               outline: "none",
               marginBottom: 10,
@@ -105,8 +105,8 @@ const VerifyOtp = () => {
               border: "1px solid #d9d9d9",
               outline: "none",
               boxShadow: "none",
-              background: "#ffd900",
-              color: "black",
+              background: "#5c2579cc",
+              color: "white",
             }}
           >
             Verify

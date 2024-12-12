@@ -8,14 +8,27 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useOverAllStateQuery } from "../../../redux/apiSlices/dashboardSlice";
 import rentMeLogo from "../../../assets/navLogo.png";
+
+const dummyChartData = [
+  { month: "January", userCount: 120 },
+  { month: "February", userCount: 150 },
+  { month: "March", userCount: 200 },
+  { month: "April", userCount: 180 },
+  { month: "May", userCount: 220 },
+  { month: "June", userCount: 250 },
+  { month: "July", userCount: 300 },
+  { month: "August", userCount: 280 },
+  { month: "September", userCount: 310 },
+  { month: "October", userCount: 400 },
+  { month: "November", userCount: 350 },
+  { month: "December", userCount: 450 },
+];
 
 const UserStatistics = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const { data: overAllState, isLoading } = useOverAllStateQuery({
-    range: selectedYear,
-  });
+  const isLoading = false; // Simulate loading state for testing
+  const chartData = dummyChartData; // Use dummy data for development
 
   if (isLoading) {
     return (
@@ -24,8 +37,6 @@ const UserStatistics = () => {
       </div>
     );
   }
-
-  const chartData = overAllState?.data || [];
 
   const currentYear = new Date().getFullYear();
   const years = Array.from(
@@ -73,8 +84,8 @@ const UserStatistics = () => {
           <Area
             type="monotone"
             dataKey="userCount"
-            stroke="#DE950F"
-            fill="#F3E524"
+            stroke="#5c2579cc"
+            fill="#f6e7ff"
           />
         </AreaChart>
       </ResponsiveContainer>

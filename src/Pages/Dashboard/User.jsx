@@ -1,25 +1,47 @@
 import React from "react";
 import { ConfigProvider, Input, Tabs } from "antd";
-import { Link, useLoaderData, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { BiLeftArrowAlt } from "react-icons/bi";
 import RunningOrderTable from "../../components/ui/Analytics/RunningOrderTable";
-import { useUserByIdQuery } from "../../redux/apiSlices/userSlice";
 
 const User = () => {
   const { id } = useParams();
 
-  const { data: singleUser, isLoading } = useUserByIdQuery(id);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  const user = singleUser?.data;
+  // Sample user data
+  const user = {
+    id: id,
+    admin: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      role: "Administrator",
+      address: {
+        city: "Springfield",
+        country: "USA",
+      },
+      profileImg: "https://example.com/randomProfile.jpg",
+    },
+    vendor: {
+      name: "Jane's Salon",
+      address: {
+        city: "Lincoln",
+        country: "USA",
+      },
+    },
+    customer: {
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      role: "Customer",
+      address: {
+        city: "Madison",
+        country: "USA",
+      },
+    },
+  };
 
   const imgUrl =
     user?.admin?.profileImg ||
     user?.user?.profileImg ||
-    user?.customer?.profileImg ||
+    user?.vendor?.profileImg ||
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmtj40PvvTQ1g64pgKZ2oKEk-tqT9rA4CXSA&s";
 
   return (
@@ -36,7 +58,7 @@ const User = () => {
             alt="img"
           />
           <div>
-            <h1 className=" text-2xl font-bold">
+            <h1 className="text-2xl font-bold">
               {user?.admin?.name || user?.vendor?.name || user?.customer?.name}
             </h1>
             <p className="text-sm text-gray-400">User ID: {user.id} </p>
@@ -48,7 +70,6 @@ const User = () => {
               Name
             </h1>
             <p className="text-lg my-2">
-              {" "}
               {user?.admin?.name || user?.vendor?.name || user?.customer?.name}
             </p>
           </div>
@@ -56,13 +77,13 @@ const User = () => {
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Email
             </h1>
-            <p className="text-lg  my-2">{user.email}</p>
+            <p className="text-lg my-2">{user.email}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Role
             </h1>
-            <p className="text-lg  my-2">{user.role}</p>
+            <p className="text-lg my-2">{user.role}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">

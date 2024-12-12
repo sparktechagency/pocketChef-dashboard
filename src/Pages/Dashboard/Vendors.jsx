@@ -1,34 +1,117 @@
 import React, { useState } from "react";
 import { Table, Button, Space, Avatar } from "antd";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import {
-  useUsersQuery,
-  useVendorsQuery,
-} from "../../redux/apiSlices/userSlice";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { FaStar } from "react-icons/fa6";
 import randomImg from "../../assets/randomProfile2.jpg";
-
-// Actions
-
-// Example data based on your `users` array with imgUrl added
+import rentMeLogo from "../../assets/navLogo.png";
 
 const Vendors = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const navigate = useNavigate();
   const [pageSize, setPageSize] = useState(10);
+
+  const dummyData = [
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john.doe@example.com",
+      address: {
+        street: "123 Main St",
+        city: "Springfield",
+        state: "IL",
+        zip: "62704",
+        country: "USA",
+      },
+      vendor: {
+        totalReviews: 15,
+        rating: 4.5,
+      },
+      status: "Active",
+      createdAt: "2022-11-05T14:48:00.000Z",
+      profileImg: randomImg,
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      email: "jane.smith@example.com",
+      address: {
+        street: "456 Oak St",
+        city: "Lincoln",
+        state: "NE",
+        zip: "68508",
+        country: "USA",
+      },
+      vendor: {
+        totalReviews: 20,
+        rating: 3.8,
+      },
+      status: "Inactive",
+      createdAt: "2023-01-12T09:23:00.000Z",
+      profileImg: randomImg,
+    },
+    {
+      id: 3,
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      address: {
+        street: "789 Maple Ave",
+        city: "Madison",
+        state: "WI",
+        zip: "53703",
+        country: "USA",
+      },
+      vendor: {
+        totalReviews: 12,
+        rating: 4.2,
+      },
+      status: "Pending",
+      createdAt: "2023-03-25T16:10:00.000Z",
+      profileImg: randomImg,
+    },
+    {
+      id: 4,
+      name: "Michael Brown",
+      email: "michael.brown@example.com",
+      address: {
+        street: "101 Pine St",
+        city: "Columbus",
+        state: "OH",
+        zip: "43215",
+        country: "USA",
+      },
+      vendor: {
+        totalReviews: 30,
+        rating: 5.0,
+      },
+      status: "Active",
+      createdAt: "2024-05-07T08:45:00.000Z",
+      profileImg: randomImg,
+    },
+    {
+      id: 5,
+      name: "Emma Wilson",
+      email: "emma.wilson@example.com",
+      address: {
+        street: "202 Cedar Dr",
+        city: "Denver",
+        state: "CO",
+        zip: "80202",
+        country: "USA",
+      },
+      vendor: {
+        totalReviews: 8,
+        rating: 3.5,
+      },
+      status: "Inactive",
+      createdAt: "2023-12-01T11:30:00.000Z",
+      profileImg: randomImg,
+    },
+  ];
+
   const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
-
-  const { data: vendors, isLoading } = useVendorsQuery();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  const data = vendors?.data?.data;
 
   const columns = [
     {
@@ -41,18 +124,8 @@ const Vendors = () => {
       dataIndex: "name",
       key: "name",
       render: (text, record) => {
-        // Extract name from the appropriate object
-        const name =
-          record?.admin?.name ||
-          record?.customer?.name ||
-          record?.vendor?.name ||
-          "Unknown";
-        const imgUrl =
-          record?.admin?.profileImg ||
-          record?.customer?.profileImg ||
-          record?.vendor?.profileImg ||
-          randomImg;
-
+        const name = record.name;
+        const imgUrl = record.profileImg || randomImg;
         const fullImgUrl = imgUrl?.startsWith("http")
           ? imgUrl
           : `${import.meta.env.VITE_BASE_URL}${imgUrl}`;
@@ -73,7 +146,6 @@ const Vendors = () => {
       title: "Address",
       key: "address",
       render: (record) => {
-        // Extract city and other address details
         const { city, street, state, zip, country } = record.address || {};
         return (
           <span>
@@ -107,7 +179,6 @@ const Vendors = () => {
         </span>
       ),
     },
-
     {
       title: "Status",
       dataIndex: "status",
@@ -125,9 +196,8 @@ const Vendors = () => {
             color = "orange";
             break;
           default:
-            color = "gray"; // Default color for unknown statuses
+            color = "gray";
         }
-
         return <span style={{ color }}>{status}</span>;
       },
     },
@@ -184,10 +254,6 @@ const Vendors = () => {
     ],
   };
 
-  const handleDetails = (id) => {
-    navigate(`/user/${id}`);
-  };
-
   const handleRestrict = (id) => {
     console.log(`Restrict clicked for user with id: ${id}`);
   };
@@ -203,8 +269,9 @@ const Vendors = () => {
         position: ["bottomCenter"],
       }}
       columns={columns}
-      dataSource={data}
+      dataSource={dummyData}
       rowKey={(record) => record.id}
+      rowSelection={rowSelection}
     />
   );
 };

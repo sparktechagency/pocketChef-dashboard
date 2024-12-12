@@ -10,8 +10,9 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { PiUserPlus } from "react-icons/pi";
 import { LuLayoutDashboard } from "react-icons/lu";
 import Cookies from "js-cookie";
-import logo from "../../assets/navLogo.png";
+import logo from "../../assets/salon-go-logo.png";
 import { DiGoogleAnalytics } from "react-icons/di";
+import { BiSolidCategoryAlt } from "react-icons/bi";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -40,14 +41,19 @@ const Sidebar = () => {
       ),
     },
     {
-      key: "/analytics",
+      key: "/transactions",
       icon: <DiGoogleAnalytics size={24} />,
-      label: <Link to="/analytics">Transactions</Link>,
+      label: <Link to="/transactions">Transactions</Link>,
     },
     {
       key: "/banners",
       icon: <MdFeaturedPlayList size={24} />,
       label: <Link to="/banners">Banners</Link>,
+    },
+    {
+      key: "/category",
+      icon: <BiSolidCategoryAlt size={24} />,
+      label: <Link to="/category">Category</Link>,
     },
     {
       key: "/users",
@@ -148,9 +154,10 @@ const Sidebar = () => {
       <div className="px-10">
         <Link
           to={"/"}
-          className="mb-10 border-b-4 border-black flex items-center justify-center py-4"
+          className="mb-10  flex items-center flex-col gap-2 justify-center py-4"
         >
           <img src={logo} alt="" />
+          <h1 className="text-xl text-[#5b2579] font-semibold">SALONGO</h1>
         </Link>
       </div>
       <Menu

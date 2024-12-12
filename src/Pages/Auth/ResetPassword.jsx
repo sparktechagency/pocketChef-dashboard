@@ -107,9 +107,10 @@ const ResetPassword = () => {
               height: 45,
               fontWeight: "400px",
               fontSize: "18px",
-              background: "#ffd900",
+              background: "#5c2579cc",
               marginTop: 20,
               borderRadius: "8px",
+              color: "white",
             }}
           >
             Update

@@ -6,6 +6,7 @@ import {
   useUpdateTermsAndConditionsMutation,
 } from "../../redux/apiSlices/termsAndConditionSlice";
 import toast from "react-hot-toast";
+import rentMeLogo from "../../assets/navLogo.png";
 
 const TermsAndCondition = () => {
   const editor = useRef(null);
@@ -25,7 +26,11 @@ const TermsAndCondition = () => {
   const [updateTermsAndConditions] = useUpdateTermsAndConditionsMutation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
 
   const termsAndConditionData = termsAndCondition?.content;
@@ -63,7 +68,7 @@ const TermsAndCondition = () => {
       <div className="flex justify-center gap-4 mb-4">
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "USER" ? "bg-[#FFD900]" : "bg-gray-200"
+            selectedTab === "USER" ? "bg-[#5c2579cc] text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("USER")}
         >
@@ -71,7 +76,9 @@ const TermsAndCondition = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "VENDOR" ? "bg-[#FFD900]" : "bg-gray-200"
+            selectedTab === "VENDOR"
+              ? "bg-[#5c2579cc] text-white"
+              : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("VENDOR")}
         >
@@ -79,7 +86,9 @@ const TermsAndCondition = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "CUSTOMER" ? "bg-[#FFD900]" : "bg-gray-200"
+            selectedTab === "CUSTOMER"
+              ? "bg-[#5c2579cc] text-white"
+              : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("CUSTOMER")}
         >
@@ -99,7 +108,7 @@ const TermsAndCondition = () => {
         <button
           onClick={termsDataSave}
           type="submit"
-          className="bg-[#FFD900] w-[160px] h-[42px] rounded-lg"
+          className="bg-[#5c2579cc] text-white w-[160px] h-[42px] rounded-lg"
         >
           Submit
         </button>

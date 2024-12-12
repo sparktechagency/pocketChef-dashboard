@@ -1,22 +1,27 @@
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
+import rentMeLogo from "../../assets/navLogo.png";
 
 import toast from "react-hot-toast";
 import { useChangePasswordMutation } from "../../redux/apiSlices/authSlice";
 
 const ChangePassword = () => {
+  const isLoading = false;
   const [form] = Form.useForm();
   const [errorMessages, setErrorMessages] = useState({
     newPassError: "",
     conPassError: "",
   });
 
-  const [changePassword, { isLoading }] = useChangePasswordMutation();
+  // const [changePassword, { isLoading }] = useChangePasswordMutation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
-
   const validatePasswordChange = (values) => {
     let errors = {};
 
@@ -132,8 +137,8 @@ const ChangePassword = () => {
               width: 178,
               height: 48,
               fontWeight: "400px",
-              background: "#FFD900",
-              color: "black",
+              background: "#5c2579cc",
+              color: "white",
             }}
             className="roboto-medium text-sm leading-4"
           >

@@ -1,24 +1,18 @@
 import React from "react";
-import {
-  FaChartGantt,
-  FaUserCheck,
-  FaUserGroup,
-  FaUsers,
-} from "react-icons/fa6";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
-import { GrUserNew } from "react-icons/gr";
-import { TbListCheck } from "react-icons/tb";
-import { LuPlaySquare } from "react-icons/lu";
 import RunningOrdersTable from "../../components/ui/Home/RunningOrdersTable";
 import rentMeLogo from "../../assets/navLogo.png";
 import UserEngagement from "../../components/ui/Home/UserEngagement";
 import GeneralStateSection from "../../components/ui/Home/GeneralStateSection";
-import { useOrderProgressQuery } from "../../redux/apiSlices/orderSlice";
-import { useVendorsQuery } from "../../redux/apiSlices/userSlice";
-import Vendors from "../../components/ui/Home/Vendors";
+import Professionals from "../../components/ui/Home/Professionals";
 
 const Home = () => {
-  const { data: orderProgress, isLoading } = useOrderProgressQuery();
+  const orderSummary = {
+    doneByProfessionals: 65,
+    doneByFreelancers: 35,
+  };
+
+  const isLoading = false;
 
   if (isLoading) {
     return (
@@ -27,8 +21,6 @@ const Home = () => {
       </div>
     );
   }
-
-  const orderPieData = orderProgress?.data;
 
   return (
     <div>
@@ -41,7 +33,7 @@ const Home = () => {
           <SalesTrackingChart />
         </div>
         <div className="md:w-7/12 md:flex gap-4">
-          <Vendors />
+          <Professionals />
           <div className="md:w-[40%] border rounded-2xl bg-white p-4 flex flex-col items-center">
             <h1 className="text-lg font-semibold mb-4">Order Summary</h1>
 
@@ -56,7 +48,7 @@ const Home = () => {
                   cy="18"
                   r="16"
                   fill="none"
-                  className="stroke-current text-[#FFF2DC]"
+                  className="stroke-current text-[#f6e7ff]"
                   strokeWidth="4"
                 ></circle>
                 <circle
@@ -64,34 +56,34 @@ const Home = () => {
                   cy="18"
                   r="16"
                   fill="none"
-                  className="stroke-current text-[#F3E524]"
+                  className="stroke-current text-[#5c2579cc]"
                   strokeWidth="4"
                   strokeDasharray="100"
                   strokeDashoffset={
-                    (100 * (100 - orderPieData?.completedPercentage)) / 100
+                    (100 * (100 - orderSummary?.doneByProfessionals)) / 100
                   }
                   strokeLinecap="round"
                 ></circle>
               </svg>
 
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#faf6ef] w-24 h-24 rounded-full flex flex-col items-center justify-center">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#f6e7ff] w-24 h-24 rounded-full flex flex-col items-center justify-center">
                 <span className="text-2xl font-bold">
-                  {orderPieData?.completedPercentage}%
+                  {orderSummary?.doneByProfessionals}%
                 </span>
               </div>
             </div>
 
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-3 rounded-3xl bg-[#F3E524]"></div>
+                <div className="w-4 h-3 rounded-3xl bg-[#5c2579cc]"></div>
                 <p className="text-sm font-medium">
-                  Completed: {orderPieData?.completedPercentage}%
+                  Professionals: {orderSummary?.doneByProfessionals}%
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-3 rounded-3xl bg-[#FFF2DC]"></div>
+                <div className="w-4 h-3 rounded-3xl bg-[#f6e7ff]"></div>
                 <p className="text-sm font-medium">
-                  In Progress: {orderPieData?.inProgressPercentage.toFixed(1)}%
+                  Freelancers: {orderSummary?.doneByFreelancers.toFixed(1)}%
                 </p>
               </div>
             </div>

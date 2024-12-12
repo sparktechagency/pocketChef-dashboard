@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import JoditEditor from "jodit-react";
 import Title from "../../components/common/Title";
-
+import rentMeLogo from "../../assets/navLogo.png";
 import toast from "react-hot-toast";
 import {
   usePrivacyPolicyQuery,
@@ -12,22 +12,29 @@ const PrivacyPolicy = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [selectedTab, setSelectedTab] = useState("USER");
+  const isLoading = false;
 
   useEffect(() => {
     setContent(content);
   }, [selectedTab]);
 
-  const {
-    data: privacyPolicy,
-    isLoading,
-    refetch,
-  } = usePrivacyPolicyQuery(selectedTab);
+  // const {
+  //   data: privacyPolicy,
+  //   isLoading,
+  //   refetch,
+  // } = usePrivacyPolicyQuery(selectedTab);
 
-  const [updatePricyPolicy] = useUpdatePricyPolicyMutation();
+  // const [updatePricyPolicy] = useUpdatePricyPolicyMutation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
+
+  const privacyPolicy = [];
 
   const privacyPolicyData = privacyPolicy?.content;
 
@@ -65,7 +72,7 @@ const PrivacyPolicy = () => {
       <div className="flex justify-center gap-4 mb-4">
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "USER" ? "bg-[#FFD900]" : "bg-gray-200"
+            selectedTab === "USER" ? "bg-[#5c2579cc] text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("USER")}
         >
@@ -73,7 +80,9 @@ const PrivacyPolicy = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "VENDOR" ? "bg-[#FFD900]" : "bg-gray-200"
+            selectedTab === "VENDOR"
+              ? "bg-[#5c2579cc] text-white"
+              : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("VENDOR")}
         >
@@ -81,7 +90,9 @@ const PrivacyPolicy = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "CUSTOMER" ? "bg-[#FFD900]" : "bg-gray-200"
+            selectedTab === "CUSTOMER"
+              ? "bg-[#5c2579cc] text-white"
+              : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("CUSTOMER")}
         >
@@ -101,7 +112,7 @@ const PrivacyPolicy = () => {
         <button
           onClick={termsDataSave}
           type="submit"
-          className="bg-[#FFD900] w-[160px] h-[42px] rounded-lg"
+          className="bg-[#5c2579cc] text-white w-[160px] h-[42px] rounded-lg"
         >
           Submit
         </button>

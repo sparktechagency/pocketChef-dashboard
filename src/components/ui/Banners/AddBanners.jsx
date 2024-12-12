@@ -5,17 +5,23 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useAddBannerMutation } from "../../../redux/apiSlices/banenrSlice";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
+import rentMeLogo from "../../../assets/navLogo.png";
 
 const AddBanners = () => {
   const [imgURL, setImgURL] = useState();
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const isLoading = false;
 
-  const [addBanner, { isLoading }] = useAddBannerMutation();
+  // const [addBanner, { isLoading }] = useAddBannerMutation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
 
   const onChangeImage = (e) => {
@@ -129,11 +135,7 @@ const AddBanners = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            type="primary"
-            className="bg-[#ffd900] text-black"
-            htmlType="submit"
-          >
+          <Button type="primary" className="bg-[#5c2579cc]" htmlType="submit">
             Add Banner
           </Button>
         </Form.Item>

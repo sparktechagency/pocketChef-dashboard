@@ -15,6 +15,25 @@
   margin-top: 0 !important;
 }
 
+:root {
+  --primary-color: #5b2579;
+  --secondary-color: #f6e7ff;
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+.text-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
 /* ant design menu option */
 .ant-menu-light .ant-menu-item {
   color: #413f3f;
@@ -46,8 +65,9 @@
 }
 
 .ant-badge .ant-badge-count {
-  background: #ffe133 !important;
+  background: #f6e7ff !important;
   color: black !important;
+  border: 1px solid #e8c4fc !important;
 }
 
 .jodit-workplace {
@@ -78,9 +98,9 @@
 
 /* pagination style */
 .ant-pagination .ant-pagination-item-active {
-  background-color: #ffe133 !important;
+  background-color: #f6e7ff !important;
   border-radius: 100%;
-  border-color: #ffe133;
+  border-color: #f6e7ff;
   color: black !important;
 }
 
@@ -90,5 +110,5 @@
 }
 
 .ant-switch-checked {
-  background-color: #ffd900 !important;
+  background-color: #5c2579cc !important;
 }

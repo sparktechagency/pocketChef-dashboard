@@ -11,7 +11,7 @@ const Header = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center my-20 text-lg text-cyan-500">
+      <div className="flex justify-center items-center my-20 text-lg text-[#f6e7ff]">
         Loading...
       </div>
     );
@@ -41,7 +41,7 @@ const Header = () => {
           className="clip"
         />
         <div className="flex pr-2 flex-col">
-          <p className="text-xl">{userData?.data?.name}</p>
+          <p className="text-xl">{userData?.data?.name || "Shakib Al Hasan"}</p>
           <p className="text-sm text-gray-500">{userData?.data?.role}</p>
         </div>
       </div>

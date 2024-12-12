@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   LineChart,
   Line,
@@ -9,7 +9,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useOverAllStateQuery } from "../../../redux/apiSlices/dashboardSlice";
 
 const UserEngagement = () => {
   const currentYear = new Date().getFullYear();
@@ -17,21 +16,23 @@ const UserEngagement = () => {
 
   const [selectedYear, setSelectedYear] = useState(currentYear.toString());
 
-  const {
-    data: overAllState,
-    isLoading,
-    refetch,
-  } = useOverAllStateQuery({ range: selectedYear }, { skip: false });
+  // Dummy data for User Engagement
+  const dummyChartData = [
+    { month: "January", orderCount: 120, userCount: 200 },
+    { month: "February", orderCount: 150, userCount: 220 },
+    { month: "March", orderCount: 180, userCount: 250 },
+    { month: "April", orderCount: 200, userCount: 300 },
+    { month: "May", orderCount: 230, userCount: 320 },
+    { month: "June", orderCount: 190, userCount: 280 },
+    { month: "July", orderCount: 250, userCount: 340 },
+    { month: "August", orderCount: 270, userCount: 360 },
+    { month: "September", orderCount: 210, userCount: 310 },
+    { month: "October", orderCount: 300, userCount: 400 },
+    { month: "November", orderCount: 260, userCount: 350 },
+    { month: "December", orderCount: 310, userCount: 420 },
+  ];
 
-  useEffect(() => {
-    refetch();
-  }, [selectedYear, refetch]);
-
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
-
-  const chartData = overAllState?.data;
+  const chartData = dummyChartData;
 
   return (
     <div className="bg-white p-5 w-[100%] h-[300px] rounded-2xl border">
@@ -76,10 +77,10 @@ const UserEngagement = () => {
           <Line
             type="monotone"
             dataKey="orderCount"
-            stroke="#FCE74C"
+            stroke="#d8b8eb"
             activeDot={{ r: 8 }}
           />
-          <Line type="monotone" dataKey="userCount" stroke="#FFBB00" />
+          <Line type="monotone" dataKey="userCount" stroke="#5c2579cc" />
         </LineChart>
       </ResponsiveContainer>
     </div>

@@ -8,24 +8,27 @@ import {
   Area,
   ResponsiveContainer,
 } from "recharts";
-import { useOverAllStateQuery } from "../../../redux/apiSlices/dashboardSlice";
-import rentMeLogo from "../../../assets/navLogo.png";
 
 const TotalEarning = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const { data: overAllState, isLoading } = useOverAllStateQuery({
-    range: selectedYear,
-  });
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
-      </div>
-    );
-  }
+  // Dummy data to simulate earnings data
+  const dummyChartData = [
+    { month: "January", revenue: 1200 },
+    { month: "February", revenue: 1500 },
+    { month: "March", revenue: 1800 },
+    { month: "April", revenue: 2100 },
+    { month: "May", revenue: 2500 },
+    { month: "June", revenue: 2300 },
+    { month: "July", revenue: 2700 },
+    { month: "August", revenue: 3000 },
+    { month: "September", revenue: 2800 },
+    { month: "October", revenue: 3100 },
+    { month: "November", revenue: 3500 },
+    { month: "December", revenue: 4000 },
+  ];
 
-  const chartData = overAllState?.data || [];
+  const chartData = dummyChartData;
 
   // Generate years from 10 years back to 1 year ahead
   const currentYear = new Date().getFullYear();
@@ -74,8 +77,8 @@ const TotalEarning = () => {
           <Area
             type="monotone"
             dataKey="revenue"
-            stroke="#DE950F"
-            fill="#F3E524"
+            stroke="#5c2579cc"
+            fill="#f6e7ff"
           />
         </AreaChart>
       </ResponsiveContainer>

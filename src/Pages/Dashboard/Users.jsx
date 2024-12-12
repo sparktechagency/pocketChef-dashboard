@@ -1,19 +1,45 @@
 import React, { useState } from "react";
 import { Table, Button, Space, Avatar } from "antd";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useUsersQuery } from "../../redux/apiSlices/userSlice";
+import { Link } from "react-router-dom";
 import randomImg from "../../assets/randomProfile2.jpg";
+import rentMeLogo from "../../assets/navLogo.png";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const navigate = useNavigate();
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: users, isLoading } = useUsersQuery();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // Dummy data for users
+  const users = {
+    data: {
+      data: [
+        {
+          id: "1",
+          name: "John Doe",
+          email: "john@example.com",
+          role: "Admin",
+          status: "Active",
+          profileImg: "https://randomuser.me/api/portraits/men/1.jpg",
+        },
+        {
+          id: "2",
+          name: "Jane Smith",
+          email: "jane@example.com",
+          role: "Customer",
+          status: "Inactive",
+          profileImg: "https://randomuser.me/api/portraits/women/2.jpg",
+        },
+        {
+          id: "3",
+          name: "Sam Wilson",
+          email: "sam@example.com",
+          role: "Vendor",
+          status: "Pending",
+          profileImg: "https://randomuser.me/api/portraits/men/3.jpg",
+        },
+        // Add more dummy users as needed
+      ],
+    },
+  };
 
   const data = users?.data?.data;
 
@@ -33,21 +59,12 @@ const Users = () => {
       dataIndex: "name",
       key: "name",
       render: (text, record) => {
-        // Extract name from the appropriate object
-        const name =
-          record?.admin?.name ||
-          record?.customer?.name ||
-          record?.vendor?.name ||
-          "Unknown";
-        const imgUrl =
-          record?.admin?.profileImg ||
-          record?.customer?.profileImg ||
-          record?.vendor?.profileImg ||
-          randomImg;
-
-        const fullImgUrl = imgUrl?.startsWith("http")
+        const name = record.name || "Unknown";
+        const imgUrl = record.profileImg || randomImg;
+        const fullImgUrl = imgUrl.startsWith("http")
           ? imgUrl
           : `${import.meta.env.VITE_BASE_URL}${imgUrl}`;
+
         return (
           <Space>
             <Avatar src={fullImgUrl} alt={name} size="large" />

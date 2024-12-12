@@ -68,7 +68,7 @@ const ForgotPassword = () => {
               fontSize: "18px",
               marginTop: 20,
             }}
-            className="flex items-center justify-center bg-[#ffd900] text-black rounded-lg"
+            className="flex items-center justify-center bg-[#5c2579cc] text-white rounded-lg"
           >
             Send OTP
           </button>

@@ -4,7 +4,6 @@ import Main from "../Layout/Main/Main";
 import Home from "../Pages/Dashboard/Home";
 import Users from "../Pages/Dashboard/Users";
 import Admin from "../Pages/Dashboard/Admin";
-import AboutUs from "../Pages/Dashboard/AboutUs";
 import PrivacyPolicy from "../Pages/Dashboard/PrivacyPolicy";
 
 import ChangePassword from "../Pages/Auth/ChangePassword";
@@ -17,15 +16,10 @@ import NotFound from "../NotFound";
 import Notifications from "../Pages/Dashboard/Notifications";
 import AdminProfile from "../Pages/Dashboard/AdminProfile/AdminProfile";
 import User from "../Pages/Dashboard/User";
-import Blogs from "../Pages/Dashboard/Blogs";
-import FAQ from "../Pages/Dashboard/FAQ";
-import Press from "../Pages/Dashboard/Press";
-import AffiliateProgram from "../Pages/Dashboard/AffliateProgram";
-import Support from "../Pages/Dashboard/Support";
-import SafetyTips from "../Pages/Dashboard/SafetyTips";
-import CookiePolicy from "../Pages/Dashboard/CookiePolicy";
 
-import Analytics from "../Pages/Dashboard/Analytics";
+import Press from "../Pages/Dashboard/Press";
+import Transactions from "../Pages/Dashboard/Transactions";
+
 import Promotion from "../Pages/Dashboard/Promotion";
 
 import UserProfile from "../Pages/Dashboard/AdminProfile/UserProfile";
@@ -36,6 +30,7 @@ import PrivateRoute from "./PrivateRoute";
 import Banners from "../Pages/Dashboard/Banners";
 import EditBanners from "../components/ui/Banners/EditBanners";
 import AddBanners from "../components/ui/Banners/AddBanners";
+import Category from "../Pages/Dashboard/Category";
 
 const router = createBrowserRouter([
   {
@@ -52,8 +47,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/analytics",
-        element: <Analytics />,
+        path: "/transactions",
+        element: <Transactions />,
       },
       {
         path: "/add-banner",
@@ -70,6 +65,10 @@ const router = createBrowserRouter([
       {
         path: "/user/profile/:id",
         element: <User />,
+      },
+      {
+        path: "/category",
+        element: <Category />,
       },
       {
         path: "/users",
@@ -97,19 +96,12 @@ const router = createBrowserRouter([
         path: "/admin",
         element: <Admin />,
       },
-      {
-        path: "/blogs",
-        element: <Blogs />,
-      },
+
       {
         path: "/subscription",
         element: <Subscription />,
       },
 
-      {
-        path: "/about-us",
-        element: <AboutUs />,
-      },
       {
         path: "/privacy-policy",
         element: <PrivacyPolicy />,
@@ -126,30 +118,12 @@ const router = createBrowserRouter([
         path: "/press",
         element: <Press />,
       },
-      {
-        path: "/affiliate-program",
-        element: <AffiliateProgram />,
-      },
-      {
-        path: "/support",
-        element: <Support />,
-      },
-      {
-        path: "/safety-tips",
-        element: <SafetyTips />,
-      },
-      {
-        path: "/cookie-policy",
-        element: <CookiePolicy />,
-      },
+
       {
         path: "/change-password",
         element: <ChangePassword />,
       },
-      {
-        path: "/faq",
-        element: <FAQ />,
-      },
+
       {
         path: "/profile",
         element: <AdminProfile />,

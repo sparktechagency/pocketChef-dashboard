@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import whiteBg from "../../../assets/whiteBG.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import toast from "react-hot-toast";
+import rentMeLogo from "../../../assets/navLogo.png";
 
 const EditBanners = () => {
   const navigate = useNavigate();
@@ -15,9 +16,10 @@ const EditBanners = () => {
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
   const { id } = useParams();
-  const { data: getBanner, isLoading, refetch } = useGetBannerByIdQuery(id);
-  const [updateBanner] = useUpdateBannerMutation();
-
+  const isLoading = false;
+  // const { data: getBanner, isLoading, refetch } = useGetBannerByIdQuery(id);
+  // const [updateBanner] = useUpdateBannerMutation();
+  const getBanner = [];
   const bannerData = getBanner?.data;
 
   useEffect(() => {
@@ -72,7 +74,11 @@ const EditBanners = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={rentMeLogo} alt="" />
+      </div>
+    );
   }
   return (
     <div>
@@ -156,11 +162,7 @@ const EditBanners = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button
-              type="primary"
-              className="bg-[#ffd900] text-black"
-              htmlType="submit"
-            >
+            <Button type="primary" className="bg-[#5c2579cc]" htmlType="submit">
               Update Banner
             </Button>
           </Form.Item>
