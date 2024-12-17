@@ -1,7 +1,6 @@
 import { Table, Input, Tooltip } from "antd";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import rentMeLogo from "../../../assets/navLogo.png";
 
 // Dummy data
 const dummyData = [

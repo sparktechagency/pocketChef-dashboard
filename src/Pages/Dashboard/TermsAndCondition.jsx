@@ -12,18 +12,21 @@ const TermsAndCondition = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
   const [selectedTab, setSelectedTab] = useState("USER");
+  const isLoading = false;
 
   useEffect(() => {
     setContent(content);
   }, [selectedTab]);
 
-  const {
-    data: termsAndCondition,
-    isLoading,
-    refetch,
-  } = useTermsAndConditionQuery(selectedTab);
+  // const {
+  //   data: termsAndCondition,
+  //   isLoading,
+  //   refetch,
+  // } = useTermsAndConditionQuery(selectedTab);
 
-  const [updateTermsAndConditions] = useUpdateTermsAndConditionsMutation();
+  // const [updateTermsAndConditions] = useUpdateTermsAndConditionsMutation();
+
+  const termsAndCondition = [];
 
   if (isLoading) {
     return (
@@ -68,7 +71,7 @@ const TermsAndCondition = () => {
       <div className="flex justify-center gap-4 mb-4">
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "USER" ? "bg-[#5c2579cc] text-white" : "bg-gray-200"
+            selectedTab === "USER" ? "bg-primary text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("USER")}
         >
@@ -76,9 +79,7 @@ const TermsAndCondition = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "VENDOR"
-              ? "bg-[#5c2579cc] text-white"
-              : "bg-gray-200"
+            selectedTab === "VENDOR" ? "bg-primary text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("VENDOR")}
         >
@@ -86,9 +87,7 @@ const TermsAndCondition = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "CUSTOMER"
-              ? "bg-[#5c2579cc] text-white"
-              : "bg-gray-200"
+            selectedTab === "CUSTOMER" ? "bg-primary text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("CUSTOMER")}
         >
@@ -108,7 +107,7 @@ const TermsAndCondition = () => {
         <button
           onClick={termsDataSave}
           type="submit"
-          className="bg-[#5c2579cc] text-white w-[160px] h-[42px] rounded-lg"
+          className="bg-primary text-white w-[160px] h-[42px] rounded-lg"
         >
           Submit
         </button>

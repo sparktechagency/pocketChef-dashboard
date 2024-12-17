@@ -7,7 +7,7 @@ const Main = () => {
   return (
     <div className="grid grid-cols-12">
       {/* side bar */}
-      <div className="col-span-2 h-screen bg-gray-200 w-full">
+      <div className="col-span-2 h-screen bg-[#ffe7e7] w-full overflow-y-auto">
         <Sidebar />
       </div>
 
@@ -17,8 +17,8 @@ const Main = () => {
           <Header />
         </div>
 
-        <div className="bg-[#F6F6F6]  h-[calc(100vh-68px)]">
-          <div className="h-full overflow-y-auto rounded-md  p-6">
+        <div className="bg-[#F6F6F6] h-[calc(100vh-68px)] overflow-y-auto">
+          <div className="h-full overflow-y-auto rounded-md p-6">
             <Outlet />
           </div>
         </div>

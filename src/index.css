@@ -14,7 +14,7 @@
 .ant-modal-footer {
   margin-top: 0 !important;
 }
-
+/* 
 :root {
   --primary-color: #5b2579;
   --secondary-color: #f6e7ff;
@@ -32,7 +32,7 @@
 }
 .text-secondary {
   background-color: var(--secondary-color) !important;
-}
+} */
 
 /* ant design menu option */
 .ant-menu-light .ant-menu-item {
@@ -65,9 +65,9 @@
 }
 
 .ant-badge .ant-badge-count {
-  background: #f6e7ff !important;
+  background: #ffe7e7 !important;
   color: black !important;
-  border: 1px solid #e8c4fc !important;
+  border: 1px solid #ffc7c7 !important;
 }
 
 .jodit-workplace {
@@ -97,16 +97,9 @@
 }
 
 /* pagination style */
-.ant-pagination .ant-pagination-item-active {
-  background-color: #f6e7ff !important;
-  border-radius: 100%;
-  border-color: #f6e7ff;
-  color: black !important;
-}
-
-.ant-pagination-item a {
-  border-radius: 100%;
-  color: black !important;
+.ant-pagination-item-active a {
+  color: white !important;
+  background-color: #8b0000 !important;
 }
 
 .ant-switch-checked {

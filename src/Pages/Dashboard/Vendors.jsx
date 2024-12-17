@@ -1,113 +1,67 @@
 import React, { useState } from "react";
-import { Table, Button, Space, Avatar } from "antd";
-import { Link, useNavigate } from "react-router-dom";
-import moment from "moment";
-import { FaStar } from "react-icons/fa6";
+import { Table, Button, Space, Avatar, Select } from "antd";
+import { Link } from "react-router-dom";
 import randomImg from "../../assets/randomProfile2.jpg";
-import rentMeLogo from "../../assets/navLogo.png";
 
 const Vendors = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const navigate = useNavigate();
   const [pageSize, setPageSize] = useState(10);
 
-  const dummyData = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      address: {
-        street: "123 Main St",
-        city: "Springfield",
-        state: "IL",
-        zip: "62704",
-        country: "USA",
-      },
-      vendor: {
-        totalReviews: 15,
-        rating: 4.5,
-      },
-      status: "Active",
-      createdAt: "2022-11-05T14:48:00.000Z",
-      profileImg: randomImg,
+  // Dummy data for barbers
+  const barbers = {
+    data: {
+      data: [
+        {
+          id: "1",
+          name: "John Doe",
+          email: "john@example.com",
+          phoneNumber: "+123456789",
+          address: "123 Main St, Cityville",
+          experienceLevel: "Senior",
+          rating: 4.8,
+          totalServices: 120,
+          totalEarnings: "$6000",
+          status: "Active",
+          profileImg: "https://randomuser.me/api/portraits/men/1.jpg",
+          complaint: null,
+        },
+        {
+          id: "2",
+          name: "Jane Smith",
+          email: "jane@example.com",
+          phoneNumber: "+123456780",
+          address: "456 Secondary St, Townsville",
+          experienceLevel: "Intermediate",
+          rating: 4.5,
+          totalServices: 200,
+          totalEarnings: "$8000",
+          status: "Inactive",
+          profileImg: "https://randomuser.me/api/portraits/women/2.jpg",
+          complaint: null,
+        },
+        {
+          id: "3",
+          name: "Sam Wilson",
+          email: "sam@example.com",
+          phoneNumber: "+123456781",
+          address: "789 Tertiary St, Suburb",
+          experienceLevel: "Junior",
+          rating: 4.2,
+          totalServices: 50,
+          totalEarnings: "$2000",
+          status: "Suspended",
+          profileImg: "https://randomuser.me/api/portraits/men/3.jpg",
+          complaint: {
+            reason: "Violation of salon policies",
+            amount: "$50",
+          },
+        },
+        // Add more dummy barbers as needed
+      ],
     },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      address: {
-        street: "456 Oak St",
-        city: "Lincoln",
-        state: "NE",
-        zip: "68508",
-        country: "USA",
-      },
-      vendor: {
-        totalReviews: 20,
-        rating: 3.8,
-      },
-      status: "Inactive",
-      createdAt: "2023-01-12T09:23:00.000Z",
-      profileImg: randomImg,
-    },
-    {
-      id: 3,
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      address: {
-        street: "789 Maple Ave",
-        city: "Madison",
-        state: "WI",
-        zip: "53703",
-        country: "USA",
-      },
-      vendor: {
-        totalReviews: 12,
-        rating: 4.2,
-      },
-      status: "Pending",
-      createdAt: "2023-03-25T16:10:00.000Z",
-      profileImg: randomImg,
-    },
-    {
-      id: 4,
-      name: "Michael Brown",
-      email: "michael.brown@example.com",
-      address: {
-        street: "101 Pine St",
-        city: "Columbus",
-        state: "OH",
-        zip: "43215",
-        country: "USA",
-      },
-      vendor: {
-        totalReviews: 30,
-        rating: 5.0,
-      },
-      status: "Active",
-      createdAt: "2024-05-07T08:45:00.000Z",
-      profileImg: randomImg,
-    },
-    {
-      id: 5,
-      name: "Emma Wilson",
-      email: "emma.wilson@example.com",
-      address: {
-        street: "202 Cedar Dr",
-        city: "Denver",
-        state: "CO",
-        zip: "80202",
-        country: "USA",
-      },
-      vendor: {
-        totalReviews: 8,
-        rating: 3.5,
-      },
-      status: "Inactive",
-      createdAt: "2023-12-01T11:30:00.000Z",
-      profileImg: randomImg,
-    },
-  ];
+  };
+
+  const data = barbers?.data?.data;
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -124,11 +78,12 @@ const Vendors = () => {
       dataIndex: "name",
       key: "name",
       render: (text, record) => {
-        const name = record.name;
+        const name = record.name || "Unknown";
         const imgUrl = record.profileImg || randomImg;
-        const fullImgUrl = imgUrl?.startsWith("http")
+        const fullImgUrl = imgUrl.startsWith("http")
           ? imgUrl
           : `${import.meta.env.VITE_BASE_URL}${imgUrl}`;
+
         return (
           <Space>
             <Avatar src={fullImgUrl} alt={name} size="large" />
@@ -143,41 +98,40 @@ const Vendors = () => {
       key: "email",
     },
     {
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+    },
+    {
       title: "Address",
+      dataIndex: "address",
       key: "address",
-      render: (record) => {
-        const { city, street, state, zip, country } = record.address || {};
-        return (
-          <span>
-            {city ? `${street}, ${city}, ${state}, ${zip}, ${country}` : "N/A"}
-          </span>
-        );
-      },
     },
     {
-      title: "Vendor Since",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (date) => moment(date).format("Do MMM, YYYY"),
-    },
-    {
-      title: "Total Reviews",
-      dataIndex: ["vendor", "totalReviews"],
-      key: "totalReviews",
-      align: "center",
-      sorter: (a, b) => a.vendor.totalReviews - b.vendor.totalReviews,
+      title: "Experience Level",
+      dataIndex: "experienceLevel",
+      key: "experienceLevel",
     },
     {
       title: "Rating",
-      dataIndex: ["vendor", "rating"],
+      dataIndex: "rating",
       key: "rating",
-      sorter: (a, b) => a.vendor.rating - b.vendor.rating,
-      render: (rating) => (
-        <span className="flex items-center jus gap-1">
-          <FaStar />
-          <p>{rating}</p>
-        </span>
-      ),
+      sorter: (a, b) => a.rating - b.rating,
+      render: (rating) => `${rating}`,
+    },
+    {
+      title: "Total Services",
+      dataIndex: "totalServices",
+      key: "totalServices",
+      sorter: (a, b) => a.totalServices - b.totalServices,
+    },
+    {
+      title: "Total Earnings",
+      dataIndex: "totalEarnings",
+      key: "totalEarnings",
+      sorter: (a, b) =>
+        parseFloat(a.totalEarnings.replace("$", "")) -
+        parseFloat(b.totalEarnings.replace("$", "")),
     },
     {
       title: "Status",
@@ -192,31 +146,53 @@ const Vendors = () => {
           case "Inactive":
             color = "red";
             break;
-          case "Pending":
+          case "Suspended":
             color = "orange";
             break;
           default:
             color = "gray";
         }
+
         return <span style={{ color }}>{status}</span>;
       },
     },
     {
+      title: "Complaint",
+      dataIndex: "complaint",
+      key: "complaint",
+      filters: [
+        { text: "None", value: "None" },
+        { text: "Has Complaints", value: "HasComplaints" },
+      ],
+      onFilter: (value, record) => {
+        if (value === "None") {
+          return !record.complaint;
+        } else if (value === "HasComplaints") {
+          return record.complaint !== null;
+        }
+        return true;
+      },
+      render: (complaint) =>
+        complaint ? (
+          <span className="text-red-700 font-semibold">
+            {complaint.amount},<br /> for {complaint.reason}
+          </span>
+        ) : (
+          "None"
+        ),
+    },
+    {
       title: "Actions",
       key: "actions",
-      align: "center",
       render: (text, record) => (
         <Space>
-          <Link to={`/user/profile/${record.id}`}>
+          <Link to={`/barber/profile/${record.id}`}>
             <Button className="bg-[#FFF4E3] text-[#F3B806] border-none">
               Details
             </Button>
           </Link>
 
-          <Button
-            className="border border-red-600 text-red-700 "
-            onClick={() => handleRestrict(record.id)}
-          >
+          <Button className="border border-red-600 text-red-700">
             Restrict
           </Button>
         </Space>
@@ -254,24 +230,15 @@ const Vendors = () => {
     ],
   };
 
-  const handleRestrict = (id) => {
-    console.log(`Restrict clicked for user with id: ${id}`);
-  };
-
   return (
     <Table
       className="bg-white"
       pagination={{
         pageSize: pageSize,
-        showSizeChanger: true,
-        pageSizeOptions: ["5", "10", "15"],
-        onShowSizeChange: (current, size) => setPageSize(size),
-        position: ["bottomCenter"],
       }}
       columns={columns}
-      dataSource={dummyData}
+      dataSource={data}
       rowKey={(record) => record.id}
-      rowSelection={rowSelection}
     />
   );
 };

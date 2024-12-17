@@ -28,7 +28,7 @@ const GeneralStateSection = () => {
   return (
     <div className="grid md:grid-cols-5 gap-6 md:h-[80px]">
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
-        <div className="w-16 h-16 rounded-full bg-[#f6e7ff] flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">
@@ -39,7 +39,7 @@ const GeneralStateSection = () => {
         </div>
       </div>
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
-        <div className="w-16 h-16 rounded-full bg-[#f6e7ff] flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">
@@ -50,7 +50,7 @@ const GeneralStateSection = () => {
         </div>
       </div>
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
-        <div className="w-16 h-16 rounded-full bg-[#f6e7ff] flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">
@@ -61,7 +61,7 @@ const GeneralStateSection = () => {
         </div>
       </div>
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
-        <div className="w-16 h-16 rounded-full bg-[#f6e7ff] flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">
@@ -72,7 +72,7 @@ const GeneralStateSection = () => {
         </div>
       </div>
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
-        <div className="w-16 h-16 rounded-full bg-[#f6e7ff] flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">

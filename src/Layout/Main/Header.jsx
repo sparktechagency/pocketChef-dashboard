@@ -11,7 +11,7 @@ const Header = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center my-20 text-lg text-[#f6e7ff]">
+      <div className="flex justify-center items-center my-20 text-lg text-secondary">
         Loading...
       </div>
     );

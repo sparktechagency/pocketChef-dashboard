@@ -72,7 +72,7 @@ const RunningOrdersTable = () => {
       <div className="flex items-center justify-between">
         <h1 className="font-bold mb-2">Running Orders</h1>
         <Link to={"/analytics"}>
-          <Button className="bg-[#f6e7ff] border-[#f6e7ff]">View All</Button>
+          <Button className="bg-secondary border-secondary">View All</Button>
         </Link>
       </div>
       <Table columns={columns} pagination={false} dataSource={data} />

@@ -48,7 +48,7 @@ const Home = () => {
                   cy="18"
                   r="16"
                   fill="none"
-                  className="stroke-current text-[#f6e7ff]"
+                  className="stroke-current text-secondary"
                   strokeWidth="4"
                 ></circle>
                 <circle
@@ -56,7 +56,7 @@ const Home = () => {
                   cy="18"
                   r="16"
                   fill="none"
-                  className="stroke-current text-[#5c2579cc]"
+                  className="stroke-current text-primary"
                   strokeWidth="4"
                   strokeDasharray="100"
                   strokeDashoffset={
@@ -66,7 +66,7 @@ const Home = () => {
                 ></circle>
               </svg>
 
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#f6e7ff] w-24 h-24 rounded-full flex flex-col items-center justify-center">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary w-24 h-24 rounded-full flex flex-col items-center justify-center">
                 <span className="text-2xl font-bold">
                   {orderSummary?.doneByProfessionals}%
                 </span>
@@ -75,13 +75,13 @@ const Home = () => {
 
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <div className="w-4 h-3 rounded-3xl bg-[#5c2579cc]"></div>
+                <div className="w-4 h-3 rounded-3xl bg-primary"></div>
                 <p className="text-sm font-medium">
                   Professionals: {orderSummary?.doneByProfessionals}%
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-3 rounded-3xl bg-[#f6e7ff]"></div>
+                <div className="w-4 h-3 rounded-3xl bg-secondary"></div>
                 <p className="text-sm font-medium">
                   Freelancers: {orderSummary?.doneByFreelancers.toFixed(1)}%
                 </p>

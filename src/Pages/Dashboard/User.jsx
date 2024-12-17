@@ -9,39 +9,22 @@ const User = () => {
 
   // Sample user data
   const user = {
-    id: id,
-    admin: {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Administrator",
-      address: {
-        city: "Springfield",
-        country: "USA",
-      },
-      profileImg: "https://example.com/randomProfile.jpg",
+    name: "John Doe",
+    id: "#5568164",
+    email: "johndoe@example.com",
+    address: {
+      street: "123 Main St",
+      city: "Los Angeles",
+      state: "CA",
+      zip: "90001",
+      country: "USA",
     },
-    vendor: {
-      name: "Jane's Salon",
-      address: {
-        city: "Lincoln",
-        country: "USA",
-      },
-    },
-    customer: {
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      role: "Customer",
-      address: {
-        city: "Madison",
-        country: "USA",
-      },
-    },
+    phone: "+1 (555) 123-4567",
+    imgUrl: "https://randomuser.me/api/portraits/men/1.jpg",
   };
 
   const imgUrl =
-    user?.admin?.profileImg ||
-    user?.user?.profileImg ||
-    user?.vendor?.profileImg ||
+    user?.imgUrl ||
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmtj40PvvTQ1g64pgKZ2oKEk-tqT9rA4CXSA&s";
 
   return (
@@ -58,9 +41,7 @@ const User = () => {
             alt="img"
           />
           <div>
-            <h1 className="text-2xl font-bold">
-              {user?.admin?.name || user?.vendor?.name || user?.customer?.name}
-            </h1>
+            <h1 className="text-2xl font-bold">{user?.name}</h1>
             <p className="text-sm text-gray-400">User ID: {user.id} </p>
           </div>
         </div>
@@ -69,40 +50,33 @@ const User = () => {
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Name
             </h1>
-            <p className="text-lg my-2">
-              {user?.admin?.name || user?.vendor?.name || user?.customer?.name}
-            </p>
+            <p className="text-lg my-2">{user?.name}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Email
             </h1>
-            <p className="text-lg my-2">{user.email}</p>
+            <p className="text-lg my-2">{user?.email}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
-              Role
+              Phone
             </h1>
-            <p className="text-lg my-2">{user.role}</p>
+            <p className="text-lg my-2">{user?.phone}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Address
             </h1>
             <p className="text-lg my-2">
-              {user?.admin?.address
-                ? user.admin.address.city && user.admin.address.country
-                  ? `${user.admin.address.city}, ${user.admin.address.country}`
-                  : user.admin.address
-                : user?.user?.address
-                ? user.user.address.city && user.user.address.country
-                  ? `${user.user.address.city}, ${user.user.address.country}`
-                  : user.user.address
-                : user?.vendor?.address
-                ? user.vendor.address.city && user.vendor.address.country
-                  ? `${user.vendor.address.city}, ${user.vendor.address.country}`
-                  : user.vendor.address
-                : "N/A"}
+              {user?.address ? (
+                <>
+                  {user?.address?.street}, {user?.address?.state},{" "}
+                  {user?.address?.city}, {user?.address?.country}
+                </>
+              ) : (
+                "N/A"
+              )}
             </p>
           </div>
         </div>

@@ -71,9 +71,9 @@ const Professionals = () => {
             <h1 className="text-sm font-medium w-32 truncate">{value?.name}</h1>
 
             <div className="flex items-center flex-1">
-              <div className="w-full bg-[#f6e7ff] rounded-full h-2.5">
+              <div className="w-full bg-secondary rounded-full h-2.5">
                 <div
-                  className="bg-[#5c2579cc] h-2.5 rounded-full"
+                  className="bg-primary h-2.5 rounded-full"
                   style={{ width: `${value.conversionRate}%` }}
                 ></div>
               </div>

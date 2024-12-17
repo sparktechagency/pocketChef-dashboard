@@ -4,7 +4,6 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import rentMeLogo from "../../assets/navLogo.png";
 import moment from "moment";
 
 const Banners = () => {
@@ -149,7 +148,7 @@ const Banners = () => {
       <div className="flex justify-between mb-5 items-center">
         <h1 className=" text-2xl font-semibold">Manage Banners</h1>
         <Link to={`/add-banner`}>
-          <button className="bg-[#5c2579cc] h-10 text-white px-4 rounded-md">
+          <button className="bg-primary h-10 text-white px-4 rounded-md">
             + Add Banner
           </button>
         </Link>

@@ -77,7 +77,7 @@ const UserEngagement = () => {
           <Line
             type="monotone"
             dataKey="orderCount"
-            stroke="#d8b8eb"
+            stroke="#8b0000"
             activeDot={{ r: 8 }}
           />
           <Line type="monotone" dataKey="userCount" stroke="#5c2579cc" />

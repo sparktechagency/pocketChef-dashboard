@@ -1,6 +1,11 @@
 import { Menu } from "antd";
 import React, { useEffect, useState } from "react";
-import { MdFeaturedPlayList } from "react-icons/md";
+import {
+  MdCancelPresentation,
+  MdCategory,
+  MdFeaturedPlayList,
+  MdMiscellaneousServices,
+} from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { TbUserScreen } from "react-icons/tb";
@@ -10,9 +15,11 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { PiUserPlus } from "react-icons/pi";
 import { LuLayoutDashboard } from "react-icons/lu";
 import Cookies from "js-cookie";
-import logo from "../../assets/salon-go-logo.png";
+import logo from "../../assets/barberMeLogo.png";
 import { DiGoogleAnalytics } from "react-icons/di";
 import { BiSolidCategoryAlt } from "react-icons/bi";
+import { FaMoneyBillTransfer, FaScissors } from "react-icons/fa6";
+import { FaBorderStyle } from "react-icons/fa";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -40,21 +47,21 @@ const Sidebar = () => {
         </Link>
       ),
     },
-    {
-      key: "/transactions",
-      icon: <DiGoogleAnalytics size={24} />,
-      label: <Link to="/transactions">Transactions</Link>,
-    },
+    // {
+    //   key: "/transactions",
+    //   icon: <DiGoogleAnalytics size={24} />,
+    //   label: <Link to="/transactions">Transactions</Link>,
+    // },
     {
       key: "/banners",
       icon: <MdFeaturedPlayList size={24} />,
       label: <Link to="/banners">Banners</Link>,
     },
-    {
-      key: "/category",
-      icon: <BiSolidCategoryAlt size={24} />,
-      label: <Link to="/category">Category</Link>,
-    },
+    // {
+    //   key: "/category",
+    //   icon: <BiSolidCategoryAlt size={24} />,
+    //   label: <Link to="/category">Category</Link>,
+    // },
     {
       key: "/users",
       icon: <TbUserScreen size={24} />,
@@ -63,13 +70,57 @@ const Sidebar = () => {
     {
       key: "/vendors",
       icon: <PiUserPlus size={24} />,
-      label: <Link to="/vendors">Vendors</Link>,
+      label: <Link to="/vendors">Barbers</Link>,
     },
-    // {
-    //   key: "/promotion",
-    //   icon: <SlCalender size={24} />,
-    //   label: <Link to="/promotion">Promotion</Link>,
-    // },
+    {
+      key: "subMenuSalon",
+      icon: <FaScissors size={24} />,
+      label: "Salon",
+      children: [
+        {
+          key: "/services",
+          icon: <MdMiscellaneousServices size={24} />,
+          label: (
+            <Link to="/services" className="text-white hover:text-white">
+              Services
+            </Link>
+          ),
+        },
+        {
+          key: "/salon-category",
+          icon: <BiSolidCategoryAlt size={24} />,
+          label: (
+            <Link to="/salon-category" className="text-white hover:text-white">
+              Category
+            </Link>
+          ),
+        },
+        {
+          key: "/sub-category",
+          icon: <MdCategory size={24} />,
+          label: (
+            <Link to="/sub-category" className="text-white hover:text-white">
+              Sub Category
+            </Link>
+          ),
+        },
+      ],
+    },
+    {
+      key: "/orders",
+      icon: <FaBorderStyle size={24} />,
+      label: <Link to="/orders">Orders</Link>,
+    },
+    {
+      key: "/cancellation",
+      icon: <MdCancelPresentation size={24} />,
+      label: <Link to="/cancellation">Cancellation</Link>,
+    },
+    {
+      key: "/our-transactions",
+      icon: <FaMoneyBillTransfer size={24} />,
+      label: <Link to="/our-transactions">Transactions</Link>,
+    },
 
     {
       key: "subMenuSetting",
@@ -81,7 +132,7 @@ const Sidebar = () => {
           label: (
             <Link
               to="/personal-information"
-              className="text-[#6B6B6B] hover:text-white"
+              className="text-white hover:text-white"
             >
               Personal Information
             </Link>
@@ -92,6 +143,22 @@ const Sidebar = () => {
           label: (
             <Link to="/change-password" className="text-white hover:text-white">
               Change Password
+            </Link>
+          ),
+        },
+        {
+          key: "/offer-list",
+          label: (
+            <Link to="/offer-list" className="text-white hover:text-white">
+              Offer List
+            </Link>
+          ),
+        },
+        {
+          key: "/about-us",
+          label: (
+            <Link to="/about-us" className="text-white hover:text-white">
+              About Us
             </Link>
           ),
         },
@@ -111,6 +178,14 @@ const Sidebar = () => {
           label: (
             <Link to="/privacy-policy" className="text-white hover:text-white">
               Privacy Policy
+            </Link>
+          ),
+        },
+        {
+          key: "/f-a-q",
+          label: (
+            <Link to="/f-a-q" className="text-white hover:text-white">
+              FAQ
             </Link>
           ),
         },
@@ -150,14 +225,13 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 overflow-y-scroll">
       <div className="px-10">
         <Link
           to={"/"}
-          className="mb-10  flex items-center flex-col gap-2 justify-center py-4"
+          className="mb-10 flex items-center flex-col gap-2 justify-center py-4"
         >
           <img src={logo} alt="" />
-          <h1 className="text-xl text-[#5b2579] font-semibold">SALONGO</h1>
         </Link>
       </div>
       <Menu

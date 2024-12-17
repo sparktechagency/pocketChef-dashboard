@@ -5,7 +5,6 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useAddBannerMutation } from "../../../redux/apiSlices/banenrSlice";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
-import rentMeLogo from "../../../assets/navLogo.png";
 
 const AddBanners = () => {
   const [imgURL, setImgURL] = useState();

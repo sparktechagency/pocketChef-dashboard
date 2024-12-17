@@ -8,7 +8,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import rentMeLogo from "../../../assets/navLogo.png";
 
 const dummyChartData = [
   { month: "January", userCount: 120 },

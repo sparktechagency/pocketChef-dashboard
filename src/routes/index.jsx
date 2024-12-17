@@ -30,7 +30,17 @@ import PrivateRoute from "./PrivateRoute";
 import Banners from "../Pages/Dashboard/Banners";
 import EditBanners from "../components/ui/Banners/EditBanners";
 import AddBanners from "../components/ui/Banners/AddBanners";
-import Category from "../Pages/Dashboard/Category";
+
+import OurTransactions from "../Pages/Dashboard/OurTransactions";
+import Faq from "../components/ui/Settings/Faq";
+import AboutUs from "../components/ui/Settings/AboutUs";
+import OfferList from "../components/ui/Settings/OfferList";
+import Orders from "../Pages/Dashboard/Orders";
+import Cancellation from "../Pages/Dashboard/Cancellation";
+import Services from "../Pages/Dashboard/Salon/Services";
+import Category from "../Pages/Dashboard/Salon/Category";
+import SubCategory from "../Pages/Dashboard/Salon/SubCategory";
+import Vendor from "../Pages/Dashboard/Vendor";
 
 const router = createBrowserRouter([
   {
@@ -67,9 +77,10 @@ const router = createBrowserRouter([
         element: <User />,
       },
       {
-        path: "/category",
-        element: <Category />,
+        path: "/barber/profile/:id",
+        element: <Vendor />,
       },
+
       {
         path: "/users",
         element: <Users />,
@@ -78,11 +89,27 @@ const router = createBrowserRouter([
         path: "/vendors",
         element: <Vendors />,
       },
-
       {
-        path: "/promotion",
-        element: <Promotion />,
+        path: "/services",
+        element: <Services />,
       },
+      {
+        path: "/salon-category",
+        element: <Category />,
+      },
+      {
+        path: "/sub-category",
+        element: <SubCategory />,
+      },
+      {
+        path: "/our-transactions",
+        element: <OurTransactions />,
+      },
+
+      // {
+      //   path: "/promotion",
+      //   element: <Promotion />,
+      // },
       {
         path: "/personal-information",
         element: <UserProfile />,
@@ -91,16 +118,35 @@ const router = createBrowserRouter([
         path: "/change-password",
         element: <ChangePassword />,
       },
-
+      {
+        path: "/cancellation",
+        element: <Cancellation />,
+      },
+      {
+        path: "f-a-q",
+        element: <Faq />,
+      },
+      {
+        path: "about-us",
+        element: <AboutUs />,
+      },
+      {
+        path: "offer-list",
+        element: <OfferList />,
+      },
+      {
+        path: "orders",
+        element: <Orders />,
+      },
       {
         path: "/admin",
         element: <Admin />,
       },
 
-      {
-        path: "/subscription",
-        element: <Subscription />,
-      },
+      // {
+      //   path: "/subscription",
+      //   element: <Subscription />,
+      // },
 
       {
         path: "/privacy-policy",
@@ -114,10 +160,10 @@ const router = createBrowserRouter([
       //   path: "/edit-terms-and-conditions",
       //   element: <TermsAndCondition />,
       // },
-      {
-        path: "/press",
-        element: <Press />,
-      },
+      // {
+      //   path: "/press",
+      //   element: <Press />,
+      // },
 
       {
         path: "/change-password",

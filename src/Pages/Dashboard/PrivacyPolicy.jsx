@@ -72,7 +72,7 @@ const PrivacyPolicy = () => {
       <div className="flex justify-center gap-4 mb-4">
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "USER" ? "bg-[#5c2579cc] text-white" : "bg-gray-200"
+            selectedTab === "USER" ? "bg-primary text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("USER")}
         >
@@ -80,9 +80,7 @@ const PrivacyPolicy = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "VENDOR"
-              ? "bg-[#5c2579cc] text-white"
-              : "bg-gray-200"
+            selectedTab === "VENDOR" ? "bg-primary text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("VENDOR")}
         >
@@ -90,9 +88,7 @@ const PrivacyPolicy = () => {
         </button>
         <button
           className={`px-4 rounded-2xl py-2 ${
-            selectedTab === "CUSTOMER"
-              ? "bg-[#5c2579cc] text-white"
-              : "bg-gray-200"
+            selectedTab === "CUSTOMER" ? "bg-primary text-white" : "bg-gray-200"
           }`}
           onClick={() => setSelectedTab("CUSTOMER")}
         >
@@ -112,7 +108,7 @@ const PrivacyPolicy = () => {
         <button
           onClick={termsDataSave}
           type="submit"
-          className="bg-[#5c2579cc] text-white w-[160px] h-[42px] rounded-lg"
+          className="bg-primary text-white w-[160px] h-[42px] rounded-lg"
         >
           Submit
         </button>
