@@ -136,7 +136,7 @@ const Vendor = () => {
               {barber.address}
             </p>
             <p className="text-gray-600">
-              <span className="font-semibold">Total Services:</span>{" "}
+              <span className="font-semibold">Total Services</span>{" "}
               {barber.totalServices}
             </p>
             <p className="text-gray-600">
