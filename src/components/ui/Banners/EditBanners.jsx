@@ -162,7 +162,7 @@ const EditBanners = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" className="bg-[#5c2579cc]" htmlType="submit">
+            <Button type="primary" className="bg-[#8b0000]" htmlType="submit">
               Update Banner
             </Button>
           </Form.Item>

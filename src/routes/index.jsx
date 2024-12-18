@@ -47,9 +47,9 @@ const router = createBrowserRouter([
     path: "/",
     // element: <ProtectedRoute><Main /></ProtectedRoute> ,
     element: (
-      <PrivateRoute>
-        <Main />
-      </PrivateRoute>
+      // <PrivateRoute>
+      <Main />
+      // </PrivateRoute>
     ),
     children: [
       {

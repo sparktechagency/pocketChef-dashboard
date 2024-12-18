@@ -57,7 +57,7 @@
 }
 
 .ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  color: #007ba5 !important;
+  color: #8b0000 !important;
 }
 
 .ant-menu .ant-menu-title-content {
@@ -86,14 +86,14 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  /* background: #6b5ecc34;  */
+  /* background: #8b0000;  */
   background: #ffffff67;
   border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #6b5ecc34;
+  background: #8b0000;
 }
 
 /* pagination style */
@@ -103,5 +103,5 @@
 }
 
 .ant-switch-checked {
-  background-color: #5c2579cc !important;
+  background-color: #8b0000 !important;
 }

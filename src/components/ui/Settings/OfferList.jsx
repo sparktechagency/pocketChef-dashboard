@@ -260,6 +260,7 @@ const OfferList = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-semibold  my-5">Offer List</h1>
       <Table columns={columns} dataSource={dummyData} rowKey="key" />
     </div>
   );

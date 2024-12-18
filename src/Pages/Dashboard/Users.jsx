@@ -276,12 +276,15 @@ const Users = () => {
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      pagination={{ pageSize, onChange: () => setPageSize() }}
-      scroll={{ x: 1000 }}
-    />
+    <>
+      <h1 className="text-2xl font-semibold  my-5">Users</h1>
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={{ pageSize, onChange: () => setPageSize() }}
+        scroll={{ x: 1000 }}
+      />
+    </>
   );
 };
 

@@ -231,15 +231,18 @@ const Vendors = () => {
   };
 
   return (
-    <Table
-      className="bg-white"
-      pagination={{
-        pageSize: pageSize,
-      }}
-      columns={columns}
-      dataSource={data}
-      rowKey={(record) => record.id}
-    />
+    <>
+      <h1 className="text-2xl font-semibold  my-5">Barbers</h1>
+      <Table
+        className="bg-white"
+        pagination={{
+          pageSize: pageSize,
+        }}
+        columns={columns}
+        dataSource={data}
+        rowKey={(record) => record.id}
+      />
+    </>
   );
 };
 

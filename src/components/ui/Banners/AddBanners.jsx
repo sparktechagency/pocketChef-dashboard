@@ -134,7 +134,7 @@ const AddBanners = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" className="bg-[#5c2579cc]" htmlType="submit">
+          <Button type="primary" className="bg-[#8b0000]" htmlType="submit">
             Add Banner
           </Button>
         </Form.Item>
