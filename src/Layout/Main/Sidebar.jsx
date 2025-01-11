@@ -7,16 +7,13 @@ import {
   MdMiscellaneousServices,
 } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { TbUserScreen } from "react-icons/tb";
 import { IoIosLogOut } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
-
-import { PiUserPlus } from "react-icons/pi";
-import { LuLayoutDashboard } from "react-icons/lu";
+import { PiCookingPotBold, PiUserPlus } from "react-icons/pi";
+import { LuLayoutDashboard, LuLayoutTemplate } from "react-icons/lu";
 import Cookies from "js-cookie";
-import logo from "../../assets/barberMeLogo.png";
-import { DiGoogleAnalytics } from "react-icons/di";
+import logo from "../../assets/logo.png";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { FaMoneyBillTransfer, FaScissors } from "react-icons/fa6";
 import { FaBorderStyle } from "react-icons/fa";
@@ -47,50 +44,37 @@ const Sidebar = () => {
         </Link>
       ),
     },
-    // {
-    //   key: "/transactions",
-    //   icon: <DiGoogleAnalytics size={24} />,
-    //   label: <Link to="/transactions">Transactions</Link>,
-    // },
-    {
-      key: "/banners",
-      icon: <MdFeaturedPlayList size={24} />,
-      label: <Link to="/banners">Banners</Link>,
-    },
-    // {
-    //   key: "/category",
-    //   icon: <BiSolidCategoryAlt size={24} />,
-    //   label: <Link to="/category">Category</Link>,
-    // },
+
     {
       key: "/users",
       icon: <TbUserScreen size={24} />,
       label: <Link to="/users">Users</Link>,
     },
     {
-      key: "/vendors",
-      icon: <PiUserPlus size={24} />,
-      label: <Link to="/vendors">Barbers</Link>,
+      key: "/user-request",
+      icon: <TbUserScreen size={24} />,
+      label: <Link to="/user-request">User Request</Link>,
     },
     {
-      key: "subMenuSalon",
-      icon: <FaScissors size={24} />,
-      label: "Salon",
+      key: "/recipe",
+      icon: <FaBorderStyle size={24} />,
+      label: <Link to="/recipe">Recipe</Link>,
+    },
+    // {
+    //   key: "/vendors",
+    //   icon: <PiUserPlus size={24} />,
+    //   label: <Link to="/vendors">Barbers</Link>,
+    // },
+    {
+      key: "subMenuCategory",
+      icon: <PiCookingPotBold size={24} />,
+      label: "Category",
       children: [
         {
-          key: "/services",
-          icon: <MdMiscellaneousServices size={24} />,
-          label: (
-            <Link to="/services" className="text-white hover:text-white">
-              Services
-            </Link>
-          ),
-        },
-        {
-          key: "/salon-category",
+          key: "/category",
           icon: <BiSolidCategoryAlt size={24} />,
           label: (
-            <Link to="/salon-category" className="text-white hover:text-white">
+            <Link to="/category" className="text-white hover:text-white">
               Category
             </Link>
           ),
@@ -107,19 +91,9 @@ const Sidebar = () => {
       ],
     },
     {
-      key: "/orders",
-      icon: <FaBorderStyle size={24} />,
-      label: <Link to="/orders">Orders</Link>,
-    },
-    {
-      key: "/cancellation",
-      icon: <MdCancelPresentation size={24} />,
-      label: <Link to="/cancellation">Cancellation</Link>,
-    },
-    {
-      key: "/our-transactions",
-      icon: <FaMoneyBillTransfer size={24} />,
-      label: <Link to="/our-transactions">Transactions</Link>,
+      key: "/template",
+      icon: <LuLayoutTemplate size={24} />,
+      label: <Link to="/template">Templates</Link>,
     },
 
     {
@@ -146,22 +120,7 @@ const Sidebar = () => {
             </Link>
           ),
         },
-        {
-          key: "/offer-list",
-          label: (
-            <Link to="/offer-list" className="text-white hover:text-white">
-              Offer List
-            </Link>
-          ),
-        },
-        {
-          key: "/about-us",
-          label: (
-            <Link to="/about-us" className="text-white hover:text-white">
-              About Us
-            </Link>
-          ),
-        },
+
         {
           key: "/terms-and-condition",
           label: (
@@ -178,14 +137,6 @@ const Sidebar = () => {
           label: (
             <Link to="/privacy-policy" className="text-white hover:text-white">
               Privacy Policy
-            </Link>
-          ),
-        },
-        {
-          key: "/f-a-q",
-          label: (
-            <Link to="/f-a-q" className="text-white hover:text-white">
-              FAQ
             </Link>
           ),
         },
@@ -229,7 +180,7 @@ const Sidebar = () => {
       <div className="px-10">
         <Link
           to={"/"}
-          className="mb-10 flex items-center flex-col gap-2 justify-center py-4"
+          className="mb-10 flex items-center border-b-2 border-[#154F92] pb-5 flex-col gap-2 justify-center py-4"
         >
           <img src={logo} alt="" />
         </Link>

@@ -39,15 +39,14 @@
   color: #413f3f;
 }
 .ant-menu-item:hover {
-  background-color: White !important;
-  color: black !important;
+  background-color: #f28705 !important;
+  color: white !important;
+  border-radius: 0 !important;
 }
 
 .ant-menu-item-selected {
-  background-color: White !important;
-  color: black !important;
-  /* margin: 0 !important;
-  padding: 0 !important; */
+  background-color: #f28705 !important;
+  color: white !important;
   border-radius: 0 !important;
   width: "100%" !important;
 }
@@ -57,7 +56,7 @@
 }
 
 .ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  color: #8b0000 !important;
+  color: #f28705 !important;
 }
 
 .ant-menu .ant-menu-title-content {
@@ -67,7 +66,15 @@
 .ant-badge .ant-badge-count {
   background: #ffe7e7 !important;
   color: black !important;
-  border: 1px solid #ffc7c7 !important;
+  border: 1px solid #ffe7e7 !important;
+}
+
+.ant-btn:hover,
+.ant-btn:focus {
+  background-color: #f28705 !important;
+  border-color: white !important;
+  color: white !important;
+  box-shadow: none !important;
 }
 
 .jodit-workplace {
@@ -93,15 +100,24 @@
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #8b0000;
+  background: #f28705;
 }
 
 /* pagination style */
 .ant-pagination-item-active a {
   color: white !important;
-  background-color: #8b0000 !important;
+  background-color: #f28705 !important;
 }
 
 .ant-switch-checked {
-  background-color: #8b0000 !important;
+  background-color: #f28705 !important;
+}
+
+.custom-modal .ant-modal-content {
+  background-color: #fdf5ec;
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #fdf5ec;
+  color: white;
 }

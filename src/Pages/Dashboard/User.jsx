@@ -1,5 +1,5 @@
 import React from "react";
-import { ConfigProvider, Input, Tabs } from "antd";
+import { Button, ConfigProvider, Input, Tabs, Table } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { BiLeftArrowAlt } from "react-icons/bi";
 import RunningOrderTable from "../../components/ui/Analytics/RunningOrderTable";
@@ -27,22 +27,91 @@ const User = () => {
     user?.imgUrl ||
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmtj40PvvTQ1g64pgKZ2oKEk-tqT9rA4CXSA&s";
 
+  // Dummy data for request history
+  const requestHistory = [
+    {
+      requestId: "1",
+      description: "Request for a new haircut style.",
+      date: "2025-01-10",
+      status: "Pending",
+    },
+    {
+      requestId: "2",
+      description:
+        "Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. ",
+      date: "2025-01-09",
+      status: "Approved",
+    },
+    {
+      requestId: "3",
+      description:
+        "Request for a manicure service. Request for a manicure service. Request for a manicure service. Request for a manicure service. ",
+      date: "2025-01-08",
+      status: "Pending",
+    },
+  ];
+
+  const columns = [
+    {
+      title: "Request ID",
+      dataIndex: "requestId",
+      key: "requestId",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      render: (text) => (
+        <div className="w-[800px] line-clamp-1">{text}</div> // Adjust the width as needed
+      ),
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <span>
+          {status === "Pending" ? (
+            <span className="text-yellow-600">Pending</span>
+          ) : (
+            <span className="text-green-600">Approved</span>
+          )}
+        </span>
+      ),
+    },
+  ];
+
   return (
     <div>
       <div className="">
-        <div className="flex gap-3 items-center ">
-          <img
-            className="rounded-full w-16 h-16"
-            src={
-              imgUrl?.startsWith("http")
-                ? imgUrl
-                : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
-            }
-            alt="img"
-          />
-          <div>
-            <h1 className="text-2xl font-bold">{user?.name}</h1>
-            <p className="text-sm text-gray-400">User ID: {user.id} </p>
+        <div className="flex items-center justify-between w-[1080px]">
+          <div className="flex gap-3 items-center ">
+            <img
+              className="rounded-full w-16 h-16"
+              src={
+                imgUrl?.startsWith("http")
+                  ? imgUrl
+                  : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
+              }
+              alt="img"
+            />
+            <div>
+              <h1 className="text-2xl font-bold">{user?.name}</h1>
+              <p className="text-sm text-gray-400">User ID: {user.id} </p>
+            </div>
+          </div>
+          <div className="space-x-4">
+            <Button className="bg-button text-white py-5 rounded-2xl text-lg px-10">
+              Ban User
+            </Button>
+            <Button className="bg-primary text-white py-5 rounded-2xl text-lg px-10">
+              Send Message
+            </Button>
           </div>
         </div>
         <div className="grid my-5 grid-cols-2 gap-5 w-[70%]">
@@ -81,11 +150,12 @@ const User = () => {
           </div>
         </div>
       </div>
-      <div>
-        <RunningOrderTable
-          filterProps={
-            user?.vendor?.name || user?.admin?.name || user?.customer?.name
-          }
+      <div className="my-10 bg-white p-5 rounded-2xl">
+        <h1 className="text-2xl font-bold">Request History</h1>
+        <Table
+          columns={columns}
+          dataSource={requestHistory}
+          pagination={{ pageSize: 5 }}
         />
       </div>
     </div>

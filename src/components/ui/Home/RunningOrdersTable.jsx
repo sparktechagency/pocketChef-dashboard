@@ -3,74 +3,73 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 
 const RunningOrdersTable = () => {
-  // Dummy data for salon orders
+  // Dummy data for recipes
   const dummyOrders = [
     {
-      orderId: "ORD001",
-      amount: 50,
-      preference: "Haircut",
-      createdAt: "2024-12-01T10:00:00Z",
+      recipeName: "Spaghetti Carbonara",
+      ratings: 4.5,
+      reviews: 120,
+      shares: 300,
     },
     {
-      orderId: "ORD002",
-      amount: 80,
-      preference: "Facial",
-      createdAt: "2024-12-03T14:00:00Z",
+      recipeName: "Chicken Tikka Masala",
+      ratings: 4.7,
+      reviews: 150,
+      shares: 400,
     },
     {
-      orderId: "ORD003",
-      amount: 40,
-      preference: "Manicure",
-      createdAt: "2024-12-05T09:30:00Z",
+      recipeName: "Beef Tacos",
+      ratings: 4.6,
+      reviews: 90,
+      shares: 250,
     },
     {
-      orderId: "ORD004",
-      amount: 120,
-      preference: "Hair Coloring",
-      createdAt: "2024-12-06T12:15:00Z",
+      recipeName: "Vegetable Stir Fry",
+      ratings: 4.3,
+      reviews: 80,
+      shares: 200,
     },
     {
-      orderId: "ORD005",
-      amount: 60,
-      preference: "Pedicure",
-      createdAt: "2024-12-08T08:45:00Z",
+      recipeName: "Caesar Salad",
+      ratings: 4.4,
+      reviews: 110,
+      shares: 350,
     },
   ];
 
   const data = dummyOrders.slice(0, 3).map((order, index) => ({
     ...order,
-    key: order.orderId || index.toString(),
+    key: index.toString(),
   }));
 
   const columns = [
     {
-      title: "Order Number",
-      dataIndex: "orderId",
-      key: "orderId",
+      title: "Recipe Name",
+      dataIndex: "recipeName",
+      key: "recipeName",
     },
     {
-      title: "Budget",
-      dataIndex: "amount",
-      key: "amount",
-      render: (text) => `$${text}`,
+      title: "Ratings",
+      dataIndex: "ratings",
+      key: "ratings",
+      render: (text) => `${text} ⭐`,
     },
     {
-      title: "Service",
-      dataIndex: "preference",
-      key: "preference",
+      title: "Reviews",
+      dataIndex: "reviews",
+      key: "reviews",
     },
     {
-      title: "Order Date",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      render: (date) => moment(date).format("Do MMM, YYYY"),
+      title: "Shares",
+      dataIndex: "shares",
+      key: "shares",
     },
   ];
 
   return (
     <div className="border bg-white h-[300px] p-5 rounded-2xl">
       <div className="flex items-center justify-between">
-        <h1 className="font-bold mb-2">Running Orders</h1>
+        <h1 className="font-bold mb-2">Trending Recipes</h1>
         <Link to={"/analytics"}>
           <Button className="bg-secondary border-secondary">View All</Button>
         </Link>

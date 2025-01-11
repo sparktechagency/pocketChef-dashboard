@@ -5,10 +5,8 @@ import Home from "../Pages/Dashboard/Home";
 import Users from "../Pages/Dashboard/Users";
 import Admin from "../Pages/Dashboard/Admin";
 import PrivacyPolicy from "../Pages/Dashboard/PrivacyPolicy";
-
 import ChangePassword from "../Pages/Auth/ChangePassword";
 import Login from "../Pages/Auth/Login";
-import Subscription from "../Pages/Dashboard/Subscription";
 import ForgotPassword from "../Pages/Auth/ForgotPassword";
 import VerifyOtp from "../Pages/Auth/VerifyOtp";
 import ResetPassword from "../Pages/Auth/ResetPassword";
@@ -16,21 +14,13 @@ import NotFound from "../NotFound";
 import Notifications from "../Pages/Dashboard/Notifications";
 import AdminProfile from "../Pages/Dashboard/AdminProfile/AdminProfile";
 import User from "../Pages/Dashboard/User";
-
-import Press from "../Pages/Dashboard/Press";
 import Transactions from "../Pages/Dashboard/Transactions";
-
-import Promotion from "../Pages/Dashboard/Promotion";
-
 import UserProfile from "../Pages/Dashboard/AdminProfile/UserProfile";
 import TermsAndCondition from "../Pages/Dashboard/TermsAndCondition";
-
 import Vendors from "../Pages/Dashboard/Vendors";
-import PrivateRoute from "./PrivateRoute";
 import Banners from "../Pages/Dashboard/Banners";
 import EditBanners from "../components/ui/Banners/EditBanners";
 import AddBanners from "../components/ui/Banners/AddBanners";
-
 import OurTransactions from "../Pages/Dashboard/OurTransactions";
 import Faq from "../components/ui/Settings/Faq";
 import AboutUs from "../components/ui/Settings/AboutUs";
@@ -38,9 +28,14 @@ import OfferList from "../components/ui/Settings/OfferList";
 import Orders from "../Pages/Dashboard/Orders";
 import Cancellation from "../Pages/Dashboard/Cancellation";
 import Services from "../Pages/Dashboard/Salon/Services";
-import Category from "../Pages/Dashboard/Salon/Category";
-import SubCategory from "../Pages/Dashboard/Salon/SubCategory";
 import Vendor from "../Pages/Dashboard/Vendor";
+import UserRequest from "../Pages/Dashboard/UserRequest";
+import RecipeManagement from "../Pages/Dashboard/Recipe/RecipeManagement";
+import EditRecipe from "../Pages/Dashboard/Recipe/EditRecipe";
+import AddRecipe from "../Pages/Dashboard/Recipe/AddRecipe";
+import ManageCategory from "../Pages/Dashboard/Category/ManageCategory";
+import ManageSubCategory from "../Pages/Dashboard/Category/ManageSubCategory";
+import Template from "../Pages/Dashboard/Template";
 
 const router = createBrowserRouter([
   {
@@ -86,6 +81,34 @@ const router = createBrowserRouter([
         element: <Users />,
       },
       {
+        path: "/recipe",
+        element: <RecipeManagement />,
+      },
+      {
+        path: "/category",
+        element: <ManageCategory />,
+      },
+      {
+        path: "/sub-category",
+        element: <ManageSubCategory />,
+      },
+      {
+        path: "/add-recipe",
+        element: <AddRecipe />,
+      },
+      {
+        path: "/edit-recipe/:id",
+        element: <EditRecipe />,
+      },
+      {
+        path: "/template",
+        element: <Template />,
+      },
+      {
+        path: "/user-request",
+        element: <UserRequest />,
+      },
+      {
         path: "/vendors",
         element: <Vendors />,
       },
@@ -93,14 +116,7 @@ const router = createBrowserRouter([
         path: "/services",
         element: <Services />,
       },
-      {
-        path: "/salon-category",
-        element: <Category />,
-      },
-      {
-        path: "/sub-category",
-        element: <SubCategory />,
-      },
+
       {
         path: "/our-transactions",
         element: <OurTransactions />,

@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { Table, Button, Space, Avatar } from "antd";
+import { Table, Button, Space, Avatar, Input, Modal, Form } from "antd";
 import { Link } from "react-router-dom";
 import randomImg from "../../assets/randomProfile2.jpg";
+import { FaIcons } from "react-icons/fa6";
+import { IoMdAdd } from "react-icons/io";
+import { BiSolidMessageDetail } from "react-icons/bi";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [pageSize, setPageSize] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isMessageModalVisible, setIsMessageModalVisible] = useState(false);
+  const [messageContent, setMessageContent] = useState("");
 
   // Dummy data for users
   const users = {
@@ -18,7 +25,7 @@ const Users = () => {
           phoneNumber: "+123456789",
           address: "123 Main St, Springfield",
           totalServices: 12,
-          status: "VIP",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/men/1.jpg",
           fine: 50,
         },
@@ -29,7 +36,7 @@ const Users = () => {
           phoneNumber: "+987654321",
           address: "456 Elm St, Springfield",
           totalServices: 5,
-          status: "Regular",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/2.jpg",
         },
         {
@@ -39,7 +46,7 @@ const Users = () => {
           phoneNumber: "+192837465",
           address: "789 Oak St, Springfield",
           totalServices: 3,
-          status: "New",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/men/3.jpg",
           fine: 30,
         },
@@ -50,7 +57,7 @@ const Users = () => {
           phoneNumber: "+456789123",
           address: "321 Pine St, Springfield",
           totalServices: 8,
-          status: "VIP",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/4.jpg",
           fine: 0,
         },
@@ -61,7 +68,7 @@ const Users = () => {
           phoneNumber: "+789456123",
           address: "654 Maple St, Springfield",
           totalServices: 6,
-          status: "Regular",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/men/5.jpg",
         },
         {
@@ -71,7 +78,7 @@ const Users = () => {
           phoneNumber: "+123987654",
           address: "987 Birch St, Springfield",
           totalServices: 7,
-          status: "New",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/6.jpg",
           fine: 40,
         },
@@ -82,7 +89,7 @@ const Users = () => {
           phoneNumber: "+456321789",
           address: "321 Cedar St, Springfield",
           totalServices: 10,
-          status: "VIP",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/men/7.jpg",
         },
         {
@@ -92,7 +99,7 @@ const Users = () => {
           phoneNumber: "+789123456",
           address: "654 Walnut St, Springfield",
           totalServices: 9,
-          status: "Regular",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/8.jpg",
         },
         {
@@ -102,7 +109,7 @@ const Users = () => {
           phoneNumber: "+123456987",
           address: "987 Cedar St, Springfield",
           totalServices: 4,
-          status: "New",
+          status: "Inactive",
           profileImg: "https://randomuser.me/api/portraits/men/9.jpg",
           fine: 25,
         },
@@ -113,7 +120,7 @@ const Users = () => {
           phoneNumber: "+456987123",
           address: "321 Birch St, Springfield",
           totalServices: 11,
-          status: "VIP",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/10.jpg",
         },
         {
@@ -123,7 +130,7 @@ const Users = () => {
           phoneNumber: "+789123789",
           address: "654 Pine St, Springfield",
           totalServices: 5,
-          status: "Regular",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/men/11.jpg",
         },
         {
@@ -133,7 +140,7 @@ const Users = () => {
           phoneNumber: "+123789456",
           address: "987 Maple St, Springfield",
           totalServices: 13,
-          status: "New",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/12.jpg",
         },
         {
@@ -143,7 +150,7 @@ const Users = () => {
           phoneNumber: "+456321654",
           address: "321 Walnut St, Springfield",
           totalServices: 6,
-          status: "VIP",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/men/13.jpg",
         },
         {
@@ -153,7 +160,7 @@ const Users = () => {
           phoneNumber: "+789654321",
           address: "654 Cedar St, Springfield",
           totalServices: 7,
-          status: "Regular",
+          status: "Active",
           profileImg: "https://randomuser.me/api/portraits/women/14.jpg",
           fine: 35,
         },
@@ -164,7 +171,7 @@ const Users = () => {
           phoneNumber: "+123321456",
           address: "987 Pine St, Springfield",
           totalServices: 8,
-          status: "New",
+          status: "Inactive",
           profileImg: "https://randomuser.me/api/portraits/men/15.jpg",
         },
       ],
@@ -173,9 +180,37 @@ const Users = () => {
 
   const data = users?.data?.data;
 
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
+  const filteredUsers = data.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = (values) => {
+    console.log("User Created: ", values);
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const showMessageModal = () => {
+    setIsMessageModalVisible(true);
+  };
+
+  const handleMessageOk = () => {
+    console.log("Message Sent: ", messageContent);
+    setIsMessageModalVisible(false);
+    setMessageContent("");
+  };
+
+  const handleMessageCancel = () => {
+    setIsMessageModalVisible(false);
   };
 
   const columns = [
@@ -209,53 +244,18 @@ const Users = () => {
       key: "email",
     },
     {
-      title: "Phone Number",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Activity",
-      dataIndex: "totalServices",
-      key: "totalServices",
-    },
-    {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => {
-        let color;
-        switch (status) {
-          case "VIP":
-            color = "orange";
-            break;
-          case "Regular":
-            color = "blue";
-            break;
-          case "New":
-            color = "green";
-            break;
-          default:
-            color = "green";
-        }
-
-        return <span style={{ color }}>{status}</span>;
-      },
-    },
-    {
-      title: "Fine",
-      dataIndex: "fine",
-      key: "fine",
-      render: (fine) =>
-        fine ? (
-          <span style={{ color: "red" }}>${fine}</span>
-        ) : (
-          <span className="text-green-700">No Fine</span>
-        ),
+      render: (status) => (
+        <span>
+          {status === "Active" ? (
+            <span className="text-green-600">Active</span>
+          ) : (
+            <span className="text-red-600">Inactive</span>
+          )}
+        </span>
+      ),
     },
     {
       title: "Actions",
@@ -263,28 +263,141 @@ const Users = () => {
       render: (text, record) => (
         <Space>
           <Link to={`/user/profile/${record.id}`}>
-            <Button className="bg-[#FFF4E3] text-[#F3B806] border-none">
+            <Button className="bg-white text-primary border border-primary">
               Details
             </Button>
           </Link>
-          <Button className="border border-red-600 text-red-700">
-            Restrict
+          <Button className="border px-5 border-button bg-button hover:!bg-red-900 text-white">
+            Ban
           </Button>
+          <div
+            className="border border-primary p-1 rounded-lg cursor-pointer"
+            onClick={showMessageModal}
+          >
+            <BiSolidMessageDetail
+              size={24}
+              className="text-primary shadow-2xl"
+            />
+          </div>
         </Space>
       ),
     },
   ];
 
   return (
-    <>
-      <h1 className="text-2xl font-semibold  my-5">Users</h1>
+    <div className=" bg-white p-5 rounded-2xl">
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-2xl font-semibold">Users</h1>
+        <div className="flex items-center">
+          <Input
+            placeholder="Search by name or email"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: 200,
+              height: 42,
+              marginRight: 10,
+              borderRadius: 12,
+            }}
+          />
+          <Button
+            className="bg-primary rounded-xl text-white py-5"
+            onClick={showModal}
+          >
+            <IoMdAdd size={20} /> Add User
+          </Button>
+        </div>
+      </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={filteredUsers}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}
       />
-    </>
+
+      <Modal
+        title="Create New User"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        width={700}
+        className="custom-modal"
+      >
+        <div className="p-10">
+          <Form layout="vertical" onFinish={handleOk}>
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[{ required: true, message: "Please input the name!" }]}
+            >
+              <Input style={{ height: 45 }} placeholder="Enter name" />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[{ required: true, message: "Please input the email!" }]}
+            >
+              <Input style={{ height: 45 }} placeholder="Enter email" />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: "Please input the password!" },
+              ]}
+            >
+              <Input.Password
+                style={{ height: 45 }}
+                placeholder="Enter password"
+              />
+            </Form.Item>
+            <Form.Item
+              name="contact"
+              label="Contact"
+              rules={[
+                { required: true, message: "Please input the contact number!" },
+              ]}
+            >
+              <Input style={{ height: 45 }} placeholder="Enter contact" />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                className="bg-primary py-5 w-[40%] text-white"
+                htmlType="submit"
+              >
+                Create User
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </Modal>
+
+      <Modal
+        title="Send Message"
+        open={isMessageModalVisible}
+        onCancel={handleMessageCancel}
+        footer={null}
+        className="custom-modal"
+      >
+        <Form layout="vertical" onFinish={handleMessageOk}>
+          <Form.Item
+            name="message"
+            label="Message"
+            rules={[{ required: true, message: "Please input your message!" }]}
+          >
+            <Input.TextArea rows={4} placeholder="Type your message here" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              className="bg-primary py-5 w-[40%] text-white"
+              htmlType="submit"
+            >
+              Send
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 };
 

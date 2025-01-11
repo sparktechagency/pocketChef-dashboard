@@ -7,9 +7,8 @@ const GeneralStateSection = () => {
     data: {
       totalActiveUsers: 1500,
       newSignups: 120,
-      totalActiveVendors: 45,
-      totalCompletedOrders: 320,
-      totalServices: 75,
+      totalLikes: 450,
+      totalRecipe: 75,
     },
   };
 
@@ -26,7 +25,7 @@ const GeneralStateSection = () => {
   const state = generalState?.data;
 
   return (
-    <div className="grid md:grid-cols-5 gap-6 md:h-[80px]">
+    <div className="grid md:grid-cols-4 gap-6 md:h-[80px]">
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
         <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
@@ -49,14 +48,15 @@ const GeneralStateSection = () => {
           </h3>
         </div>
       </div>
+
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
         <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">
-          <h2 className="text-center text-2xl text-base">Active Vendors</h2>
+          <h2 className="text-center text-2xl text-base">Total Recipe</h2>
           <h3 className="text-center text-2xl font-semibold">
-            {state?.totalActiveVendors}
+            {state?.totalRecipe}
           </h3>
         </div>
       </div>
@@ -65,20 +65,9 @@ const GeneralStateSection = () => {
           <FaUsers color="#210630" size={24} />
         </div>
         <div className="flex flex-col items-start">
-          <h2 className="text-center text-2xl text-base">Completed Orders</h2>
+          <h2 className="text-center text-2xl text-base">Total Likes</h2>
           <h3 className="text-center text-2xl font-semibold">
-            {state?.totalCompletedOrders}
-          </h3>
-        </div>
-      </div>
-      <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
-        <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
-          <FaUsers color="#210630" size={24} />
-        </div>
-        <div className="flex flex-col items-start">
-          <h2 className="text-center text-2xl text-base">Total Services</h2>
-          <h3 className="text-center text-2xl font-semibold">
-            {state?.totalServices}
+            {state?.totalLikes}
           </h3>
         </div>
       </div>

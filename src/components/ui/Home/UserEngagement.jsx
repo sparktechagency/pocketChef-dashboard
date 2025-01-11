@@ -18,18 +18,18 @@ const UserEngagement = () => {
 
   // Dummy data for User Engagement
   const dummyChartData = [
-    { month: "January", orderCount: 120, userCount: 200 },
-    { month: "February", orderCount: 150, userCount: 220 },
-    { month: "March", orderCount: 180, userCount: 250 },
-    { month: "April", orderCount: 200, userCount: 300 },
-    { month: "May", orderCount: 230, userCount: 320 },
-    { month: "June", orderCount: 190, userCount: 280 },
-    { month: "July", orderCount: 250, userCount: 340 },
-    { month: "August", orderCount: 270, userCount: 360 },
-    { month: "September", orderCount: 210, userCount: 310 },
-    { month: "October", orderCount: 300, userCount: 400 },
-    { month: "November", orderCount: 260, userCount: 350 },
-    { month: "December", orderCount: 310, userCount: 420 },
+    { month: "January", totalUsers: 200, activeUsers: 150 },
+    { month: "February", totalUsers: 220, activeUsers: 160 },
+    { month: "March", totalUsers: 250, activeUsers: 180 },
+    { month: "April", totalUsers: 300, activeUsers: 200 },
+    { month: "May", totalUsers: 320, activeUsers: 230 },
+    { month: "June", totalUsers: 280, activeUsers: 190 },
+    { month: "July", totalUsers: 340, activeUsers: 250 },
+    { month: "August", totalUsers: 360, activeUsers: 270 },
+    { month: "September", totalUsers: 310, activeUsers: 210 },
+    { month: "October", totalUsers: 400, activeUsers: 300 },
+    { month: "November", totalUsers: 350, activeUsers: 260 },
+    { month: "December", totalUsers: 420, activeUsers: 310 },
   ];
 
   const chartData = dummyChartData;
@@ -76,11 +76,11 @@ const UserEngagement = () => {
           <Legend verticalAlign="bottom" align="center" />
           <Line
             type="monotone"
-            dataKey="orderCount"
-            stroke="#8b0000"
+            dataKey="totalUsers"
+            stroke="#f24c05 "
             activeDot={{ r: 8 }}
           />
-          <Line type="monotone" dataKey="userCount" stroke="#5c2579cc" />
+          <Line type="monotone" dataKey="activeUsers" stroke="#F6AF58" />
         </LineChart>
       </ResponsiveContainer>
     </div>

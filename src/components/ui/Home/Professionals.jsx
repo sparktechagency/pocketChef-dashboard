@@ -8,34 +8,40 @@ const Professionals = () => {
   const dummyProfessionalsData = {
     data: [
       {
-        name: "Professional One",
+        name: "Spaghetti Carbonara",
         conversionRate: 85,
-        profileImg: "https://randomuser.me/api/portraits/women/1.jpg",
+        profileImg:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0QZECLItrlrbZ2hsCiznqGTg_1z8eYbqhsA&s",
       },
       {
-        name: "Professional Two",
+        name: "Chicken Tikka Masala",
         conversionRate: 78,
-        profileImg: "https://randomuser.me/api/portraits/men/2.jpg",
+        profileImg:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDmdMSSPxj66_a1ASxRdtZeB07Lbub8S8Q8Q&s",
       },
       {
-        name: "Professional Three",
+        name: "Beef Tacos",
         conversionRate: 92,
-        profileImg: "https://randomuser.me/api/portraits/women/3.jpg",
+        profileImg:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEhqk5cA7Wt2k7w4RFIdi97vrRAXDVNbhgsQ&s",
       },
       {
-        name: "Professional Four",
+        name: "Vegetable Stir Fry",
         conversionRate: 65,
-        profileImg: "https://randomuser.me/api/portraits/men/4.jpg",
+        profileImg:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDaVcll19kN9w5p2AKqn33CtJYOzzUQiWb0A&s",
       },
       {
-        name: "Professional Five",
+        name: "Caesar Salad",
         conversionRate: 73,
-        profileImg: "https://randomuser.me/api/portraits/women/5.jpg",
+        profileImg:
+          "https://itsavegworldafterall.com/wp-content/uploads/2023/04/Avocado-Caesar-Salad-FI.jpg",
       },
       {
-        name: "Professional Six",
+        name: "Chocolate Cake",
         conversionRate: 80,
-        profileImg: "https://randomuser.me/api/portraits/men/6.jpg",
+        profileImg:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWJ6APTq4uFZaqBYDDKhwdw_wDcBhpjjVwlw&s",
       },
     ],
   };
@@ -57,8 +63,8 @@ const Professionals = () => {
     .slice(0, 5);
 
   return (
-    <div className="md:w-[60%] border h-[290px] bg-white rounded-2xl pb-5 md:flex flex-col justify-center">
-      <p className="text-base font-semibold px-10 py-4">Professionals</p>
+    <div className="w-full border h-[290px] bg-white rounded-2xl pb-5 md:flex flex-col justify-center">
+      <p className="text-base font-semibold px-10 py-4">Most Viewed Recipes</p>
       <div className="md:flex flex-col px-10 gap-4">
         {topProfessionals?.map((value, index) => (
           <div key={index} className="flex items-center gap-4">
