@@ -150,9 +150,11 @@ const RecipeManagement = () => {
       key: "action",
       render: (text, record) => (
         <Space>
-          <Button className="bg-primary text-white px-7 rounded-xl py-4">
-            Edit
-          </Button>
+          <Link to={`/edit-recipe/${record.key}`}>
+            <Button className="bg-primary text-white px-7 rounded-xl py-4">
+              Edit
+            </Button>
+          </Link>
           <Button className="bg-button text-white px-7 rounded-xl py-4">
             Delete
           </Button>

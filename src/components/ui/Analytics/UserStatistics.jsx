@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import logo from "../../../assets/logo.png";
 import {
   AreaChart,
   Area,
@@ -32,7 +33,7 @@ const UserStatistics = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
+        <img src={logo} alt="" />
       </div>
     );
   }

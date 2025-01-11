@@ -1,14 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  useGetBannerByIdQuery,
-  useUpdateBannerMutation,
-} from "../../../redux/apiSlices/banenrSlice";
+import logo from "../../../assets/logo.png";
 import { Button, Card, Form, Input, Switch } from "antd";
 import { useEffect, useState } from "react";
 import whiteBg from "../../../assets/whiteBG.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import toast from "react-hot-toast";
-import rentMeLogo from "../../../assets/navLogo.png";
 
 const EditBanners = () => {
   const navigate = useNavigate();
@@ -76,7 +72,7 @@ const EditBanners = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
+        <img src={logo} alt="" />
       </div>
     );
   }

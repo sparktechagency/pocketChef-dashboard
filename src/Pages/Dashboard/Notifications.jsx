@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { ConfigProvider, Pagination } from "antd";
 import Title from "../../components/common/Title";
-import { useNotificationQuery } from "../../redux/apiSlices/notificationSlice";
-import rentMeLogo from "../../assets/navLogo.png";
+import logo from "../../assets/logo.png";
 
 const notificationsData = [
   {
@@ -80,7 +79,7 @@ const Notifications = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
+        <img src={logo} alt="" />
       </div>
     );
   }

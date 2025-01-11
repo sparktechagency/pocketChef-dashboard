@@ -99,7 +99,7 @@ const ManageSubCategory = () => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-10 rounded-2xl bg-white">
       <div className="flex justify-between mb-5">
         <h1 className="text-2xl font-semibold mb-4">Manage Sub Categories</h1>
         <div className="flex items-center gap-5">
@@ -127,6 +127,10 @@ const ManageSubCategory = () => {
         title={currentSubCategory ? "Edit Sub Category" : "Add Sub Category"}
         open={isModalVisible}
         onOk={handleModalOk}
+        onOkButtonProps={{
+          className: "bg-primary",
+          style: { color: "white", borderRadius: "5px", border: "none" },
+        }}
         onCancel={handleModalCancel}
         className="custom-modal"
       >
