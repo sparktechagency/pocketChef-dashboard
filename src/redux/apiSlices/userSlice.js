@@ -6,7 +6,7 @@ const userSlice = api.injectEndpoints({
       query: () => {
         return {
           method: "GET",
-          url: "/user?role=ADMIN",
+          url: "/user/profile",
         };
       },
     }),
@@ -14,7 +14,7 @@ const userSlice = api.injectEndpoints({
       query: () => {
         return {
           method: "GET",
-          url: "/user",
+          url: "/auth/users",
         };
       },
     }),

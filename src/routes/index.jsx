@@ -16,11 +16,8 @@ import AdminProfile from "../Pages/Dashboard/AdminProfile/AdminProfile";
 import User from "../Pages/Dashboard/User";
 import UserProfile from "../Pages/Dashboard/AdminProfile/UserProfile";
 import TermsAndCondition from "../Pages/Dashboard/TermsAndCondition";
-
 import Faq from "../components/ui/Settings/Faq";
 import AboutUs from "../components/ui/Settings/AboutUs";
-import OfferList from "../components/ui/Settings/OfferList";
-
 import UserRequest from "../Pages/Dashboard/UserRequest";
 import RecipeManagement from "../Pages/Dashboard/Recipe/RecipeManagement";
 import EditRecipe from "../Pages/Dashboard/Recipe/EditRecipe";
@@ -28,15 +25,17 @@ import AddRecipe from "../Pages/Dashboard/Recipe/AddRecipe";
 import ManageCategory from "../Pages/Dashboard/Category/ManageCategory";
 import ManageSubCategory from "../Pages/Dashboard/Category/ManageSubCategory";
 import Template from "../Pages/Dashboard/Template";
+import PrivateRoute from "./PrivateRoute";
+import Ingredients from "../Pages/Dashboard/Ingredients/Ingredients";
 
 const router = createBrowserRouter([
   {
     path: "/",
     // element: <ProtectedRoute><Main /></ProtectedRoute> ,
     element: (
-      // <PrivateRoute>
-      <Main />
-      // </PrivateRoute>
+      <PrivateRoute>
+        <Main />
+      </PrivateRoute>
     ),
     children: [
       {
@@ -60,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "/category",
         element: <ManageCategory />,
+      },
+      {
+        path: "/ingredients",
+        element: <Ingredients />,
       },
       {
         path: "/sub-category",

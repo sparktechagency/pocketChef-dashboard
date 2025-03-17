@@ -4,29 +4,23 @@ import { useNavigate } from "react-router-dom";
 import FormItem from "../../components/common/FormItem";
 import { useLoginMutation } from "../../redux/apiSlices/authSlice";
 import toast from "react-hot-toast";
-import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
-  // const [rememberMe, setRememberMe] = useState(false); // Track checkbox state
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // const [login] = useLoginMutation();
+  const [login] = useLoginMutation();
 
   const onFinish = async (values) => {
     try {
-      // console.log(values);
-      // const response = await login(values).unwrap();
-      // const { accessToken } = response?.data;
-      // const { refreshToken } = response?.data;
+      console.log(values);
+      const response = await login(values).unwrap();
+      const { token } = response?.data;
 
-      if (values) {
-        // localStorage.setItem("authToken", accessToken);
-        // localStorage.setItem("refreshToken", refreshToken);
-        // Cookies.set("refreshToken", refreshToken);
+      if (rememberMe) {
+        localStorage.setItem("authToken", token);
       } else {
-        // sessionStorage.setItem("authToken", accessToken);
-        // localStorage.setItem("refreshToken", refreshToken);
-        // Cookies.set("refreshToken", refreshToken);
+        sessionStorage.setItem("authToken", token);
       }
 
       navigate("/");
@@ -43,7 +37,7 @@ const Login = () => {
   };
 
   const onCheckboxChange = (e) => {
-    setRememberMe(e.target.checked); // Update checkbox state
+    setRememberMe(e.target.checked);
   };
 
   return (

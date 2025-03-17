@@ -17,6 +17,7 @@ import logo from "../../assets/logo.png";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { FaMoneyBillTransfer, FaScissors } from "react-icons/fa6";
 import { FaBorderStyle } from "react-icons/fa";
+import { RiAlignItemLeftLine } from "react-icons/ri";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -56,15 +57,10 @@ const Sidebar = () => {
       label: <Link to="/user-request">User Request</Link>,
     },
     {
-      key: "/recipe",
-      icon: <FaBorderStyle size={24} />,
-      label: <Link to="/recipe">Recipe</Link>,
+      key: "/ingredients",
+      icon: <RiAlignItemLeftLine size={24} />,
+      label: <Link to="/ingredients">Ingredients</Link>,
     },
-    // {
-    //   key: "/vendors",
-    //   icon: <PiUserPlus size={24} />,
-    //   label: <Link to="/vendors">Barbers</Link>,
-    // },
     {
       key: "subMenuCategory",
       icon: <PiCookingPotBold size={24} />,
@@ -89,6 +85,11 @@ const Sidebar = () => {
           ),
         },
       ],
+    },
+    {
+      key: "/recipe",
+      icon: <FaBorderStyle size={24} />,
+      label: <Link to="/recipe">Recipe</Link>,
     },
     {
       key: "/template",

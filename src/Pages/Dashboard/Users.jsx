@@ -5,8 +5,15 @@ import randomImg from "../../assets/randomProfile2.jpg";
 import { FaIcons } from "react-icons/fa6";
 import { IoMdAdd } from "react-icons/io";
 import { BiSolidMessageDetail } from "react-icons/bi";
+import { useUsersQuery } from "../../redux/apiSlices/userSlice";
+import { imageUrl } from "../../redux/api/baseApi";
 
 const Users = () => {
+  const { data: getUsers, isLoading } = useUsersQuery();
+  const userData = getUsers?.data;
+
+  console.log(userData);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -215,9 +222,10 @@ const Users = () => {
 
   const columns = [
     {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
+      title: "Serial",
+      dataIndex: "serial",
+      key: "serial",
+      render: (_, record, index) => <p>{index + 1}</p>,
     },
     {
       title: "Name",
@@ -225,10 +233,10 @@ const Users = () => {
       key: "name",
       render: (text, record) => {
         const name = record.name || "Unknown";
-        const imgUrl = record.profileImg || randomImg;
+        const imgUrl = record.profile || randomImg;
         const fullImgUrl = imgUrl.startsWith("http")
           ? imgUrl
-          : `${import.meta.env.VITE_BASE_URL}${imgUrl}`;
+          : `${imageUrl}${imgUrl}`;
 
         return (
           <Space>
@@ -270,7 +278,7 @@ const Users = () => {
           <Button className="border px-5 border-button bg-button hover:!bg-red-900 text-white">
             Ban
           </Button>
-          <div
+          {/* <div
             className="border border-primary p-1 rounded-lg cursor-pointer"
             onClick={showMessageModal}
           >
@@ -278,7 +286,7 @@ const Users = () => {
               size={24}
               className="text-primary shadow-2xl"
             />
-          </div>
+          </div> */}
         </Space>
       ),
     },
@@ -310,7 +318,8 @@ const Users = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={filteredUsers}
+        loading={isLoading}
+        dataSource={userData}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}
       />

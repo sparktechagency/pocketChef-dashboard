@@ -1,68 +1,91 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Space, Switch, Modal, Form, Select } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Space,
+  Switch,
+  Modal,
+  Form,
+  Select,
+  Spin,
+} from "antd";
 import { FaEdit } from "react-icons/fa";
 import { FaPlus, FaTrash } from "react-icons/fa";
+import {
+  useAddSubCategoryMutation,
+  useCategoriesQuery,
+  useSubCategoriesQuery,
+} from "../../../redux/apiSlices/categorySlice";
+import toast from "react-hot-toast";
 
 const ManageSubCategory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSubCategory, setCurrentSubCategory] = useState(null);
+  const [form] = Form.useForm();
 
-  // Dummy data for categories
-  const categories = [
-    { id: "1", name: "Italian" },
-    { id: "2", name: "Chinese" },
-    { id: "3", name: "Mexican" },
-  ];
+  const { data: allCategories, isLoading } = useCategoriesQuery();
+  const { data: getAllSubCategories, isLoading: subCategoryLoading } =
+    useSubCategoriesQuery();
+  const [addSubCategory] = useAddSubCategoryMutation();
+
+  if (isLoading || subCategoryLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spin />
+      </div>
+    );
+  }
+
+  const subCategories = getAllSubCategories?.data;
+  const categories = allCategories?.data;
+  // console.log(categories, subCategories);
 
   // Dummy data for subcategories
-  const subCategories = [
-    {
-      id: "1",
-      name: "Pasta",
-      category: "Italian",
-      isHome: true,
-    },
-    {
-      id: "2",
-      name: "Noodles",
-      category: "Chinese",
-      isHome: false,
-    },
-    {
-      id: "3",
-      name: "Tacos",
-      category: "Mexican",
-      isHome: true,
-    },
-  ];
+  // const subCategories = [
+  //   {
+  //     id: "1",
+  //     name: "Pasta",
+  //     category: "Italian",
+  //     isHome: true,
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Noodles",
+  //     category: "Chinese",
+  //     isHome: false,
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "Tacos",
+  //     category: "Mexican",
+  //     isHome: true,
+  //   },
+  // ];
 
-  const filteredSubCategories = subCategories.filter((subCategory) =>
-    subCategory.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSubCategories = subCategories?.filter((subCategory) =>
+    subCategory?.subCategory?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
   const columns = [
     {
       title: "S.No",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "serial",
+      key: "serial",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Sub Category Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "subCategory",
+      key: "subCategory",
     },
     {
       title: "Category",
-      dataIndex: "category",
+      dataIndex: ["category", "name"],
       key: "category",
     },
-    {
-      title: "Add to Home",
-      dataIndex: "isHome",
-      key: "isHome",
-      render: (text, record) => <Switch checked={record.isHome} />,
-    },
+
     {
       title: "Action",
       key: "action",
@@ -89,9 +112,25 @@ const ManageSubCategory = () => {
     setIsModalVisible(true);
   };
 
-  const handleModalOk = () => {
-    // Handle add/update logic here
-    setIsModalVisible(false);
+  const handleModalOk = async (values) => {
+    const data = {
+      category: values?._id,
+      subCategory: values?.subCategory,
+    };
+
+    try {
+      const res = await addSubCategory(data).unwrap();
+
+      if (res?.success) {
+        toast.success("Sub Category added successfully");
+        setIsModalVisible(false);
+        form.resetFields();
+      } else {
+        toast.error("Failed to add sub category");
+      }
+    } catch (error) {
+      toast.error(error?.message || "Failed to add sub category");
+    }
   };
 
   const handleModalCancel = () => {
@@ -121,38 +160,45 @@ const ManageSubCategory = () => {
         columns={columns}
         dataSource={filteredSubCategories}
         pagination={{ pageSize: 10 }}
+        rowKey="_id"
       />
 
       <Modal
         title={currentSubCategory ? "Edit Sub Category" : "Add Sub Category"}
         open={isModalVisible}
-        onOk={handleModalOk}
-        onOkButtonProps={{
-          className: "bg-primary",
-          style: { color: "white", borderRadius: "5px", border: "none" },
-        }}
         onCancel={handleModalCancel}
-        className="custom-modal"
+        footer={[
+          <Button key="cancel" onClick={handleModalCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => form.submit()} // Ensure form submits
+          >
+            Save
+          </Button>,
+        ]}
       >
-        <Form layout="vertical">
-          <Form.Item label="Sub Category Name">
-            <Input
-              style={{ height: 42, borderRadius: 10 }}
-              placeholder="Enter sub category name"
-              defaultValue={currentSubCategory ? currentSubCategory.name : ""}
-            />
+        <Form form={form} layout="vertical" onFinish={handleModalOk}>
+          <Form.Item
+            name="subCategory"
+            label="Sub Category Name"
+            rules={[
+              { required: true, message: "Please enter a subcategory name" },
+            ]}
+          >
+            <Input />
           </Form.Item>
-          <Form.Item label="Category Name">
-            <Select
-              style={{ height: 42, borderRadius: 15 }}
-              placeholder="Select a category"
-              defaultValue={
-                currentSubCategory ? currentSubCategory.category : ""
-              }
-            >
-              {categories.map((category) => (
-                <Select.Option key={category.id} value={category.name}>
-                  {category.name}
+          <Form.Item
+            name="_id"
+            label="Category Name"
+            rules={[{ required: true, message: "Please select a category" }]}
+          >
+            <Select>
+              {categories?.map((category) => (
+                <Select.Option key={category?._id} value={category?._id}>
+                  {category?.name}
                 </Select.Option>
               ))}
             </Select>
