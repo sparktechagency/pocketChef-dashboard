@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { Space, Table, Modal, Form, Input, Upload, Button } from "antd";
+import { Space, Table, Modal, Form, Input, Button, Spin, message } from "antd";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import logo from "../../../assets/whiteBG.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
+import {
+  useAddIngredientMutation,
+  useDeleteIngredientMutation,
+  useIngredientsQuery,
+  useUpdateIngredientMutation,
+} from "../../../redux/apiSlices/ingredientsSlice";
+import { imageUrl } from "../../../redux/api/baseApi";
+import toast from "react-hot-toast";
 
 const { TextArea } = Input;
 
@@ -11,49 +19,22 @@ const Ingredients = () => {
   const [form] = Form.useForm();
   const [imgURL, setImgURL] = useState(logo);
   const [file, setFile] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
 
-  const ingredients = [
-    {
-      key: "1",
-      name: "Tomato",
-      image:
-        "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQAOpGpc-kiO1H-awMfLOrgBoi20cQv43EnRL6QvT1eKgWgczRjzXfg7J0kUIq-Z2K8qBZx0-Haz9PnMRXJswB5AQ",
-      subName: "Solanum lycopersicum",
-      description: "A red, edible fruit used in various cuisines.",
-    },
-    {
-      key: "2",
-      name: "Basil",
-      image:
-        "https://www.veggycation.com.au/siteassets/veggycationvegetable/basil.jpg",
-      subName: "Ocimum basilicum",
-      description: "A culinary herb used for its aromatic leaves.",
-    },
-    {
-      key: "3",
-      name: "Garlic",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQPozp1am84RbkSvYV1_7Lpx8EFAzdOj7yrslk3c2Dacs9ambvnnI89SzAn42Y32aHKAHM57tC36iTb7JA2OLQNg",
-      subName: "Allium sativum",
-      description: "A species in the onion genus, used for its pungent flavor.",
-    },
-    {
-      key: "4",
-      name: "Olive Oil",
-      image:
-        "https://health.ucdavis.edu/media-resources/contenthub/post/internet/good-food/2024/04/images-body/olive-oil-health-benefits.jpg",
-      subName: "Olea europaea",
-      description: "A liquid fat obtained from olives, used in cooking.",
-    },
-    {
-      key: "5",
-      name: "Salt",
-      image:
-        "https://www.canr.msu.edu/outreach/uploads/images/salt-6728600_1280.jpg?language_id=1",
-      subName: "Sodium chloride",
-      description: "A mineral used as a seasoning and preservative.",
-    },
-  ];
+  const { data: ingredientsData, isLoading, refetch } = useIngredientsQuery();
+  const [addIngredient] = useAddIngredientMutation();
+  const [updateIngredient] = useUpdateIngredientMutation();
+  const [deleteIngredient] = useDeleteIngredientMutation();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spin />
+      </div>
+    );
+  }
+  const ingredients = ingredientsData?.data;
 
   const columns = [
     {
@@ -69,13 +50,18 @@ const Ingredients = () => {
     },
     {
       title: "Image",
-      dataIndex: "image",
-      key: "image",
-      render: (image) => (
+      dataIndex: "ingredientImages",
+      key: "ingredientImages",
+      render: (image, record) => (
         <img
-          src={image}
+          src={
+            record?.ingredientImages?.startsWith("http")
+              ? record?.ingredientImages
+              : `${imageUrl}${record?.ingredientImages}`
+          }
           alt="ingredient"
           style={{ width: 50, height: 50, borderRadius: 5 }}
+          className="object-cover"
         />
       ),
     },
@@ -88,40 +74,131 @@ const Ingredients = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      render: (text) => (
+        <p className="text-sm line-clamp-2 w-[800px]">{text}</p>
+      ),
     },
     {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      render: () => (
+      render: (text, record) => (
         <Space>
-          <FaEdit size={20} />
-          <FaTrash size={20} />
+          <FaEdit
+            size={20}
+            className="cursor-pointer"
+            onClick={() => handleEdit(record)}
+          />
+          <FaTrash
+            size={20}
+            color="red"
+            className="cursor-pointer"
+            onClick={() => handleDelete(record._id)}
+          />
         </Space>
       ),
     },
   ];
 
   const showModal = () => {
+    setIsEditMode(false); // Set to add mode
+    setIsModalVisible(true);
+    form.resetFields();
+    setImgURL(logo); // Reset the image preview
+    setFile(null); // Reset the file state
+  };
+
+  const handleEdit = (record) => {
+    setIsEditMode(true); // Set to edit mode
+    setSelectedIngredient(record);
+    form.setFieldsValue({
+      name: record.name,
+      subName: record.subName,
+      description: record.description,
+      preparation: record.preparation,
+    });
+    setImgURL(
+      record.ingredientImages.startsWith("http")
+        ? record.ingredientImages
+        : `${imageUrl}${record.ingredientImages}`
+    );
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("Form Values:", values);
-        setIsModalVisible(false);
-        form.resetFields();
-      })
-      .catch((error) => {
-        console.error("Validation Failed:", error);
-      });
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log("sdsdvsdfsdfsdf", values);
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("subName", values.subName);
+      formData.append("description", values.description);
+      formData.append("preparation", values.preparation);
+      if (file) {
+        formData.append("ingredientImages", file); // Append the image file
+      }
+
+      if (isEditMode) {
+        // Update existing ingredient
+        const res = await updateIngredient({
+          id: selectedIngredient._id,
+          data: formData,
+        }).unwrap();
+        if (res.success) {
+          toast.success(res.message || "Ingredient updated successfully");
+          setIsModalVisible(false);
+          form.resetFields();
+          setImgURL(logo); // Reset the image preview
+          setFile(null); // Reset the file state
+          refetch(); // Refresh the data
+        } else {
+          toast.error(res.message || "Failed to update ingredient");
+        }
+      } else {
+        // Add new ingredient
+        const res = await addIngredient(formData).unwrap();
+        if (res.success) {
+          toast.success(res.message || "Ingredient added successfully");
+          setIsModalVisible(false);
+          form.resetFields();
+          setImgURL(logo); // Reset the image preview
+          setFile(null); // Reset the file state
+          refetch(); // Refresh the data
+        } else {
+          toast.error(res.message || "Failed to add ingredient");
+        }
+      }
+    } catch (error) {
+      toast.error(error.message || "An error occurred");
+      console.error("Error:", error);
+    }
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
     form.resetFields();
+    setImgURL(logo); // Reset the image preview
+    setFile(null); // Reset the file state
+  };
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this ingredient?",
+      content: "This action cannot be undone.",
+      onOk: () => {
+        deleteIngredient(id)
+          .unwrap()
+          .then(() => {
+            toast.success("Ingredient deleted successfully");
+            refetch(); // Refresh the data
+          })
+          .catch((error) => {
+            toast.error("Failed to delete ingredient");
+            console.error("Failed to delete ingredient:", error);
+          });
+      },
+      onCancel: () => {},
+    });
   };
 
   const onChangeImage = (e) => {
@@ -147,14 +224,14 @@ const Ingredients = () => {
         </div>
       </div>
       <div>
-        <Table columns={columns} dataSource={ingredients} />
+        <Table rowKey="_id" columns={columns} dataSource={ingredients} />
       </div>
 
-      {/* Add Ingredient Modal */}
+      {/* Combined Add/Edit Modal */}
       <Modal
-        title="Add Ingredient"
+        title={isEditMode ? "Edit Ingredient" : "Add Ingredient"}
         open={isModalVisible}
-        onOk={handleOk}
+        onOk={handleSubmit}
         onCancel={handleCancel}
         className="custom-modal"
         width={700}

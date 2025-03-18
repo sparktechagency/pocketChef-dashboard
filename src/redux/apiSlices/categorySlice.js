@@ -54,10 +54,10 @@ const categorySlice = api.injectEndpoints({
       invalidatesTags: ["subCategories"],
     }),
     updateSubCategory: builder.mutation({
-      query: ({ id, body }) => ({
+      query: ({ id, data }) => ({
         method: "PATCH",
         url: `/subcategory/${id}`,
-        body,
+        body: data,
       }),
       invalidatesTags: ["subCategories"],
     }),

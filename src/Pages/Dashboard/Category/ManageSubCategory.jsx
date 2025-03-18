@@ -1,21 +1,12 @@
 import React, { useState } from "react";
-import {
-  Table,
-  Button,
-  Input,
-  Space,
-  Switch,
-  Modal,
-  Form,
-  Select,
-  Spin,
-} from "antd";
-import { FaEdit } from "react-icons/fa";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { Table, Button, Input, Space, Modal, Form, Select, Spin } from "antd";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import {
   useAddSubCategoryMutation,
   useCategoriesQuery,
+  useDeleteSubCategoryMutation,
   useSubCategoriesQuery,
+  useUpdateSubCategoryMutation,
 } from "../../../redux/apiSlices/categorySlice";
 import toast from "react-hot-toast";
 
@@ -29,6 +20,8 @@ const ManageSubCategory = () => {
   const { data: getAllSubCategories, isLoading: subCategoryLoading } =
     useSubCategoriesQuery();
   const [addSubCategory] = useAddSubCategoryMutation();
+  const [updateSubCategory] = useUpdateSubCategoryMutation();
+  const [deleteSubCategory] = useDeleteSubCategoryMutation();
 
   if (isLoading || subCategoryLoading) {
     return (
@@ -40,29 +33,6 @@ const ManageSubCategory = () => {
 
   const subCategories = getAllSubCategories?.data;
   const categories = allCategories?.data;
-  // console.log(categories, subCategories);
-
-  // Dummy data for subcategories
-  // const subCategories = [
-  //   {
-  //     id: "1",
-  //     name: "Pasta",
-  //     category: "Italian",
-  //     isHome: true,
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Noodles",
-  //     category: "Chinese",
-  //     isHome: false,
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "Tacos",
-  //     category: "Mexican",
-  //     isHome: true,
-  //   },
-  // ];
 
   const filteredSubCategories = subCategories?.filter((subCategory) =>
     subCategory?.subCategory?.toLowerCase()?.includes(searchTerm?.toLowerCase())
@@ -85,7 +55,6 @@ const ManageSubCategory = () => {
       dataIndex: ["category", "name"],
       key: "category",
     },
-
     {
       title: "Action",
       key: "action",
@@ -94,7 +63,10 @@ const ManageSubCategory = () => {
           <div className="cursor-pointer" onClick={() => handleEdit(record)}>
             <FaEdit size={20} />
           </div>
-          <div className="cursor-pointer">
+          <div
+            className="cursor-pointer"
+            onClick={() => handleDelete(record?._id)}
+          >
             <FaTrash size={20} className="text-red-600" />
           </div>
         </Space>
@@ -105,11 +77,25 @@ const ManageSubCategory = () => {
   const handleEdit = (record) => {
     setCurrentSubCategory(record);
     setIsModalVisible(true);
+    form.setFieldsValue({
+      subCategory: record.subCategory,
+      _id: record.category?._id,
+    });
   };
 
   const handleAdd = () => {
     setCurrentSubCategory(null);
     setIsModalVisible(true);
+    form.resetFields();
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteSubCategory(id).unwrap();
+      toast.success("Sub Category deleted successfully");
+    } catch (error) {
+      toast.error(error?.message || "Failed to delete sub category");
+    }
   };
 
   const handleModalOk = async (values) => {
@@ -119,22 +105,21 @@ const ManageSubCategory = () => {
     };
 
     try {
-      const res = await addSubCategory(data).unwrap();
-
-      if (res?.success) {
-        toast.success("Sub Category added successfully");
-        setIsModalVisible(false);
-        form.resetFields();
+      if (currentSubCategory) {
+        await updateSubCategory({
+          id: currentSubCategory._id,
+          data: data,
+        }).unwrap();
+        toast.success("Sub Category updated successfully");
       } else {
-        toast.error("Failed to add sub category");
+        await addSubCategory(data).unwrap();
+        toast.success("Sub Category added successfully");
       }
+      setIsModalVisible(false);
+      form.resetFields();
     } catch (error) {
-      toast.error(error?.message || "Failed to add sub category");
+      toast.error(error?.message || "Failed to save sub category");
     }
-  };
-
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
   };
 
   return (
@@ -166,16 +151,12 @@ const ManageSubCategory = () => {
       <Modal
         title={currentSubCategory ? "Edit Sub Category" : "Add Sub Category"}
         open={isModalVisible}
-        onCancel={handleModalCancel}
+        onCancel={() => setIsModalVisible(false)}
         footer={[
-          <Button key="cancel" onClick={handleModalCancel}>
+          <Button key="cancel" onClick={() => setIsModalVisible(false)}>
             Cancel
           </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={() => form.submit()} // Ensure form submits
-          >
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
             Save
           </Button>,
         ]}

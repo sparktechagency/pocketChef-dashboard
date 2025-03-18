@@ -25,7 +25,7 @@ const ManageCategory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
-  const [imgURL, setImgURL] = useState(logo);
+  const [imgURL, setImgURL] = useState("");
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
 
@@ -136,17 +136,17 @@ const ManageCategory = () => {
           body: formData, // Pass FormData as the body
         }).unwrap();
         if (res?.success) {
-          toast.success("Category updated successfully");
+          toast.success(res?.message || "Category updated successfully");
         } else {
-          toast.error("Failed to update category");
+          toast.error(res?.message || "Failed to update category");
         }
       } else {
         // Add new category
         const res = await addCategory(formData).unwrap();
         if (res?.success) {
-          toast.success("Category added successfully");
+          toast.success(res?.message || "Category added successfully");
         } else {
-          toast.error("Failed to add category");
+          toast.error(res?.message || "Failed to add category");
         }
       }
       setIsModalVisible(false);
