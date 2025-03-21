@@ -25,14 +25,11 @@ const Home = () => {
   return (
     <div>
       <GeneralStateSection />
-      <div className="md:flex w-full items-center gap-6 mt-6">
-        <div className="md:w-6/12 bg-white border rounded-2xl py-3 flex flex-col justify-center">
-          <SalesTrackingChart />
-        </div>
-        <div className="md:w-6/12 md:flex gap-4">
+      {/* <div className="md:flex w-full items-center gap-6 mt-6"> */}
+      {/* <div className="md:w-6/12 md:flex gap-4">
           <Professionals />
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
       <div className="w-full md:flex gap-6">
         <div className="md:w-6/12 my-6 ">
           {" "}
@@ -41,6 +38,9 @@ const Home = () => {
         <div className="md:w-6/12 my-6 ">
           <UserEngagement />
         </div>
+      </div>
+      <div className="w-full bg-white border rounded-2xl py-3 flex flex-col justify-center">
+        <SalesTrackingChart />
       </div>
     </div>
   );

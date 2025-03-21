@@ -12,39 +12,52 @@ import {
 
 const data = [
   {
-    name: "Mo",
+    name: "Jan",
     NewUsers: 4000,
-    Revenue: 2400,
   },
   {
-    name: "Tu",
+    name: "Feb",
     NewUsers: 3000,
-    Revenue: 1398,
   },
   {
-    name: "We",
+    name: "Mar",
     NewUsers: 6800,
-    Revenue: 3200,
   },
   {
-    name: "Th",
+    name: "Apr",
     NewUsers: 4780,
-    Revenue: 1908,
   },
   {
-    name: "Fr",
+    name: "May",
     NewUsers: 4890,
-    Revenue: 2800,
   },
   {
-    name: "Su",
+    name: "Jun",
     NewUsers: 3390,
-    Revenue: 2800,
   },
   {
-    name: "St",
+    name: "Jul",
     NewUsers: 3490,
-    Revenue: 1300,
+  },
+  {
+    name: "Aug",
+    NewUsers: 3890,
+  },
+  {
+    name: "Sep",
+    NewUsers: 4290,
+  },
+  {
+    name: "Oct",
+    NewUsers: 4790,
+  },
+  {
+    name: "Nov",
+    NewUsers: 4990,
+  },
+  {
+    name: "Dec",
+    NewUsers: 5290,
   },
 ];
 
@@ -79,7 +92,7 @@ const SalesTrackingChart = () => {
           </select>
         </div>
       </div>
-      <ResponsiveContainer width="90%" height={230}>
+      <ResponsiveContainer width="100%" height={250}>
         <BarChart
           data={data}
           margin={{
@@ -101,14 +114,7 @@ const SalesTrackingChart = () => {
             stackId="a"
             fill="#f28705"
             radius={[20, 20, 0, 0]} // Optional: rounded top corners
-            barSize={10} // Make bars thinner
-          />
-          <Bar
-            dataKey="Revenue"
-            stackId="a"
-            fill="#E4E3E0"
-            radius={[20, 20, 0, 0]} // Optional: rounded top corners
-            barSize={10} // Make bars thinner
+            barSize={25} // Make bars thinner
           />
         </BarChart>
       </ResponsiveContainer>

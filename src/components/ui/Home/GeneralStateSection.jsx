@@ -25,7 +25,7 @@ const GeneralStateSection = () => {
   const state = generalState?.data;
 
   return (
-    <div className="grid md:grid-cols-4 gap-6 md:h-[80px]">
+    <div className="grid md:grid-cols-3 gap-6 md:h-[100px]">
       <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
         <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
@@ -60,7 +60,7 @@ const GeneralStateSection = () => {
           </h3>
         </div>
       </div>
-      <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
+      {/* <div className="bg-white rounded-2xl py-0 px-6 flex items-center justify-start gap-4">
         <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
           <FaUsers color="#210630" size={24} />
         </div>
@@ -70,7 +70,7 @@ const GeneralStateSection = () => {
             {state?.totalLikes}
           </h3>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

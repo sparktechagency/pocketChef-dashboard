@@ -6,7 +6,7 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import {
   useAddIngredientMutation,
   useDeleteIngredientMutation,
-  useIngredientsQuery,
+  useGetIngredientsQuery,
   useUpdateIngredientMutation,
 } from "../../../redux/apiSlices/ingredientsSlice";
 import { imageUrl } from "../../../redux/api/baseApi";
@@ -22,7 +22,11 @@ const Ingredients = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
 
-  const { data: ingredientsData, isLoading, refetch } = useIngredientsQuery();
+  const {
+    data: ingredientsData,
+    isLoading,
+    refetch,
+  } = useGetIngredientsQuery();
   const [addIngredient] = useAddIngredientMutation();
   const [updateIngredient] = useUpdateIngredientMutation();
   const [deleteIngredient] = useDeleteIngredientMutation();

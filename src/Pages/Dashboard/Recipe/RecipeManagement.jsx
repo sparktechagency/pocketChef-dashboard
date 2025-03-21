@@ -1,10 +1,25 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Space } from "antd";
+import { Table, Button, Input, Space, Spin } from "antd";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { useGetAllRecipesQuery } from "../../../redux/apiSlices/recipeSlice";
+import { imageUrl } from "../../../redux/api/baseApi";
 
 const RecipeManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: allRecipes, isLoading } = useGetAllRecipesQuery();
+
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spin />
+      </div>
+    );
+
+  const recipeData = allRecipes?.data;
+
+  console.log(recipeData);
 
   // Dummy data for recipes
   const recipes = [
@@ -115,35 +130,51 @@ const RecipeManagement = () => {
     },
   ];
 
-  const filteredRecipes = recipes.filter((recipe) =>
-    recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRecipes = recipeData?.filter((recipe) =>
+    recipe?.recipeName?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "Serial",
+      dataIndex: "serial",
+      key: "serial",
+      render: (text, record, index) => index + 1,
     },
     {
       title: "Recipe Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "recipeName",
+      key: "recipeName",
       render: (text, record) => (
         <Space>
           <img
-            src={record.image}
-            alt={record.name}
+            src={
+              record?.image[0]?.startsWith("http")
+                ? record?.image[0]
+                : `${imageUrl}${record?.image[0]}`
+            }
+            alt={record.recipeName}
             className="w-16 h-16 rounded-full"
           />
-          <span>{record.name}</span>
+          <span>{record.recipeName}</span>
         </Space>
       ),
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+      render: (text, record) => record?.category[0]?.name,
+    },
+    {
+      title: "Level",
+      dataIndex: "selectLevel",
+      key: "selectLevel",
+    },
+    {
+      title: "Rating",
+      dataIndex: "totalRatings",
+      key: "totalRatings",
     },
     {
       title: "Action",

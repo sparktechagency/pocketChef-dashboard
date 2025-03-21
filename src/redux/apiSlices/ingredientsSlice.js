@@ -2,7 +2,7 @@ import { api } from "../api/baseApi";
 
 const ingredientsSlice = api.injectEndpoints({
   endpoints: (builder) => ({
-    ingredients: builder.query({
+    getIngredients: builder.query({
       query: () => {
         return {
           method: "GET",
@@ -38,7 +38,7 @@ const ingredientsSlice = api.injectEndpoints({
 });
 
 export const {
-  useIngredientsQuery,
+  useGetIngredientsQuery,
   useAddIngredientMutation,
   useUpdateIngredientMutation,
   useDeleteIngredientMutation,

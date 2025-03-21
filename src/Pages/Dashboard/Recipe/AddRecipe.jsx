@@ -1,7 +1,27 @@
 import React, { useState } from "react";
-import { Form, Input, Select, Button, Space, Upload, Image } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import {
+  Form,
+  Input,
+  Select,
+  Button,
+  Space,
+  Upload,
+  Image,
+  message,
+  Spin,
+} from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { Plus, Trash2 } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import { FaImage } from "react-icons/fa6";
+import { MdOutlineOndemandVideo } from "react-icons/md";
+import {
+  useCategoriesQuery,
+  useSubCategoriesQuery,
+} from "../../../redux/apiSlices/categorySlice";
+import { useCreateRecipeMutation } from "../../../redux/apiSlices/recipeSlice";
+import toast from "react-hot-toast";
+import { useGetIngredientsQuery } from "../../../redux/apiSlices/ingredientsSlice";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -9,23 +29,80 @@ const { Option } = Select;
 const AddRecipe = () => {
   const [form] = Form.useForm();
   const [ingredients, setIngredients] = useState([
-    { id: 1, name: "", amount: "", unit: "" },
+    { id: 1, ingredientName: "", amount: "", unit: "" },
   ]);
-  const [fileList, setFileList] = useState([]);
-  const [video, setVideo] = useState("");
+  const [instructions, setInstructions] = useState([
+    { id: uuidv4(), instructionImages: null, instruction: "" },
+  ]);
+  const [nutritionalValues, setNutritionalValues] = useState([
+    { id: uuidv4(), name: "", Kcal: "" },
+  ]);
 
-  const handleUploadChange = ({ fileList }) => {
-    setFileList(fileList);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [videoFile, setVideoFile] = useState(null);
+  const { data: categories, isLoading: categoriesLoading } =
+    useCategoriesQuery();
+  const { data: subCategories, isLoading: subCategoriesLoading } =
+    useSubCategoriesQuery();
+  const [addRecipe, { isLoading: addRecipeLoading }] =
+    useCreateRecipeMutation();
+  const { data: ingredientsData, isLoading: ingredientsLoading } =
+    useGetIngredientsQuery();
+
+  // const ingredientsData = [];
+  // const ingredientsLoading = false;
+
+  if (categoriesLoading || subCategoriesLoading || ingredientsLoading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spin />
+      </div>
+    );
+
+  const categoriesData = categories?.data;
+  const subCategoriesData = subCategories?.data;
+  const allIngredients = ingredientsData?.data;
+  console.log(allIngredients);
+
+  const handleImageUploadChange = ({ fileList }) => {
+    if (fileList.length > 3) {
+      message.error("You can upload a maximum of 3 images!");
+      return;
+    }
+    setImageFiles(fileList);
   };
 
-  const handleVideoChange = (file) => {
-    setVideo(file ? URL.createObjectURL(file) : "");
+  const handleVideoUploadChange = ({ fileList }) => {
+    if (fileList.length > 1) {
+      message.error("You can upload only one video!");
+      return;
+    }
+    setVideoFile(fileList[0]?.originFileObj || null);
+  };
+
+  const addNutritionalValue = () => {
+    setNutritionalValues([
+      ...nutritionalValues,
+      { id: uuidv4(), name: "", Kcal: "" },
+    ]);
+  };
+
+  // Remove Nutritional Value
+  const removeNutritionalValue = (id) => {
+    setNutritionalValues(nutritionalValues.filter((nv) => nv.id !== id));
+  };
+
+  // Handle Nutritional Value change
+  const handleNutritionChange = (id, field, value) => {
+    setNutritionalValues((prev) =>
+      prev?.map((nv) => (nv.id === id ? { ...nv, [field]: value } : nv))
+    );
   };
 
   const addIngredient = () => {
     setIngredients([
       ...ingredients,
-      { id: Date.now(), name: "", amount: "", unit: "" },
+      { id: Date.now(), ingredientName: "", amount: "", unit: "" },
     ]);
   };
 
@@ -35,31 +112,131 @@ const AddRecipe = () => {
 
   const handleIngredientChange = (id, field, value) => {
     setIngredients((prevIngredients) =>
-      prevIngredients.map((ingredient) =>
-        ingredient.id === id ? { ...ingredient, [field]: value } : ingredient
+      prevIngredients?.map((ingredient) =>
+        ingredient._id === id ? { ...ingredient, [field]: value } : ingredient
       )
     );
   };
 
-  const handleSubmit = (values) => {
-    const recipeData = {
-      ...values,
-      ingredients: ingredients.map((ingredient) => ({
-        name: ingredient.name,
-        amount: ingredient.amount,
-        unit: ingredient.unit,
-      })),
-      images: fileList.map((file) => file.originFileObj),
-      video,
-    };
-    console.log("Submitted Recipe Data:", recipeData);
-    // Add your form submission logic here
+  const handleInstructionChange = (id, field, value) => {
+    setInstructions((prevInstructions) =>
+      prevInstructions?.map((instruction) =>
+        instruction.id === id ? { ...instruction, [field]: value } : instruction
+      )
+    );
+  };
+
+  const addInstruction = () => {
+    setInstructions([
+      ...instructions,
+      { id: uuidv4(), instructionImages: null, instruction: "" },
+    ]);
+  };
+
+  const removeInstruction = (id) => {
+    setInstructions(
+      instructions.filter((instruction) => instruction.id !== id)
+    );
+  };
+
+  const handleInstructionImageUpload = (info, id) => {
+    const { file } = info;
+    if (file.status === "uploading") return;
+    if (file.status === "done" || file.originFileObj) {
+      handleInstructionChange(id, "instructionImages", file.originFileObj);
+    }
+  };
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handleSubmit = async (values) => {
+    const formData = new FormData();
+
+    // Append basic form values
+    formData.append("recipeName", values.recipeName);
+    formData.append("description", values.description);
+    formData.append("portionSize", values.portionSize);
+    formData.append("selectLevel", values.selectLevel);
+    formData.append("category", values.category);
+    formData.append("prepTime", values.prepTime);
+    formData.append("cookTime", values.cookTime);
+    formData.append("tags", JSON.stringify(values.tags || []));
+    formData.append("subCategory", values.subCategory);
+
+    // Append ingredients as JSON
+    const ingredientsData = ingredients?.map((ingredient) => ({
+      ingredientName: ingredient._id,
+      amount: ingredient.amount,
+      unit: ingredient.unit,
+    }));
+    formData.append("ingredientName", JSON.stringify(ingredientsData));
+
+    // Append instructions with images
+    const instructionsData = await Promise.all(
+      instructions?.map(async (instruction) => {
+        const images = [];
+        if (instruction.instructionImages) {
+          images.push(await toBase64(instruction.instructionImages));
+        }
+        return {
+          instruction: instruction.instruction,
+          instructionImages: images,
+        };
+      })
+    );
+    formData.append("instructions", JSON.stringify(instructionsData));
+
+    // Append nutritional values as JSON
+    const nutritionalData = nutritionalValues?.map((nv) => ({
+      name: nv.name,
+      Kcal: nv.Kcal,
+    }));
+    formData.append("nutritionalValues", JSON.stringify(nutritionalData));
+
+    // Append images
+    imageFiles.forEach((file) => {
+      formData.append("image", file.originFileObj);
+    });
+
+    // Append video
+    if (videoFile) {
+      formData.append("video", videoFile);
+    }
+
+    // console.log("Submitted Recipe Data:", recipeData);
+    // Add form submission logic here
+
+    try {
+      const res = await addRecipe(formData).unwrap();
+      if (res.success) {
+        toast.success("Recipe created successfully!");
+      } else {
+        toast.error(res.message || "Failed to create recipe");
+      }
+
+      // Reset form and states
+      form.resetFields();
+      setIngredients([{ id: 1, ingredientName: "", amount: "", unit: "" }]);
+      setInstructions([
+        { id: uuidv4(), instructionImages: null, instruction: "" },
+      ]);
+      setNutritionalValues([{ id: uuidv4(), name: "", Kcal: "" }]);
+      setImageFiles([]);
+      setVideoFile(null);
+    } catch (error) {
+      message.error(error.data?.message || "Failed to create recipe");
+    }
   };
 
   return (
     <div className="p-10 rounded-2xl bg-white">
       <h1 className="text-2xl font-semibold mb-6">Add Recipes</h1>
-
       <Form
         form={form}
         layout="vertical"
@@ -69,27 +246,26 @@ const AddRecipe = () => {
         <div className="flex w-full gap-5">
           {/* Left Side */}
           <div className="w-[50%]">
-            {/* Image and Video Upload */}
             <div className="bg-white p-4 rounded-lg shadow">
-              <div className="mb-4">Upload Recipe Images (3) and Video</div>
+              <div className="mb-4">Upload Recipe Images (Maximum 3)</div>
               <Upload.Dragger
                 multiple
-                fileList={fileList}
-                onChange={handleUploadChange}
-                beforeUpload={() => false} // Prevent auto-upload
+                fileList={imageFiles}
+                onChange={handleImageUploadChange}
+                beforeUpload={() => false}
                 style={{
                   minHeight: "150px",
                   padding: "20px",
                   border: "2px dashed #d9d9d9",
                 }}
               >
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined size={40} />
+                <p className="flex items-center justify-center">
+                  <FaImage size={40} />
                 </p>
                 <div className="ant-upload-text">
-                  {fileList.length > 0 ? (
+                  {imageFiles.length > 0 ? (
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {fileList.map((file, index) => (
+                      {imageFiles?.map((file, index) => (
                         <Image
                           key={index}
                           src={URL.createObjectURL(file.originFileObj)}
@@ -106,8 +282,44 @@ const AddRecipe = () => {
               </Upload.Dragger>
             </div>
 
-            {/* Basic Info */}
-            <div className="space-y-4">
+            <div className="bg-white p-4 mt-6 rounded-lg shadow">
+              <div className="mb-4">Upload Recipe Video (Maximum 1)</div>
+              <Upload.Dragger
+                fileList={videoFile ? [videoFile] : []}
+                onChange={handleVideoUploadChange}
+                beforeUpload={(file) => {
+                  if (file.type !== "video/mp4") {
+                    message.error("Only MP4 video files are allowed!");
+                    return false;
+                  }
+                }}
+                style={{
+                  minHeight: "150px",
+                  padding: "20px",
+                  border: "2px dashed #d9d9d9",
+                }}
+              >
+                <p className="flex items-center justify-center">
+                  <MdOutlineOndemandVideo size={40} />
+                </p>
+                <div className="ant-upload-text">
+                  {videoFile ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <video
+                        src={URL.createObjectURL(videoFile)}
+                        controls
+                        width={160}
+                        className="rounded-md"
+                      />
+                    </div>
+                  ) : (
+                    "Click or drag a video here to upload"
+                  )}
+                </div>
+              </Upload.Dragger>
+            </div>
+
+            <div className="space-y-4 mt-6">
               <Form.Item
                 label="Recipe Name"
                 name="recipeName"
@@ -117,7 +329,6 @@ const AddRecipe = () => {
               >
                 <Input className="w-full" />
               </Form.Item>
-
               <Form.Item
                 label="Description"
                 name="description"
@@ -128,175 +339,226 @@ const AddRecipe = () => {
                 <TextArea className="min-h-[100px]" />
               </Form.Item>
 
-              <Form.Item
-                label="Portion size for"
-                name="portionSize"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please specify the portion size!",
-                  },
-                ]}
-              >
-                <Input className="w-1/4" />
-              </Form.Item>
-            </div>
+              {/* category & subCategory */}
+              <div className="flex gap-4 w-full">
+                <div className="w-[50%]">
+                  <Form.Item
+                    label="Category"
+                    name="category"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select a category!",
+                      },
+                    ]}
+                  >
+                    <Select placeholder="Select category">
+                      {categoriesData?.map((category) => (
+                        <Option key={category._id} value={category._id}>
+                          {category.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className="w-[50%]">
+                  <Form.Item
+                    label="Sub Category"
+                    name="subCategory"
+                    rules={[
+                      { required: true, message: "Please select a level!" },
+                    ]}
+                  >
+                    <Select placeholder="Select sub category">
+                      {subCategoriesData?.map((subCategory) => (
+                        <Option key={subCategory._id} value={subCategory._id}>
+                          {subCategory.subCategory}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </div>
 
-            {/* Recipe Details */}
-            <div className="grid grid-cols-3 gap-4">
-              <Form.Item
-                label="Select Level"
-                name="level"
-                rules={[{ required: true, message: "Please select a level!" }]}
-              >
-                <Select placeholder="Select level">
-                  <Option value="beginner">Beginner</Option>
-                  <Option value="intermediate">Intermediate</Option>
-                  <Option value="advanced">Advanced</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label="Select Course"
-                name="course"
-                rules={[{ required: true, message: "Please select a course!" }]}
-              >
-                <Select placeholder="Select course">
-                  <Option value="breakfast">Breakfast</Option>
-                  <Option value="lunch">Lunch</Option>
-                  <Option value="dinner">Dinner</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label="Select Key Ingredient"
-                name="keyIngredient"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a key ingredient!",
-                  },
-                ]}
-              >
-                <Select placeholder="Select ingredient">
-                  <Option value="chicken">Chicken</Option>
-                  <Option value="beef">Beef</Option>
-                  <Option value="fish">Fish</Option>
-                </Select>
-              </Form.Item>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <Form.Item
-                label="Select by Diet"
-                name="diet"
-                rules={[{ required: true, message: "Please select a diet!" }]}
-              >
-                <Select placeholder="Select diet">
-                  <Option value="vegetarian">Vegetarian</Option>
-                  <Option value="vegan">Vegan</Option>
-                  <Option value="keto">Keto</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                label="Cooking Method"
-                name="cookingMethod"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select a cooking method!",
-                  },
-                ]}
-              >
-                <Select placeholder="Select method">
-                  <Option value="baking">Baking</Option>
-                  <Option value="frying">Frying</Option>
-                  <Option value="grilling">Grilling</Option>
-                </Select>
-              </Form.Item>
-            </div>
-
-            {/* Time Details */}
-            <div className="grid grid-cols-3 gap-4">
-              <Form.Item
-                label="Total Time"
-                name="totalTime"
-                rules={[
-                  { required: true, message: "Please enter the total time!" },
-                ]}
-              >
-                <Input placeholder="HH:MM" />
-              </Form.Item>
-              <Form.Item
-                label="Prep Time"
-                name="prepTime"
-                rules={[
-                  { required: true, message: "Please enter the prep time!" },
-                ]}
-              >
-                <Input placeholder="HH:MM" />
-              </Form.Item>
-              <Form.Item
-                label="Cook Time"
-                name="cookTime"
-                rules={[
-                  { required: true, message: "Please enter the cook time!" },
-                ]}
-              >
-                <Input placeholder="HH:MM" />
-              </Form.Item>
-            </div>
-          </div>
-          <div className="w-[50%]">
-            {/* Instructions Editor */}
-            <div className="bg-white p-4 rounded-lg shadow">
-              <div className="mb-4">Instructions</div>
-              <div className="p-4">
-                <TextArea placeholder="Enter instructions here" rows={6} />
+              <div className="flex gap-4 w-full">
+                <div className="w-[50%]">
+                  <Form.Item
+                    label="Portion size for"
+                    name="portionSize"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please specify the portion size!",
+                      },
+                      {
+                        pattern: /^[0-9]+$/,
+                        message: "Only numbers are allowed!",
+                      },
+                    ]}
+                  >
+                    <Input type="number" className="w-full" />
+                  </Form.Item>
+                </div>
+                <div className="w-[50%]">
+                  <Form.Item
+                    label="Select Level"
+                    name="selectLevel"
+                    rules={[
+                      { required: true, message: "Please select a level!" },
+                    ]}
+                  >
+                    <Select placeholder="Select level">
+                      <Option value="Easy">Easy</Option>
+                      <Option value="Medium">Medium</Option>
+                      <Option value="Hard">Hard</Option>
+                    </Select>
+                  </Form.Item>
+                </div>
               </div>
             </div>
 
-            {/* Ingredients */}
+            <div className="flex gap-4 w-full">
+              <div className="w-[50%]">
+                <Form.Item
+                  label="Prep Time"
+                  name="prepTime"
+                  rules={[
+                    { required: true, message: "Please enter the prep time!" },
+                  ]}
+                >
+                  <Input placeholder="HH:MM" />
+                </Form.Item>
+              </div>
+              <div className="w-[50%]">
+                <Form.Item
+                  label="Cook Time"
+                  name="cookTime"
+                  rules={[
+                    { required: true, message: "Please enter the cook time!" },
+                  ]}
+                >
+                  <Input placeholder="HH:MM" />
+                </Form.Item>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side */}
+          <div className="w-[50%]">
+            <div className="bg-white p-4 rounded-lg shadow">
+              <div className="mb-4">Instructions</div>
+              <div className="flex flex-col gap-4">
+                {instructions?.map((instruction) => (
+                  <div key={instruction.id} className="flex gap-4">
+                    <Upload
+                      name="instructionImages"
+                      listType="picture-card"
+                      className="avatar-uploader"
+                      showUploadList={false}
+                      beforeUpload={(file) => {
+                        const isJpgOrPng =
+                          file.type === "image/jpeg" ||
+                          file.type === "image/png";
+                        if (!isJpgOrPng)
+                          message.error("Only JPG/PNG file is accepted!");
+                        const isLt2M = file.size / 1024 / 1024 < 2;
+                        if (!isLt2M)
+                          message.error("Image must be smaller than 2MB!");
+                        return isJpgOrPng && isLt2M;
+                      }}
+                      onChange={(info) =>
+                        handleInstructionImageUpload(info, instruction.id)
+                      }
+                    >
+                      {instruction.instructionImages ? (
+                        <img
+                          src={URL.createObjectURL(
+                            instruction.instructionImages
+                          )}
+                          alt="instruction"
+                          style={{ width: "100px", height: "100px" }}
+                        />
+                      ) : (
+                        <div>
+                          <PlusOutlined />
+                          <div style={{ marginTop: 8 }}>Upload</div>
+                        </div>
+                      )}
+                    </Upload>
+                    <Input
+                      placeholder="Instruction"
+                      name="instruction"
+                      value={instruction.instruction}
+                      onChange={(e) =>
+                        handleInstructionChange(
+                          instruction.id,
+                          "instruction",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <Button
+                      type="text"
+                      danger
+                      onClick={() => removeInstruction(instruction.id)}
+                      icon={<Trash2 className="w-4 h-4" />}
+                    />
+                  </div>
+                ))}
+                <Button
+                  className="w-full bg-primary text-white"
+                  onClick={addInstruction}
+                  icon={<Plus className="w-4 h-4" />}
+                >
+                  Add More
+                </Button>
+              </div>
+            </div>
+
             <div className="p-4 my-5 w-full rounded-lg shadow">
               <h2 className="text-lg font-semibold mb-4">Ingredients</h2>
-              {ingredients.map((ingredient, index) => (
+              {ingredients?.map((ingredient) => (
                 <Space
-                  key={ingredient.id}
+                  key={ingredient._id}
                   className="w-full mb-2"
                   align="start"
                 >
-                  <Input
-                    placeholder="Ingredient Name"
-                    value={ingredient.name}
-                    onChange={(e) =>
-                      handleIngredientChange(
-                        ingredient.id,
-                        "name",
-                        e.target.value
-                      )
-                    }
-                    className=""
-                  />
+                  <div className="w-full">
+                    <Select
+                      placeholder="Ingredient"
+                      value={ingredient.ingredientName}
+                      onChange={(value) =>
+                        handleIngredientChange(
+                          ingredient._id,
+                          "ingredientName",
+                          value
+                        )
+                      }
+                    >
+                      {allIngredients?.map((ingredient) => (
+                        <Option key={ingredient._id} value={ingredient._id}>
+                          {ingredient.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
                   <Input
                     placeholder="Amount"
                     value={ingredient.amount}
                     onChange={(e) =>
                       handleIngredientChange(
-                        ingredient.id,
+                        ingredient._id,
                         "amount",
                         e.target.value
                       )
                     }
-                    className=""
                   />
                   <Select
                     placeholder="Unit"
                     value={ingredient.unit}
                     onChange={(value) =>
-                      handleIngredientChange(ingredient.id, "unit", value)
+                      handleIngredientChange(ingredient._id, "unit", value)
                     }
-                    className=""
                   >
                     <Option value="kg">kg</Option>
                     <Option value="g">g</Option>
@@ -320,18 +582,64 @@ const AddRecipe = () => {
               </Button>
             </div>
 
-            {/* Tags */}
+            {/* Nutritional Value Section */}
+            <div className="p-4 my-5 w-full rounded-lg shadow">
+              <h2 className="text-lg font-semibold mb-4">Nutritional Values</h2>
+              {nutritionalValues?.map((nutrition) => (
+                <Space
+                  key={nutrition._id}
+                  className="w-full mb-2"
+                  align="start"
+                >
+                  <Input
+                    placeholder="Name (e.g., Energy)"
+                    value={nutrition.name}
+                    onChange={(e) =>
+                      handleNutritionChange(
+                        nutrition.id,
+                        "name",
+                        e.target.value
+                      )
+                    }
+                  />
+                  <Input
+                    placeholder="Value (e.g., 680 g)"
+                    value={nutrition.Kcal}
+                    onChange={(e) =>
+                      handleNutritionChange(
+                        nutrition.id,
+                        "Kcal",
+                        e.target.value
+                      )
+                    }
+                  />
+                  <Button
+                    type="text"
+                    danger
+                    onClick={() => removeNutritionalValue(nutrition.id)}
+                    icon={<Trash2 className="w-4 h-4" />}
+                  />
+                </Space>
+              ))}
+              <Button
+                type="dashed"
+                className="mt-4 bg-primary text-white"
+                onClick={addNutritionalValue}
+                icon={<Plus className="w-4 h-4" />}
+              >
+                Add Nutritional Value
+              </Button>
+            </div>
+
             <Form.Item label="Tags (Maximum 20)" name="tags">
               <Select mode="tags" placeholder="Add tags" className="w-full" />
             </Form.Item>
-
             <div className="text-gray-500">
               Suggested: Breakfast, Eggs, 5min recipes, easy_recipes
             </div>
           </div>
         </div>
 
-        {/* Submit Button */}
         <Form.Item>
           <Button
             type="primary"
