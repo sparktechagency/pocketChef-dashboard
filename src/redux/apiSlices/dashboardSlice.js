@@ -6,7 +6,7 @@ const dashboardSlice = api.injectEndpoints({
       query: () => {
         return {
           method: "GET",
-          url: "/dashboard/general-stat",
+          url: "/dashboard/total-data",
         };
       },
     }),

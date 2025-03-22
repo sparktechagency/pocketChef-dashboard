@@ -10,7 +10,7 @@ import {
   message,
   Spin,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+
 import { Plus, Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { FaImage } from "react-icons/fa6";
@@ -22,22 +22,20 @@ import {
 import { useCreateRecipeMutation } from "../../../redux/apiSlices/recipeSlice";
 import toast from "react-hot-toast";
 import { useGetIngredientsQuery } from "../../../redux/apiSlices/ingredientsSlice";
-
 const { TextArea } = Input;
 const { Option } = Select;
 
 const AddRecipe = () => {
   const [form] = Form.useForm();
   const [ingredients, setIngredients] = useState([
-    { id: 1, ingredientName: "", amount: "", unit: "" },
+    { id: 1, ingredientName: "", amount: "0", unit: "" },
   ]);
   const [instructions, setInstructions] = useState([
-    { id: uuidv4(), instructionImages: null, instruction: "" },
+    { id: uuidv4(), instruction: "" },
   ]);
   const [nutritionalValues, setNutritionalValues] = useState([
     { id: uuidv4(), name: "", Kcal: "" },
   ]);
-
   const [imageFiles, setImageFiles] = useState([]);
   const [videoFile, setVideoFile] = useState(null);
   const { data: categories, isLoading: categoriesLoading } =
@@ -49,9 +47,6 @@ const AddRecipe = () => {
   const { data: ingredientsData, isLoading: ingredientsLoading } =
     useGetIngredientsQuery();
 
-  // const ingredientsData = [];
-  // const ingredientsLoading = false;
-
   if (categoriesLoading || subCategoriesLoading || ingredientsLoading)
     return (
       <div className="flex items-center justify-center h-screen">
@@ -62,7 +57,6 @@ const AddRecipe = () => {
   const categoriesData = categories?.data;
   const subCategoriesData = subCategories?.data;
   const allIngredients = ingredientsData?.data;
-  console.log(allIngredients);
 
   const handleImageUploadChange = ({ fileList }) => {
     if (fileList.length > 3) {
@@ -87,12 +81,10 @@ const AddRecipe = () => {
     ]);
   };
 
-  // Remove Nutritional Value
   const removeNutritionalValue = (id) => {
     setNutritionalValues(nutritionalValues.filter((nv) => nv.id !== id));
   };
 
-  // Handle Nutritional Value change
   const handleNutritionChange = (id, field, value) => {
     setNutritionalValues((prev) =>
       prev?.map((nv) => (nv.id === id ? { ...nv, [field]: value } : nv))
@@ -102,7 +94,7 @@ const AddRecipe = () => {
   const addIngredient = () => {
     setIngredients([
       ...ingredients,
-      { id: Date.now(), ingredientName: "", amount: "", unit: "" },
+      { id: Date.now(), ingredientName: "", amount: "0", unit: "" },
     ]);
   };
 
@@ -112,25 +104,24 @@ const AddRecipe = () => {
 
   const handleIngredientChange = (id, field, value) => {
     setIngredients((prevIngredients) =>
-      prevIngredients?.map((ingredient) =>
-        ingredient._id === id ? { ...ingredient, [field]: value } : ingredient
+      prevIngredients.map((ingredient) =>
+        ingredient.id === id ? { ...ingredient, [field]: value } : ingredient
       )
     );
   };
 
-  const handleInstructionChange = (id, field, value) => {
+  const handleInstructionChange = (id, value) => {
     setInstructions((prevInstructions) =>
       prevInstructions?.map((instruction) =>
-        instruction.id === id ? { ...instruction, [field]: value } : instruction
+        instruction.id === id
+          ? { ...instruction, instruction: value }
+          : instruction
       )
     );
   };
 
   const addInstruction = () => {
-    setInstructions([
-      ...instructions,
-      { id: uuidv4(), instructionImages: null, instruction: "" },
-    ]);
+    setInstructions([...instructions, { id: uuidv4(), instruction: "" }]);
   };
 
   const removeInstruction = (id) => {
@@ -139,26 +130,8 @@ const AddRecipe = () => {
     );
   };
 
-  const handleInstructionImageUpload = (info, id) => {
-    const { file } = info;
-    if (file.status === "uploading") return;
-    if (file.status === "done" || file.originFileObj) {
-      handleInstructionChange(id, "instructionImages", file.originFileObj);
-    }
-  };
-
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
   const handleSubmit = async (values) => {
     const formData = new FormData();
-
-    // Append basic form values
     formData.append("recipeName", values.recipeName);
     formData.append("description", values.description);
     formData.append("portionSize", values.portionSize);
@@ -169,48 +142,31 @@ const AddRecipe = () => {
     formData.append("tags", JSON.stringify(values.tags || []));
     formData.append("subCategory", values.subCategory);
 
-    // Append ingredients as JSON
     const ingredientsData = ingredients?.map((ingredient) => ({
       ingredientName: ingredient._id,
-      amount: ingredient.amount,
+      amount: Number(ingredient.amount) || 0,
       unit: ingredient.unit,
     }));
     formData.append("ingredientName", JSON.stringify(ingredientsData));
 
-    // Append instructions with images
-    const instructionsData = await Promise.all(
-      instructions?.map(async (instruction) => {
-        const images = [];
-        if (instruction.instructionImages) {
-          images.push(await toBase64(instruction.instructionImages));
-        }
-        return {
-          instruction: instruction.instruction,
-          instructionImages: images,
-        };
-      })
+    const instructionsData = instructions?.map(
+      (instruction) => instruction.instruction
     );
     formData.append("instructions", JSON.stringify(instructionsData));
 
-    // Append nutritional values as JSON
     const nutritionalData = nutritionalValues?.map((nv) => ({
       name: nv.name,
       Kcal: nv.Kcal,
     }));
     formData.append("nutritionalValues", JSON.stringify(nutritionalData));
 
-    // Append images
     imageFiles.forEach((file) => {
       formData.append("image", file.originFileObj);
     });
 
-    // Append video
     if (videoFile) {
       formData.append("video", videoFile);
     }
-
-    // console.log("Submitted Recipe Data:", recipeData);
-    // Add form submission logic here
 
     try {
       const res = await addRecipe(formData).unwrap();
@@ -220,12 +176,9 @@ const AddRecipe = () => {
         toast.error(res.message || "Failed to create recipe");
       }
 
-      // Reset form and states
       form.resetFields();
       setIngredients([{ id: 1, ingredientName: "", amount: "", unit: "" }]);
-      setInstructions([
-        { id: uuidv4(), instructionImages: null, instruction: "" },
-      ]);
+      setInstructions([{ id: uuidv4(), instruction: "" }]);
       setNutritionalValues([{ id: uuidv4(), name: "", Kcal: "" }]);
       setImageFiles([]);
       setVideoFile(null);
@@ -281,7 +234,6 @@ const AddRecipe = () => {
                 </div>
               </Upload.Dragger>
             </div>
-
             <div className="bg-white p-4 mt-6 rounded-lg shadow">
               <div className="mb-4">Upload Recipe Video (Maximum 1)</div>
               <Upload.Dragger
@@ -318,7 +270,6 @@ const AddRecipe = () => {
                 </div>
               </Upload.Dragger>
             </div>
-
             <div className="space-y-4 mt-6">
               <Form.Item
                 label="Recipe Name"
@@ -338,7 +289,6 @@ const AddRecipe = () => {
               >
                 <TextArea className="min-h-[100px]" />
               </Form.Item>
-
               {/* category & subCategory */}
               <div className="flex gap-4 w-full">
                 <div className="w-[50%]">
@@ -379,7 +329,6 @@ const AddRecipe = () => {
                   </Form.Item>
                 </div>
               </div>
-
               <div className="flex gap-4 w-full">
                 <div className="w-[50%]">
                   <Form.Item
@@ -416,7 +365,6 @@ const AddRecipe = () => {
                 </div>
               </div>
             </div>
-
             <div className="flex gap-4 w-full">
               <div className="w-[50%]">
                 <Form.Item
@@ -442,7 +390,6 @@ const AddRecipe = () => {
               </div>
             </div>
           </div>
-
           {/* Right Side */}
           <div className="w-[50%]">
             <div className="bg-white p-4 rounded-lg shadow">
@@ -450,51 +397,12 @@ const AddRecipe = () => {
               <div className="flex flex-col gap-4">
                 {instructions?.map((instruction) => (
                   <div key={instruction.id} className="flex gap-4">
-                    <Upload
-                      name="instructionImages"
-                      listType="picture-card"
-                      className="avatar-uploader"
-                      showUploadList={false}
-                      beforeUpload={(file) => {
-                        const isJpgOrPng =
-                          file.type === "image/jpeg" ||
-                          file.type === "image/png";
-                        if (!isJpgOrPng)
-                          message.error("Only JPG/PNG file is accepted!");
-                        const isLt2M = file.size / 1024 / 1024 < 2;
-                        if (!isLt2M)
-                          message.error("Image must be smaller than 2MB!");
-                        return isJpgOrPng && isLt2M;
-                      }}
-                      onChange={(info) =>
-                        handleInstructionImageUpload(info, instruction.id)
-                      }
-                    >
-                      {instruction.instructionImages ? (
-                        <img
-                          src={URL.createObjectURL(
-                            instruction.instructionImages
-                          )}
-                          alt="instruction"
-                          style={{ width: "100px", height: "100px" }}
-                        />
-                      ) : (
-                        <div>
-                          <PlusOutlined />
-                          <div style={{ marginTop: 8 }}>Upload</div>
-                        </div>
-                      )}
-                    </Upload>
                     <Input
                       placeholder="Instruction"
                       name="instruction"
                       value={instruction.instruction}
                       onChange={(e) =>
-                        handleInstructionChange(
-                          instruction.id,
-                          "instruction",
-                          e.target.value
-                        )
+                        handleInstructionChange(instruction.id, e.target.value)
                       }
                     />
                     <Button
@@ -514,56 +422,86 @@ const AddRecipe = () => {
                 </Button>
               </div>
             </div>
-
             <div className="p-4 my-5 w-full rounded-lg shadow">
               <h2 className="text-lg font-semibold mb-4">Ingredients</h2>
               {ingredients?.map((ingredient) => (
                 <Space
-                  key={ingredient._id}
+                  key={ingredient.id}
                   className="w-full mb-2"
                   align="start"
                 >
-                  <div className="w-full">
+                  <Form.Item
+                    style={{ marginBottom: 0, flex: 2 }}
+                    name={["ingredients", ingredient.id, "name"]}
+                    rules={[{ required: true, message: "Ingredient required" }]}
+                  >
                     <Select
                       placeholder="Ingredient"
                       value={ingredient.ingredientName}
                       onChange={(value) =>
                         handleIngredientChange(
-                          ingredient._id,
+                          ingredient.id,
                           "ingredientName",
                           value
                         )
                       }
                     >
-                      {allIngredients?.map((ingredient) => (
-                        <Option key={ingredient._id} value={ingredient._id}>
-                          {ingredient.name}
+                      {allIngredients?.map((ing) => (
+                        <Option key={ing._id} value={ing._id}>
+                          {ing.name}
                         </Option>
                       ))}
                     </Select>
-                  </div>
-                  <Input
-                    placeholder="Amount"
-                    value={ingredient.amount}
-                    onChange={(e) =>
-                      handleIngredientChange(
-                        ingredient._id,
-                        "amount",
-                        e.target.value
-                      )
-                    }
-                  />
-                  <Select
-                    placeholder="Unit"
-                    value={ingredient.unit}
-                    onChange={(value) =>
-                      handleIngredientChange(ingredient._id, "unit", value)
-                    }
+                  </Form.Item>
+                  <Form.Item
+                    style={{ marginBottom: 0, flex: 1 }}
+                    name={["ingredients", ingredient.id, "amount"]}
+                    rules={[
+                      { required: true, message: "Amount required" },
+                      {
+                        validator: (_, value) =>
+                          Number(value) > 0
+                            ? Promise.resolve()
+                            : Promise.reject("Must be > 0"),
+                      },
+                    ]}
                   >
-                    <Option value="kg">kg</Option>
-                    <Option value="g">g</Option>
-                    <Option value="unit">unit</Option>
-                  </Select>
+                    <Input
+                      type="number"
+                      min={0}
+                      step="0.1"
+                      value={ingredient.amount}
+                      onChange={(e) => {
+                        if (!/^\d+\.?\d*$/.test(e.target.value)) return;
+                        handleIngredientChange(
+                          ingredient.id,
+                          "amount",
+                          e.target.value
+                        );
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    style={{ marginBottom: 0, flex: 1 }}
+                    name={["ingredients", ingredient.id, "unit"]}
+                    rules={[{ required: true, message: "Unit required" }]}
+                  >
+                    <Select
+                      placeholder="Unit"
+                      value={ingredient.unit}
+                      onChange={(value) =>
+                        handleIngredientChange(ingredient.id, "unit", value)
+                      }
+                    >
+                      <Option value="kg">kg</Option>
+                      <Option value="g">g</Option>
+                      <Option value="l">L</Option>
+                      <Option value="ml">ml</Option>
+                      <Option value="tsp">tsp</Option>
+                      <Option value="tbsp">tbsp</Option>
+                      <Option value="unit">unit</Option>
+                    </Select>
+                  </Form.Item>
                   <Button
                     type="text"
                     danger
@@ -581,7 +519,6 @@ const AddRecipe = () => {
                 Add Ingredient
               </Button>
             </div>
-
             {/* Nutritional Value Section */}
             <div className="p-4 my-5 w-full rounded-lg shadow">
               <h2 className="text-lg font-semibold mb-4">Nutritional Values</h2>
@@ -630,7 +567,6 @@ const AddRecipe = () => {
                 Add Nutritional Value
               </Button>
             </div>
-
             <Form.Item label="Tags (Maximum 20)" name="tags">
               <Select mode="tags" placeholder="Add tags" className="w-full" />
             </Form.Item>
@@ -639,7 +575,6 @@ const AddRecipe = () => {
             </div>
           </div>
         </div>
-
         <Form.Item>
           <Button
             type="primary"

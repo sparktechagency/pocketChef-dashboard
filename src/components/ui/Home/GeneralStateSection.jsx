@@ -1,28 +1,21 @@
 import { FaUsers } from "react-icons/fa6";
 import salongoLogo from "../../../assets/salon-go-logo.png";
+import { useGeneralStatsQuery } from "../../../redux/apiSlices/dashboardSlice";
+import { Spin } from "antd";
 
 const GeneralStateSection = () => {
-  // Simulated dummy data
-  const generalState = {
-    data: {
-      totalActiveUsers: 1500,
-      newSignups: 120,
-      totalLikes: 450,
-      totalRecipe: 75,
-    },
-  };
-
-  const isLoading = false; // Simulated loading state
+  const { data: generalState, isLoading } = useGeneralStatsQuery();
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={salongoLogo} alt="" />
+        <Spin />
       </div>
     );
   }
 
   const state = generalState?.data;
+  console.log(state);
 
   return (
     <div className="grid md:grid-cols-3 gap-6 md:h-[100px]">
@@ -33,7 +26,7 @@ const GeneralStateSection = () => {
         <div className="flex flex-col items-start">
           <h2 className="text-center text-2xl text-base">Total User</h2>
           <h3 className="text-center text-2xl font-semibold">
-            {state?.totalActiveUsers}
+            {state?.totalUsers}
           </h3>
         </div>
       </div>
@@ -44,7 +37,7 @@ const GeneralStateSection = () => {
         <div className="flex flex-col items-start">
           <h2 className="text-center text-2xl text-base">New Sign Ups</h2>
           <h3 className="text-center text-2xl font-semibold">
-            {state?.newSignups}
+            {state?.newUsersThisMonth}
           </h3>
         </div>
       </div>
@@ -56,7 +49,7 @@ const GeneralStateSection = () => {
         <div className="flex flex-col items-start">
           <h2 className="text-center text-2xl text-base">Total Recipe</h2>
           <h3 className="text-center text-2xl font-semibold">
-            {state?.totalRecipe}
+            {state?.totalRecipes}
           </h3>
         </div>
       </div>
