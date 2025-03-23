@@ -77,7 +77,7 @@ const router = createBrowserRouter([
         element: <EditRecipe />,
       },
       {
-        path: "/template",
+        path: "/banner",
         element: <Template />,
       },
       {

@@ -57,6 +57,11 @@ const Sidebar = () => {
       label: <Link to="/user-request">User Request</Link>,
     },
     {
+      key: "/banner",
+      icon: <LuLayoutTemplate size={24} />,
+      label: <Link to="/banner">Banner</Link>,
+    },
+    {
       key: "/ingredients",
       icon: <RiAlignItemLeftLine size={24} />,
       label: <Link to="/ingredients">Ingredients</Link>,
@@ -90,11 +95,6 @@ const Sidebar = () => {
       key: "/recipe",
       icon: <FaBorderStyle size={24} />,
       label: <Link to="/recipe">Recipe</Link>,
-    },
-    {
-      key: "/template",
-      icon: <LuLayoutTemplate size={24} />,
-      label: <Link to="/template">Templates</Link>,
     },
 
     {
