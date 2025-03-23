@@ -149,16 +149,15 @@ const AddRecipe = () => {
     }));
     formData.append("ingredientName", JSON.stringify(ingredientsData));
 
-    const instructionsData = instructions?.map(
-      (instruction) => instruction.instruction
-    );
-    formData.append("instructions", JSON.stringify(instructionsData));
+    instructions.forEach((instruction, index) => {
+      formData.append(`instructions[${index}]`, instruction.instruction);
+    });
 
     const nutritionalData = nutritionalValues?.map((nv) => ({
       name: nv.name,
-      Kcal: nv.Kcal,
+      Kcal: Number(nv.Kcal) || 0,
     }));
-    formData.append("nutritionalValues", JSON.stringify(nutritionalData));
+    formData.append("NutritionalValue", JSON.stringify(nutritionalData));
 
     imageFiles.forEach((file) => {
       formData.append("image", file.originFileObj);
@@ -540,15 +539,16 @@ const AddRecipe = () => {
                     }
                   />
                   <Input
-                    placeholder="Value (e.g., 680 g)"
+                    placeholder="Value (e.g., 680)"
+                    type="number" // <-- Force numeric input
+                    min={0}
                     value={nutrition.Kcal}
-                    onChange={(e) =>
-                      handleNutritionChange(
-                        nutrition.id,
-                        "Kcal",
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only numbers
+                      if (!/^\d*\.?\d*$/.test(value)) return;
+                      handleNutritionChange(nutrition.id, "Kcal", value);
+                    }}
                   />
                   <Button
                     type="text"
