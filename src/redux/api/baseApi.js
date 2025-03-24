@@ -84,6 +84,7 @@ export const api = createApi({
     "subCategories",
     "getAllRecipes",
     "termsAndCondition",
+    "requestedRecipes",
   ],
   endpoints: () => ({}),
 });

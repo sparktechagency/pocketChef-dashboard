@@ -8,6 +8,7 @@ import {
   Form,
   Spin,
   ConfigProvider,
+  Avatar,
 } from "antd";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import logo from "../../../assets/whiteBG.png";
@@ -43,6 +44,7 @@ const ManageCategory = () => {
   }
 
   const categories = getAllCategories?.data;
+  console.log("categories", categories);
 
   const filteredCategories = categories?.filter((category) =>
     category?.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())
@@ -70,15 +72,32 @@ const ManageCategory = () => {
       render: (text, record, index) => index + 1,
     },
     {
+      title: "Image",
+      dataIndex: "category",
+      key: "category",
+      render: (text, record) => (
+        <Avatar
+          src={
+            record?.category?.startsWith("http")
+              ? record?.category
+              : `${imageUrl}${record?.category}`
+          }
+          alt={record?.name}
+          size="large"
+          className="w-20 h-20 rounded-lg"
+        />
+      ),
+    },
+    {
       title: "Category Name",
       dataIndex: "name",
       key: "name",
     },
-    {
-      title: "Sub Categories",
-      dataIndex: "subCategories",
-      key: "subCategories",
-    },
+    // {
+    //   title: "Sub Categories",
+    //   dataIndex: "subCategories",
+    //   key: "subCategories",
+    // },
     {
       title: "Action",
       key: "action",
