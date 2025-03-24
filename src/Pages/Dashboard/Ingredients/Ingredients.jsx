@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Space, Table, Modal, Form, Input, Button, Spin, message } from "antd";
+import {
+  Space,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Button,
+  Spin,
+  message,
+  Image,
+} from "antd";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import logo from "../../../assets/whiteBG.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
@@ -57,7 +67,7 @@ const Ingredients = () => {
       dataIndex: "ingredientImages",
       key: "ingredientImages",
       render: (image, record) => (
-        <img
+        <Image
           src={
             record?.ingredientImages?.startsWith("http")
               ? record?.ingredientImages

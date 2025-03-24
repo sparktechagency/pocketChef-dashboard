@@ -1,59 +1,57 @@
 import React, { useState, useRef, useEffect } from "react";
 import JoditEditor from "jodit-react";
 import Title from "../../components/common/Title";
-import logo from "../../assets/logo.png";
 import toast from "react-hot-toast";
+import { Spin } from "antd";
 import {
-  usePrivacyPolicyQuery,
-  useUpdatePricyPolicyMutation,
-} from "../../redux/apiSlices/privacyPolicySlice";
+  useAboutUsQuery,
+  useUpdateAboutUsMutation,
+} from "../../redux/apiSlices/aboutSlice";
 
-const PrivacyPolicy = () => {
+const AboutPocketChef = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
 
-  const { data: privacyPolicy, isLoading, refetch } = usePrivacyPolicyQuery();
-
-  const [updatePricyPolicy] = useUpdatePricyPolicyMutation();
+  const { data: getAbout, isLoading } = useAboutUsQuery();
+  const [updateAboutUs] = useUpdateAboutUsMutation();
 
   useEffect(() => {
-    setContent(privacyPolicy?.[0]?.description);
-  }, [privacyPolicy]);
+    setContent(getAbout?.[0]?.document);
+  }, []);
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={logo} alt="" />
+        <Spin />
       </div>
     );
   }
 
-  const data = privacyPolicy?.[0]?.description;
+  const data = getAbout?.[0]?.document;
   console.log(data);
 
   const termsDataSave = async () => {
     const data = {
-      description: content,
+      document: content,
     };
 
     try {
-      const res = await updatePricyPolicy(data).unwrap();
+      const res = await updateAboutUs(data).unwrap();
       if (res.success) {
-        toast.success("Privacy Policy updated successfully");
-        setContent(res.data.content);
+        toast.success("About PocketChef updated successfully");
+        setContent(res.data.document);
         refetch();
       } else {
         toast.error("Something went wrong");
       }
-    } catch (error) {
-      console.error("Update failed:", error);
-      toast.error("Update failed. Please try again.");
+    } catch {
+      throw new Error("Something Is wrong at try");
     }
   };
 
   return (
     <div>
-      <Title className="mb-4">Privacy Policy</Title>
+      <Title className="mb-4">About PocketChef</Title>
 
       <JoditEditor
         ref={editor}
@@ -76,4 +74,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+export default AboutPocketChef;

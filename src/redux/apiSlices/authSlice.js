@@ -79,7 +79,7 @@ const authSlice = api.injectEndpoints({
       query: (data) => {
         return {
           method: "PATCH",
-          url: "/admin/profile",
+          url: "/user/profile",
           body: data,
           headers: {
             Authorization: `Bearer ${JSON.parse(

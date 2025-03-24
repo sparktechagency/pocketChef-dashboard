@@ -27,6 +27,7 @@ import ManageSubCategory from "../Pages/Dashboard/Category/ManageSubCategory";
 import Template from "../Pages/Dashboard/Template";
 import PrivateRoute from "./PrivateRoute";
 import Ingredients from "../Pages/Dashboard/Ingredients/Ingredients";
+import AboutPocketChef from "../Pages/Dashboard/AboutPocketChef";
 
 const router = createBrowserRouter([
   {
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
       {
         path: "/terms-and-condition",
         element: <TermsAndCondition />,
+      },
+      {
+        path: "/about-pocket-chef",
+        element: <AboutPocketChef />,
       },
       // {
       //   path: "/edit-terms-and-conditions",

@@ -10,38 +10,15 @@ const dashboardSlice = api.injectEndpoints({
         };
       },
     }),
-    overAllState: builder.query({
-      query: ({ range }) => {
-        return {
-          method: "GET",
-          url: `/dashboard/overall-stat?range=${range}`,
-        };
-      },
-    }),
-
-    bestServices: builder.query({
+    newUserChart: builder.query({
       query: () => {
         return {
           method: "GET",
-          url: "/dashboard/best-services",
-        };
-      },
-    }),
-
-    vendorsConversionData: builder.query({
-      query: () => {
-        return {
-          method: "GET",
-          url: "/dashboard/vendor-order-conversion-rate",
+          url: "/dashboard/total-new-user",
         };
       },
     }),
   }),
 });
 
-export const {
-  useGeneralStatsQuery,
-  useOverAllStateQuery,
-  useBestServicesQuery,
-  useVendorsConversionDataQuery,
-} = dashboardSlice;
+export const { useGeneralStatsQuery, useNewUserChartQuery } = dashboardSlice;

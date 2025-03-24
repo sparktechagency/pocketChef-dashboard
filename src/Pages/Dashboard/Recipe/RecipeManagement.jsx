@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Space, Spin } from "antd";
+import { Table, Button, Input, Space, Spin, Image } from "antd";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { useGetAllRecipesQuery } from "../../../redux/apiSlices/recipeSlice";
@@ -147,14 +147,14 @@ const RecipeManagement = () => {
       key: "recipeName",
       render: (text, record) => (
         <Space>
-          <img
+          <Image
             src={
               record?.image[0]?.startsWith("http")
                 ? record?.image[0]
                 : `${imageUrl}${record?.image[0]}`
             }
             alt={record.recipeName}
-            className="w-16 h-16 rounded-full"
+            className="!w-16 !h-16 rounded-lg object-cover"
           />
           <span>{record.recipeName}</span>
         </Space>

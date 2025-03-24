@@ -141,6 +141,17 @@ const Sidebar = () => {
             </Link>
           ),
         },
+        {
+          key: "/about-pocket-chef",
+          label: (
+            <Link
+              to="/about-pocket-chef"
+              className="text-white hover:text-white"
+            >
+              About PocketChef
+            </Link>
+          ),
+        },
       ],
     },
     {

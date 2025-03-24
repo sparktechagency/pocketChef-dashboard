@@ -6,14 +6,13 @@ import toast from "react-hot-toast";
 import { useChangePasswordMutation } from "../../redux/apiSlices/authSlice";
 
 const ChangePassword = () => {
-  const isLoading = false;
   const [form] = Form.useForm();
   const [errorMessages, setErrorMessages] = useState({
     newPassError: "",
     conPassError: "",
   });
 
-  // const [changePassword, { isLoading }] = useChangePasswordMutation();
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
 
   if (isLoading) {
     return (
@@ -38,6 +37,7 @@ const ChangePassword = () => {
   };
 
   const onFinish = async (values) => {
+    console.log(values);
     const errors = validatePasswordChange(values);
 
     if (Object.keys(errors).length === 0) {

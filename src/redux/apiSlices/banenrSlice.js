@@ -11,11 +11,12 @@ const bannerSlice = api.injectEndpoints({
       },
       providesTags: ["Banner"],
     }),
+
     addBanner: builder.mutation({
-      query: (data) => ({
-        url: `/carusel`,
+      query: (body) => ({
+        url: "/carusel",
         method: "POST",
-        data,
+        body,
       }),
       invalidatesTags: ["Banner"],
     }),

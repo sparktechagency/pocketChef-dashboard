@@ -13,13 +13,15 @@ const { TextArea } = Input;
 const Template = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
-  const [loading, setLoading] = useState(false);
+
+  // console.log("fileList", fileList);
 
   const { data: bannerData, isLoading } = useAllBannerQuery();
   const [addBanner] = useAddBannerMutation();
 
   const handleSubmit = async (values) => {
-    setLoading(true);
+    console.log("values", values);
+
     const formData = new FormData();
 
     // Append text fields
@@ -29,7 +31,7 @@ const Template = () => {
 
     // Append single image
     if (fileList.length > 0) {
-      formData.append("bannerImages", fileList[0].originFileObj);
+      formData.append("bannerImages", fileList[0].originFileObj); // Singular field name
     }
 
     try {
@@ -40,9 +42,7 @@ const Template = () => {
         toast.success(res?.message || "Banner added successfully");
       }
     } catch (err) {
-      toast.error("Error adding banner");
-    } finally {
-      setLoading(false);
+      toast.error(err.data?.message || "Error adding banner");
     }
   };
 
@@ -121,8 +121,8 @@ const Template = () => {
 
             <Form.Item
               label="Banner Image"
-              required
-              extra="Only one image allowed (JPEG/PNG)"
+              name="bannerImage"
+              rules={[{ required: true, message: "Please upload an image!" }]}
             >
               <Upload
                 listType="picture-card"
@@ -145,7 +145,6 @@ const Template = () => {
               <Button
                 type="primary"
                 htmlType="submit"
-                loading={loading}
                 className="bg-primary text-white w-[160px] h-[42px] rounded-lg"
               >
                 Submit

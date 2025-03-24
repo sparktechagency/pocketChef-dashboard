@@ -7,39 +7,38 @@ import {
 } from "../../redux/apiSlices/termsAndConditionSlice";
 import toast from "react-hot-toast";
 import logo from "../../assets/logo.png";
+import { Spin } from "antd";
 
 const TermsAndCondition = () => {
   const editor = useRef(null);
   const [content, setContent] = useState("");
 
-  // const {
-  //   data: termsAndCondition,
-  //   isLoading,
-  //   refetch,
-  // } = useTermsAndConditionQuery();
+  const {
+    data: termsAndCondition,
+    isLoading,
+    refetch,
+  } = useTermsAndConditionQuery();
 
-  // const [updateTermsAndConditions] = useUpdateTermsAndConditionsMutation();
-
-  const termsAndCondition = [];
-
-  const isLoading = false;
+  const [updateTermsAndConditions] = useUpdateTermsAndConditionsMutation();
 
   useEffect(() => {
-    setContent(termsAndCondition?.content);
+    setContent(termsAndCondition?.[0]?.content);
   }, []);
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={logo} alt="" />
+        <Spin />
       </div>
     );
   }
 
+  const data = termsAndCondition?.[0]?.content;
+  console.log(data);
+
   const termsDataSave = async () => {
     const data = {
       content: content,
-      userType: "USER",
     };
 
     try {
@@ -62,7 +61,7 @@ const TermsAndCondition = () => {
 
       <JoditEditor
         ref={editor}
-        value={content}
+        value={data}
         onChange={(newContent) => {
           setContent(newContent);
         }}

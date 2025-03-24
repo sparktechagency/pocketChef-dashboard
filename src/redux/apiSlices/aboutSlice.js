@@ -3,29 +3,19 @@ import { api } from "../api/baseApi";
 const aboutUsSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     updateAboutUs: builder.mutation({
-      query: ({ id, description }) => {
+      query: (data) => {
         return {
-          url: `/about/update-about/${id}`,
-          method: "PATCH",
-          body: { description },
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
+          url: `/about`,
+          method: "POST",
+          body: data,
         };
       },
     }),
     aboutUs: builder.query({
       query: () => {
         return {
-          url: "/about/get-about",
+          url: "/about",
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
         };
       },
       transformResponse: ({ data }) => {
