@@ -5,11 +5,16 @@ import randomImg from "../../assets/randomProfile2.jpg";
 import { FaIcons } from "react-icons/fa6";
 import { IoMdAdd } from "react-icons/io";
 import { BiSolidMessageDetail } from "react-icons/bi";
-import { useUsersQuery } from "../../redux/apiSlices/userSlice";
+import {
+  useBanUserMutation,
+  useUsersQuery,
+} from "../../redux/apiSlices/userSlice";
 import { imageUrl } from "../../redux/api/baseApi";
+import toast from "react-hot-toast";
 
 const Users = () => {
   const { data: getUsers, isLoading } = useUsersQuery();
+  const [banUser] = useBanUserMutation();
   const userData = getUsers?.data;
 
   console.log(userData);
@@ -220,6 +225,23 @@ const Users = () => {
     setIsMessageModalVisible(false);
   };
 
+  const handleBan = async (id) => {
+    try {
+      const response = await banUser(id).unwrap();
+      console.log(response);
+      if (response?.success) {
+        toast.success("User banned successfully!");
+        navigate(`/user/${id}`);
+      } else {
+        toast.error(response?.message || "Failed to ban user.");
+      }
+    } catch (error) {
+      message.error(
+        error?.data?.message || "An error occurred. Please try again."
+      );
+    }
+  };
+
   const columns = [
     {
       title: "Serial",
@@ -275,8 +297,15 @@ const Users = () => {
               Details
             </Button>
           </Link>
-          <Button className="border px-5 border-button bg-button hover:!bg-red-900 text-white">
-            Ban
+          <Button
+            onClick={() => handleBan(record._id)}
+            className={`border px-5 border-button ${
+              record.userBan === false
+                ? "bg-button"
+                : "bg-green-900 !hover:bg-green-900 border-green-900"
+            } hover:!bg-red-900 text-white`}
+          >
+            {record.userBan === false ? "Ban" : "Unban"}
           </Button>
           <div
             className="border border-primary p-1 rounded-lg cursor-pointer"

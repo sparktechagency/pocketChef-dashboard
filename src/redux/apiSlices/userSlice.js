@@ -17,6 +17,7 @@ const userSlice = api.injectEndpoints({
           url: "/auth/users",
         };
       },
+      providesTags: ["users"],
     }),
     getSingleUser: builder.query({
       query: (id) => {
@@ -42,6 +43,14 @@ const userSlice = api.injectEndpoints({
         };
       },
     }),
+
+    banUser: builder.mutation({
+      query: (id) => ({
+        method: "PATCH",
+        url: `/auth/ban/${id}`,
+      }),
+      invalidatesTags: ["users"],
+    }),
   }),
 });
 
@@ -51,4 +60,5 @@ export const {
   useGetSingleUserQuery,
   useVendorsQuery,
   useUserByIdQuery,
+  useBanUserMutation,
 } = userSlice;
