@@ -1,74 +1,65 @@
 import React from "react";
-import { Button, ConfigProvider, Input, Tabs, Table } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Input,
+  Tabs,
+  Table,
+  Spin,
+  Tooltip,
+} from "antd";
 import { Link, useParams } from "react-router-dom";
 import { BiLeftArrowAlt } from "react-icons/bi";
 import RunningOrderTable from "../../components/ui/Analytics/RunningOrderTable";
+import { useGetSingleUserQuery } from "../../redux/apiSlices/userSlice";
+import { imageUrl } from "../../redux/api/baseApi";
+import { useRecipeRequestBySingleUserQuery } from "../../redux/apiSlices/recipeSlice";
+import moment from "moment";
 
 const User = () => {
   const { id } = useParams();
 
-  // Sample user data
-  const user = {
-    name: "John Doe",
-    id: "#5568164",
-    email: "johndoe@example.com",
-    address: {
-      street: "123 Main St",
-      city: "Los Angeles",
-      state: "CA",
-      zip: "90001",
-      country: "USA",
-    },
-    phone: "+1 (555) 123-4567",
-    imgUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-  };
+  const { data: getSingleUser, isLoading } = useGetSingleUserQuery(id);
+  const {
+    data: recipeRequestBySingleUser,
+    isLoading: recipeRequestBySingleUserLoading,
+  } = useRecipeRequestBySingleUserQuery(id);
+
+  if (isLoading || recipeRequestBySingleUserLoading)
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spin />
+      </div>
+    );
+
+  const userData = getSingleUser?.data;
+  const recipeRequestData = recipeRequestBySingleUser?.data;
+  console.log(recipeRequestData);
 
   const imgUrl =
-    user?.imgUrl ||
+    userData?.profile ||
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmtj40PvvTQ1g64pgKZ2oKEk-tqT9rA4CXSA&s";
-
-  // Dummy data for request history
-  const requestHistory = [
-    {
-      requestId: "1",
-      description: "Request for a new haircut style.",
-      date: "2025-01-10",
-      status: "Pending",
-    },
-    {
-      requestId: "2",
-      description:
-        "Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. Request for a facial treatment. ",
-      date: "2025-01-09",
-      status: "Approved",
-    },
-    {
-      requestId: "3",
-      description:
-        "Request for a manicure service. Request for a manicure service. Request for a manicure service. Request for a manicure service. ",
-      date: "2025-01-08",
-      status: "Pending",
-    },
-  ];
 
   const columns = [
     {
-      title: "Request ID",
-      dataIndex: "requestId",
-      key: "requestId",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      render: (text) => (
-        <div className="w-[800px] line-clamp-1">{text}</div> // Adjust the width as needed
+      title: "ID",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text, record) => (
+        <Tooltip title={text}>{text?.slice(0, 10)}</Tooltip>
       ),
     },
     {
+      title: "Description",
+      dataIndex: "RequestRecipeBody",
+      key: "RequestRecipeBody",
+      render: (text) => <div className="w-[600px]">{text}</div>,
+    },
+    {
       title: "Date",
-      dataIndex: "date",
-      key: "date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (text) => <span>{moment(text).format("YYYY-MM-DD")}</span>,
     },
     {
       title: "Status",
@@ -76,7 +67,7 @@ const User = () => {
       key: "status",
       render: (status) => (
         <span>
-          {status === "Pending" ? (
+          {status === "pending" ? (
             <span className="text-yellow-600">Pending</span>
           ) : (
             <span className="text-green-600">Approved</span>
@@ -92,17 +83,13 @@ const User = () => {
         <div className="flex items-center justify-between w-[1080px]">
           <div className="flex gap-3 items-center ">
             <img
-              className="rounded-full w-16 h-16"
-              src={
-                imgUrl?.startsWith("http")
-                  ? imgUrl
-                  : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
-              }
+              className="rounded-full object-cover w-16 h-16"
+              src={imgUrl?.startsWith("http") ? imgUrl : `${imageUrl}${imgUrl}`}
               alt="img"
             />
             <div>
-              <h1 className="text-2xl font-bold">{user?.name}</h1>
-              <p className="text-sm text-gray-400">User ID: {user.id} </p>
+              <h1 className="text-2xl font-bold">{userData?.name}</h1>
+              <p className="text-sm text-gray-400">User ID: {userData?._id} </p>
             </div>
           </div>
           <div className="space-x-4">
@@ -119,34 +106,25 @@ const User = () => {
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Name
             </h1>
-            <p className="text-lg my-2">{user?.name}</p>
+            <p className="text-lg my-2">{userData?.name}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Email
             </h1>
-            <p className="text-lg my-2">{user?.email}</p>
+            <p className="text-lg my-2">{userData?.email}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Phone
             </h1>
-            <p className="text-lg my-2">{user?.phone}</p>
+            <p className="text-lg my-2">{userData?.contact}</p>
           </div>
           <div className="p-3 bg-white h-20 rounded-2xl shadow-sm">
             <h1 className="font-semibold text-sm border-b-2 border-dashed">
               Address
             </h1>
-            <p className="text-lg my-2">
-              {user?.address ? (
-                <>
-                  {user?.address?.street}, {user?.address?.state},{" "}
-                  {user?.address?.city}, {user?.address?.country}
-                </>
-              ) : (
-                "N/A"
-              )}
-            </p>
+            <p className="text-lg my-2">{userData?.location || "N/A"}</p>
           </div>
         </div>
       </div>
@@ -154,8 +132,9 @@ const User = () => {
         <h1 className="text-2xl font-bold">Request History</h1>
         <Table
           columns={columns}
-          dataSource={requestHistory}
+          dataSource={recipeRequestData}
           pagination={{ pageSize: 5 }}
+          rowKey="_id"
         />
       </div>
     </div>

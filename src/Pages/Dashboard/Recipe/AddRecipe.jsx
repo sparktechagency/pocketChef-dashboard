@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Form,
   Input,
@@ -10,9 +10,7 @@ import {
   message,
   Spin,
 } from "antd";
-
 import { Plus, Trash2 } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
 import { FaImage } from "react-icons/fa6";
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import {
@@ -22,22 +20,16 @@ import {
 import { useCreateRecipeMutation } from "../../../redux/apiSlices/recipeSlice";
 import toast from "react-hot-toast";
 import { useGetIngredientsQuery } from "../../../redux/apiSlices/ingredientsSlice";
+
 const { TextArea } = Input;
 const { Option } = Select;
 
 const AddRecipe = () => {
   const [form] = Form.useForm();
-  const [ingredients, setIngredients] = useState([
-    { id: 1, ingredientName: "", amount: "0", unit: "" },
-  ]);
-  const [instructions, setInstructions] = useState([
-    { id: uuidv4(), instruction: "" },
-  ]);
-  const [nutritionalValues, setNutritionalValues] = useState([
-    { id: uuidv4(), name: "", Kcal: "" },
-  ]);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [videoFile, setVideoFile] = useState(null);
+  const [imageFiles, setImageFiles] = React.useState([]);
+  const [videoFile, setVideoFile] = React.useState(null);
+
+  // API Queries
   const { data: categories, isLoading: categoriesLoading } =
     useCategoriesQuery();
   const { data: subCategories, isLoading: subCategoriesLoading } =
@@ -47,12 +39,13 @@ const AddRecipe = () => {
   const { data: ingredientsData, isLoading: ingredientsLoading } =
     useGetIngredientsQuery();
 
-  if (categoriesLoading || subCategoriesLoading || ingredientsLoading)
+  if (categoriesLoading || subCategoriesLoading || ingredientsLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Spin />
       </div>
     );
+  }
 
   const categoriesData = categories?.data;
   const subCategoriesData = subCategories?.data;
@@ -74,64 +67,10 @@ const AddRecipe = () => {
     setVideoFile(fileList[0]?.originFileObj || null);
   };
 
-  const addNutritionalValue = () => {
-    setNutritionalValues([
-      ...nutritionalValues,
-      { id: uuidv4(), name: "", Kcal: "" },
-    ]);
-  };
-
-  const removeNutritionalValue = (id) => {
-    setNutritionalValues(nutritionalValues.filter((nv) => nv.id !== id));
-  };
-
-  const handleNutritionChange = (id, field, value) => {
-    setNutritionalValues((prev) =>
-      prev?.map((nv) => (nv.id === id ? { ...nv, [field]: value } : nv))
-    );
-  };
-
-  const addIngredient = () => {
-    setIngredients([
-      ...ingredients,
-      { id: Date.now(), ingredientName: "", amount: "0", unit: "" },
-    ]);
-  };
-
-  const removeIngredient = (id) => {
-    setIngredients(ingredients.filter((ing) => ing.id !== id));
-  };
-
-  const handleIngredientChange = (id, field, value) => {
-    setIngredients((prevIngredients) =>
-      prevIngredients.map((ingredient) =>
-        ingredient.id === id ? { ...ingredient, [field]: value } : ingredient
-      )
-    );
-  };
-
-  const handleInstructionChange = (id, value) => {
-    setInstructions((prevInstructions) =>
-      prevInstructions?.map((instruction) =>
-        instruction.id === id
-          ? { ...instruction, instruction: value }
-          : instruction
-      )
-    );
-  };
-
-  const addInstruction = () => {
-    setInstructions([...instructions, { id: uuidv4(), instruction: "" }]);
-  };
-
-  const removeInstruction = (id) => {
-    setInstructions(
-      instructions.filter((instruction) => instruction.id !== id)
-    );
-  };
-
   const handleSubmit = async (values) => {
     const formData = new FormData();
+
+    // Basic fields
     formData.append("recipeName", values.recipeName);
     formData.append("description", values.description);
     formData.append("portionSize", values.portionSize);
@@ -142,27 +81,30 @@ const AddRecipe = () => {
     formData.append("tags", JSON.stringify(values.tags || []));
     formData.append("subCategory", values.subCategory);
 
-    const ingredientsData = ingredients?.map((ingredient) => ({
-      ingredientName: ingredient._id,
+    // Ingredients
+    const ingredientsData = values.ingredients?.map((ingredient) => ({
+      ingredientName: ingredient.ingredientName,
       amount: Number(ingredient.amount) || 0,
       unit: ingredient.unit,
     }));
     formData.append("ingredientName", JSON.stringify(ingredientsData));
 
-    instructions.forEach((instruction, index) => {
-      formData.append(`instructions[${index}]`, instruction.instruction);
+    // Instructions
+    values.instructions?.forEach((instruction, index) => {
+      formData.append(`instructions[${index}]`, instruction);
     });
 
-    const nutritionalData = nutritionalValues?.map((nv) => ({
+    // Nutritional Values
+    const nutritionalData = values.nutritionalValues?.map((nv) => ({
       name: nv.name,
-      Kcal: Number(nv.Kcal) || 0,
+      Kcal: nv.Kcal || "", // Keep Kcal field name but store string value
     }));
     formData.append("NutritionalValue", JSON.stringify(nutritionalData));
 
+    // Media files
     imageFiles.forEach((file) => {
       formData.append("image", file.originFileObj);
     });
-
     if (videoFile) {
       formData.append("video", videoFile);
     }
@@ -171,16 +113,10 @@ const AddRecipe = () => {
       const res = await addRecipe(formData).unwrap();
       if (res.success) {
         toast.success("Recipe created successfully!");
-      } else {
-        toast.error(res.message || "Failed to create recipe");
+        form.resetFields();
+        setImageFiles([]);
+        setVideoFile(null);
       }
-
-      form.resetFields();
-      setIngredients([{ id: 1, ingredientName: "", amount: "", unit: "" }]);
-      setInstructions([{ id: uuidv4(), instruction: "" }]);
-      setNutritionalValues([{ id: uuidv4(), name: "", Kcal: "" }]);
-      setImageFiles([]);
-      setVideoFile(null);
     } catch (error) {
       message.error(error.data?.message || "Failed to create recipe");
     }
@@ -198,6 +134,7 @@ const AddRecipe = () => {
         <div className="flex w-full gap-5">
           {/* Left Side */}
           <div className="w-[50%]">
+            {/* Image Upload Section */}
             <div className="bg-white p-4 rounded-lg shadow">
               <div className="mb-4">Upload Recipe Images (Maximum 3)</div>
               <Upload.Dragger
@@ -233,6 +170,8 @@ const AddRecipe = () => {
                 </div>
               </Upload.Dragger>
             </div>
+
+            {/* Video Upload Section */}
             <div className="bg-white p-4 mt-6 rounded-lg shadow">
               <div className="mb-4">Upload Recipe Video (Maximum 1)</div>
               <Upload.Dragger
@@ -269,6 +208,8 @@ const AddRecipe = () => {
                 </div>
               </Upload.Dragger>
             </div>
+
+            {/* Basic Information Section */}
             <div className="space-y-4 mt-6">
               <Form.Item
                 label="Recipe Name"
@@ -279,6 +220,7 @@ const AddRecipe = () => {
               >
                 <Input className="w-full" />
               </Form.Item>
+
               <Form.Item
                 label="Description"
                 name="description"
@@ -288,17 +230,15 @@ const AddRecipe = () => {
               >
                 <TextArea className="min-h-[100px]" />
               </Form.Item>
-              {/* category & subCategory */}
+
+              {/* Category & Subcategory */}
               <div className="flex gap-4 w-full">
                 <div className="w-[50%]">
                   <Form.Item
                     label="Category"
                     name="category"
                     rules={[
-                      {
-                        required: true,
-                        message: "Please select a category!",
-                      },
+                      { required: true, message: "Please select a category!" },
                     ]}
                   >
                     <Select placeholder="Select category">
@@ -315,7 +255,10 @@ const AddRecipe = () => {
                     label="Sub Category"
                     name="subCategory"
                     rules={[
-                      { required: true, message: "Please select a level!" },
+                      {
+                        required: true,
+                        message: "Please select a sub category!",
+                      },
                     ]}
                   >
                     <Select placeholder="Select sub category">
@@ -328,6 +271,8 @@ const AddRecipe = () => {
                   </Form.Item>
                 </div>
               </div>
+
+              {/* Portion Size & Difficulty Level */}
               <div className="flex gap-4 w-full">
                 <div className="w-[50%]">
                   <Form.Item
@@ -336,12 +281,9 @@ const AddRecipe = () => {
                     rules={[
                       {
                         required: true,
-                        message: "Please specify the portion size!",
+                        message: "Please specify portion size!",
                       },
-                      {
-                        pattern: /^[0-9]+$/,
-                        message: "Only numbers are allowed!",
-                      },
+                      { pattern: /^[0-9]+$/, message: "Only numbers allowed!" },
                     ]}
                   >
                     <Input type="number" className="w-full" />
@@ -352,7 +294,10 @@ const AddRecipe = () => {
                     label="Select Level"
                     name="selectLevel"
                     rules={[
-                      { required: true, message: "Please select a level!" },
+                      {
+                        required: true,
+                        message: "Please select difficulty level!",
+                      },
                     ]}
                   >
                     <Select placeholder="Select level">
@@ -363,225 +308,231 @@ const AddRecipe = () => {
                   </Form.Item>
                 </div>
               </div>
-            </div>
-            <div className="flex gap-4 w-full">
-              <div className="w-[50%]">
-                <Form.Item
-                  label="Prep Time"
-                  name="prepTime"
-                  rules={[
-                    { required: true, message: "Please enter the prep time!" },
-                  ]}
-                >
-                  <Input placeholder="HH:MM" />
-                </Form.Item>
-              </div>
-              <div className="w-[50%]">
-                <Form.Item
-                  label="Cook Time"
-                  name="cookTime"
-                  rules={[
-                    { required: true, message: "Please enter the cook time!" },
-                  ]}
-                >
-                  <Input placeholder="HH:MM" />
-                </Form.Item>
+
+              {/* Prep Time & Cook Time */}
+              <div className="flex gap-4 w-full">
+                <div className="w-[50%]">
+                  <Form.Item
+                    label="Prep Time"
+                    name="prepTime"
+                    rules={[
+                      { required: true, message: "Please enter prep time!" },
+                    ]}
+                  >
+                    <Input placeholder="HH:MM" />
+                  </Form.Item>
+                </div>
+                <div className="w-[50%]">
+                  <Form.Item
+                    label="Cook Time"
+                    name="cookTime"
+                    rules={[
+                      { required: true, message: "Please enter cook time!" },
+                    ]}
+                  >
+                    <Input placeholder="HH:MM" />
+                  </Form.Item>
+                </div>
               </div>
             </div>
           </div>
+
           {/* Right Side */}
           <div className="w-[50%]">
+            {/* Instructions Section */}
             <div className="bg-white p-4 rounded-lg shadow">
               <div className="mb-4">Instructions</div>
-              <div className="flex flex-col gap-4">
-                {instructions?.map((instruction) => (
-                  <div key={instruction.id} className="flex gap-4">
-                    <Input
-                      placeholder="Instruction"
-                      name="instruction"
-                      value={instruction.instruction}
-                      onChange={(e) =>
-                        handleInstructionChange(instruction.id, e.target.value)
-                      }
-                    />
+              <Form.List name="instructions">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <div key={key} className="flex gap-4 mb-2">
+                        <Form.Item
+                          {...restField}
+                          name={[name]}
+                          rules={[
+                            { required: true, message: "Instruction required" },
+                          ]}
+                          className="flex-1"
+                        >
+                          <Input placeholder="Instruction step" />
+                        </Form.Item>
+                        <Button
+                          type="text"
+                          danger
+                          onClick={() => remove(name)}
+                          icon={<Trash2 className="w-4 h-4" />}
+                        />
+                      </div>
+                    ))}
                     <Button
-                      type="text"
-                      danger
-                      onClick={() => removeInstruction(instruction.id)}
-                      icon={<Trash2 className="w-4 h-4" />}
-                    />
-                  </div>
-                ))}
-                <Button
-                  className="w-full bg-primary text-white"
-                  onClick={addInstruction}
-                  icon={<Plus className="w-4 h-4" />}
-                >
-                  Add More
-                </Button>
-              </div>
+                      className="w-full bg-primary text-white"
+                      onClick={() => add()}
+                      icon={<Plus className="w-4 h-4" />}
+                    >
+                      Add Instruction
+                    </Button>
+                  </>
+                )}
+              </Form.List>
             </div>
+
+            {/* Ingredients Section */}
             <div className="p-4 my-5 w-full rounded-lg shadow">
               <h2 className="text-lg font-semibold mb-4">Ingredients</h2>
-              {ingredients?.map((ingredient) => (
-                <Space
-                  key={ingredient.id}
-                  className="w-full mb-2"
-                  align="start"
-                >
-                  <Form.Item
-                    style={{ marginBottom: 0, flex: 2 }}
-                    name={["ingredients", ingredient.id, "name"]}
-                    rules={[{ required: true, message: "Ingredient required" }]}
-                  >
-                    <Select
-                      placeholder="Ingredient"
-                      value={ingredient.ingredientName}
-                      onChange={(value) =>
-                        handleIngredientChange(
-                          ingredient.id,
-                          "ingredientName",
-                          value
-                        )
-                      }
+              <Form.List name="ingredients">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <Space key={key} className="w-full mb-2" align="start">
+                        <Form.Item
+                          {...restField}
+                          name={[name, "ingredientName"]}
+                          rules={[{ required: true, message: "Required" }]}
+                          style={{ flex: 2 }}
+                        >
+                          <Select placeholder="Ingredient">
+                            {allIngredients?.map((ing) => (
+                              <Option key={ing._id} value={ing._id}>
+                                {ing.name}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          name={[name, "amount"]}
+                          rules={[
+                            { required: true, message: "Required" },
+                            {
+                              validator: (_, value) =>
+                                Number(value) > 0
+                                  ? Promise.resolve()
+                                  : Promise.reject("Must be > 0"),
+                            },
+                          ]}
+                          style={{ flex: 1 }}
+                        >
+                          <Input
+                            type="number"
+                            min={0}
+                            step="0.1"
+                            placeholder="Amount"
+                          />
+                        </Form.Item>
+
+                        <Form.Item
+                          {...restField}
+                          name={[name, "unit"]}
+                          rules={[{ required: true, message: "Required" }]}
+                          style={{ flex: 1 }}
+                        >
+                          <Select placeholder="Unit">
+                            <Option value="kg">kg</Option>
+                            <Option value="g">g</Option>
+                            <Option value="l">L</Option>
+                            <Option value="ml">ml</Option>
+                            <Option value="tsp">tsp</Option>
+                            <Option value="tbsp">tbsp</Option>
+                            <Option value="unit">unit</Option>
+                          </Select>
+                        </Form.Item>
+
+                        <Button
+                          type="text"
+                          danger
+                          onClick={() => remove(name)}
+                          icon={<Trash2 className="w-4 h-4" />}
+                        />
+                      </Space>
+                    ))}
+                    <Button
+                      type="dashed"
+                      className="mt-4 bg-primary text-white"
+                      onClick={() => add()}
+                      icon={<Plus className="w-4 h-4" />}
                     >
-                      {allIngredients?.map((ing) => (
-                        <Option key={ing._id} value={ing._id}>
-                          {ing.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    style={{ marginBottom: 0, flex: 1 }}
-                    name={["ingredients", ingredient.id, "amount"]}
-                    rules={[
-                      { required: true, message: "Amount required" },
-                      {
-                        validator: (_, value) =>
-                          Number(value) > 0
-                            ? Promise.resolve()
-                            : Promise.reject("Must be > 0"),
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="number"
-                      min={0}
-                      step="0.1"
-                      value={ingredient.amount}
-                      onChange={(e) => {
-                        if (!/^\d+\.?\d*$/.test(e.target.value)) return;
-                        handleIngredientChange(
-                          ingredient.id,
-                          "amount",
-                          e.target.value
-                        );
-                      }}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    style={{ marginBottom: 0, flex: 1 }}
-                    name={["ingredients", ingredient.id, "unit"]}
-                    rules={[{ required: true, message: "Unit required" }]}
-                  >
-                    <Select
-                      placeholder="Unit"
-                      value={ingredient.unit}
-                      onChange={(value) =>
-                        handleIngredientChange(ingredient.id, "unit", value)
-                      }
-                    >
-                      <Option value="kg">kg</Option>
-                      <Option value="g">g</Option>
-                      <Option value="l">L</Option>
-                      <Option value="ml">ml</Option>
-                      <Option value="tsp">tsp</Option>
-                      <Option value="tbsp">tbsp</Option>
-                      <Option value="unit">unit</Option>
-                    </Select>
-                  </Form.Item>
-                  <Button
-                    type="text"
-                    danger
-                    onClick={() => removeIngredient(ingredient.id)}
-                    icon={<Trash2 className="w-4 h-4" />}
-                  />
-                </Space>
-              ))}
-              <Button
-                type="dashed"
-                className="mt-4 bg-primary text-white"
-                onClick={addIngredient}
-                icon={<Plus className="w-4 h-4" />}
-              >
-                Add Ingredient
-              </Button>
+                      Add Ingredient
+                    </Button>
+                  </>
+                )}
+              </Form.List>
             </div>
-            {/* Nutritional Value Section */}
+
+            {/* Nutritional Values Section */}
             <div className="p-4 my-5 w-full rounded-lg shadow">
               <h2 className="text-lg font-semibold mb-4">Nutritional Values</h2>
-              {nutritionalValues?.map((nutrition) => (
-                <Space
-                  key={nutrition._id}
-                  className="w-full mb-2"
-                  align="start"
-                >
-                  <Input
-                    placeholder="Name (e.g., Energy)"
-                    value={nutrition.name}
-                    onChange={(e) =>
-                      handleNutritionChange(
-                        nutrition.id,
-                        "name",
-                        e.target.value
-                      )
-                    }
-                  />
-                  <Input
-                    placeholder="Value (e.g., 680)"
-                    type="number" // <-- Force numeric input
-                    min={0}
-                    value={nutrition.Kcal}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      // Allow only numbers
-                      if (!/^\d*\.?\d*$/.test(value)) return;
-                      handleNutritionChange(nutrition.id, "Kcal", value);
-                    }}
-                  />
-                  <Button
-                    type="text"
-                    danger
-                    onClick={() => removeNutritionalValue(nutrition.id)}
-                    icon={<Trash2 className="w-4 h-4" />}
-                  />
-                </Space>
-              ))}
-              <Button
-                type="dashed"
-                className="mt-4 bg-primary text-white"
-                onClick={addNutritionalValue}
-                icon={<Plus className="w-4 h-4" />}
-              >
-                Add Nutritional Value
-              </Button>
+              <Form.List name="nutritionalValues">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <Space key={key} className="w-full mb-2" align="start">
+                        <Form.Item
+                          {...restField}
+                          name={[name, "name"]}
+                          rules={[{ required: true, message: "Name required" }]}
+                        >
+                          <Input placeholder="Nutrient name (e.g., Protein)" />
+                        </Form.Item>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "Kcal"]} // Keep field name as Kcal
+                          rules={[
+                            { required: true, message: "Value required" },
+                            {
+                              pattern: /^[0-9]+[a-zA-Z%]*$/,
+                              message:
+                                "Format: Number + unit (e.g., 10g or 50%)",
+                            },
+                          ]}
+                        >
+                          <Input placeholder="Value (e.g., 55g or 20%)" />
+                        </Form.Item>
+                        <Button
+                          type="text"
+                          danger
+                          onClick={() => remove(name)}
+                          icon={<Trash2 className="w-4 h-4" />}
+                        />
+                      </Space>
+                    ))}
+                    <Button
+                      type="dashed"
+                      className="mt-4 bg-primary text-white"
+                      onClick={() => add()}
+                      icon={<Plus className="w-4 h-4" />}
+                    >
+                      Add Nutrient
+                    </Button>
+                  </>
+                )}
+              </Form.List>
             </div>
+
+            {/* Tags Section */}
             <Form.Item label="Tags (Maximum 20)" name="tags">
-              <Select mode="tags" placeholder="Add tags" className="w-full" />
+              <Select
+                mode="tags"
+                placeholder="Add tags (e.g., Breakfast, Vegetarian)"
+                className="w-full"
+              />
             </Form.Item>
-            <div className="text-gray-500">
-              Suggested: Breakfast, Eggs, 5min recipes, easy_recipes
+            <div className="text-gray-500 text-sm mt-2">
+              Example tags: Breakfast, Eggs, Quick Recipes, Healthy
             </div>
           </div>
         </div>
+
+        {/* Submit Button */}
         <Form.Item>
           <Button
             type="primary"
-            className="w-full bg-orange-500 hover:bg-orange-600"
+            className="w-full bg-orange-500 hover:bg-orange-600 h-12 text-lg"
             htmlType="submit"
+            loading={addRecipeLoading}
           >
-            Publish
+            Publish Recipe
           </Button>
         </Form.Item>
       </Form>

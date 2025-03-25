@@ -28,7 +28,7 @@ const VerifyOtp = () => {
       }).unwrap();
 
       if (response?.success) {
-        localStorage.setItem("Authorization", response.data);
+        localStorage.setItem("Authorization", response?.data?.data);
         navigate(`/auth/reset-password?email=${email}`);
       } else {
         console.error("OTP verification failed");
@@ -75,7 +75,7 @@ const VerifyOtp = () => {
               borderRadius: "8px",
               margin: "16px",
               fontSize: "20px",
-              border: "1px solid #8b0000",
+              border: "1px solid #F28705",
               color: "#2B2A2A",
               outline: "none",
               marginBottom: 10,
@@ -105,8 +105,8 @@ const VerifyOtp = () => {
               border: "1px solid #d9d9d9",
               outline: "none",
               boxShadow: "none",
-              background: "#8b0000",
-              color: "white",
+              background: "#F28705",
+              color: "black",
             }}
           >
             Verify

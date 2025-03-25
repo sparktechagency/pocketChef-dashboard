@@ -1,12 +1,24 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Upload, Image, Table, Spin } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Upload,
+  Image,
+  Table,
+  Spin,
+  Tooltip,
+  Modal,
+} from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import {
   useAddBannerMutation,
   useAllBannerQuery,
+  useDeleteBannerMutation,
 } from "../../redux/apiSlices/banenrSlice";
 import { imageUrl } from "../../redux/api/baseApi";
 import toast from "react-hot-toast";
+import { FaTrash } from "react-icons/fa6";
 
 const { TextArea } = Input;
 
@@ -18,6 +30,7 @@ const Template = () => {
 
   const { data: bannerData, isLoading } = useAllBannerQuery();
   const [addBanner] = useAddBannerMutation();
+  const [deleteBanner] = useDeleteBannerMutation();
 
   const handleSubmit = async (values) => {
     console.log("values", values);
@@ -44,6 +57,24 @@ const Template = () => {
     } catch (err) {
       toast.error(err.data?.message || "Error adding banner");
     }
+  };
+
+  const handleDelete = async (id) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this banner?",
+      content: "This action cannot be undone.",
+      onOk: async () => {
+        try {
+          const res = await deleteBanner(id).unwrap();
+          if (res?.success) {
+            toast.success(res?.message || "Banner deleted successfully");
+          }
+        } catch (err) {
+          toast.error(err.data?.message || "Error deleting banner");
+        }
+      },
+      onCancel: () => {},
+    });
   };
 
   const handleUploadChange = ({ fileList: newFileList }) => {
@@ -77,7 +108,25 @@ const Template = () => {
       title: "Details",
       dataIndex: "description",
       key: "description",
-      render: (text) => <div className="line-clamp-3">{text}</div>,
+      render: (text) => (
+        <Tooltip title={text}>
+          <div className="line-clamp-3">{text}</div>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: (record) => (
+        <div>
+          <FaTrash
+            onClick={() => handleDelete(record._id)}
+            size={20}
+            className="text-red-600 cursor-pointer"
+          />
+        </div>
+      ),
     },
   ];
 

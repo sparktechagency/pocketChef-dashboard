@@ -20,7 +20,19 @@ const bannerSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["Banner"],
     }),
+
+    deleteBanner: builder.mutation({
+      query: (id) => ({
+        url: `/carusel/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Banner"],
+    }),
   }),
 });
 
-export const { useAllBannerQuery, useAddBannerMutation } = bannerSlice;
+export const {
+  useAllBannerQuery,
+  useAddBannerMutation,
+  useDeleteBannerMutation,
+} = bannerSlice;

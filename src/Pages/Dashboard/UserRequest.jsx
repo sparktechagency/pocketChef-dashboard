@@ -16,7 +16,7 @@ const UserRequest = () => {
 
   if (isLoading) {
     return (
-      <div>
+      <div className="flex items-center justify-center h-screen">
         <Spin />
       </div>
     );

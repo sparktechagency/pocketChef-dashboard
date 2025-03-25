@@ -21,6 +21,14 @@ const recipeSlice = api.injectEndpoints({
       invalidatesTags: ["getAllRecipes"],
     }),
 
+    deleteRecipe: builder.mutation({
+      query: (id) => ({
+        method: "DELETE",
+        url: `/recipe/${id}`,
+      }),
+      invalidatesTags: ["getAllRecipes"],
+    }),
+
     //requested recipes
     requestedRecipes: builder.query({
       query: () => {
@@ -30,6 +38,15 @@ const recipeSlice = api.injectEndpoints({
         };
       },
       providesTags: ["requestedRecipes"],
+    }),
+    recipeRequestBySingleUser: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/recipes/user/${id}`,
+        };
+      },
+      providesTags: ["recipeRequestBySingleUser"],
     }),
     updateRequestStatus: builder.mutation({
       query: ({ body, id }) => ({
@@ -45,6 +62,10 @@ const recipeSlice = api.injectEndpoints({
 export const {
   useGetAllRecipesQuery,
   useCreateRecipeMutation,
+  useDeleteRecipeMutation,
+
+  //requested recipes
   useRequestedRecipesQuery,
+  useRecipeRequestBySingleUserQuery,
   useUpdateRequestStatusMutation,
 } = recipeSlice;

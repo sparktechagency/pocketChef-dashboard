@@ -270,7 +270,7 @@ const Users = () => {
       key: "actions",
       render: (text, record) => (
         <Space>
-          <Link to={`/user/profile/${record.id}`}>
+          <Link to={`/user/profile/${record._id}`}>
             <Button className="bg-white text-primary border border-primary">
               Details
             </Button>
@@ -278,7 +278,7 @@ const Users = () => {
           <Button className="border px-5 border-button bg-button hover:!bg-red-900 text-white">
             Ban
           </Button>
-          {/* <div
+          <div
             className="border border-primary p-1 rounded-lg cursor-pointer"
             onClick={showMessageModal}
           >
@@ -286,7 +286,7 @@ const Users = () => {
               size={24}
               className="text-primary shadow-2xl"
             />
-          </div> */}
+          </div>
         </Space>
       ),
     },
@@ -322,6 +322,7 @@ const Users = () => {
         dataSource={userData}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}
+        rowKey="_id"
       />
 
       <Modal

@@ -18,6 +18,14 @@ const userSlice = api.injectEndpoints({
         };
       },
     }),
+    getSingleUser: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/auth/user/${id}`,
+        };
+      },
+    }),
     vendors: builder.query({
       query: () => {
         return {
@@ -40,6 +48,7 @@ const userSlice = api.injectEndpoints({
 export const {
   useAdminQuery,
   useUsersQuery,
+  useGetSingleUserQuery,
   useVendorsQuery,
   useUserByIdQuery,
 } = userSlice;

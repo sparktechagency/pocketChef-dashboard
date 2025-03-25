@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Space, Spin, Image } from "antd";
+import { Table, Button, Input, Space, Spin, Image, Modal } from "antd";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { useGetAllRecipesQuery } from "../../../redux/apiSlices/recipeSlice";
+import {
+  useDeleteRecipeMutation,
+  useGetAllRecipesQuery,
+} from "../../../redux/apiSlices/recipeSlice";
 import { imageUrl } from "../../../redux/api/baseApi";
+import toast from "react-hot-toast";
 
 const RecipeManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: allRecipes, isLoading } = useGetAllRecipesQuery();
+  const [deleteRecipe] = useDeleteRecipeMutation();
 
   if (isLoading)
     return (
@@ -21,114 +26,23 @@ const RecipeManagement = () => {
 
   console.log(recipeData);
 
-  // Dummy data for recipes
-  const recipes = [
-    {
-      id: "1",
-      name: "Spaghetti Carbonara",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "2",
-      name: "Chicken Alfredo",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "3",
-      name: "Beef Stroganoff",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Unavailable",
-    },
-    {
-      id: "4",
-      name: "Margherita Pizza",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "5",
-      name: "Grilled Cheese Sandwich",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "6",
-      name: "Caesar Salad",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Unavailable",
-    },
-    {
-      id: "7",
-      name: "Vegetable Stir Fry",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "8",
-      name: "Teriyaki Chicken",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "9",
-      name: "Eggplant Parmesan",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Unavailable",
-    },
-    {
-      id: "10",
-      name: "Greek Salad",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "11",
-      name: "Shrimp Scampi",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "12",
-      name: "Fish Tacos",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "13",
-      name: "Pancakes",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-    {
-      id: "14",
-      name: "Chili Con Carne",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Unavailable",
-    },
-    {
-      id: "15",
-      name: "Classic Cheesecake",
-      image:
-        "https://www.chilipeppermadness.com/wp-content/uploads/2022/11/Barbacoa-Tacos-SQ.jpg",
-      status: "Available",
-    },
-  ];
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this recipe?",
+      content: "This action cannot be undone.",
+      onOk: async () => {
+        try {
+          const res = await deleteRecipe(id).unwrap();
+          if (res.success) {
+            toast.success("Recipe deleted successfully!");
+          }
+        } catch (error) {
+          toast.error(error.data?.message || "Failed to delete recipe");
+        }
+      },
+      onCancel: () => {},
+    });
+  };
 
   const filteredRecipes = recipeData?.filter((recipe) =>
     recipe?.recipeName?.toLowerCase()?.includes(searchTerm?.toLowerCase())
@@ -186,7 +100,10 @@ const RecipeManagement = () => {
               Edit
             </Button>
           </Link> */}
-          <Button className="bg-button text-white px-7 rounded-xl py-4">
+          <Button
+            onClick={() => handleDelete(record._id)}
+            className="bg-button text-white px-7 rounded-xl py-4"
+          >
             Delete
           </Button>
         </Space>

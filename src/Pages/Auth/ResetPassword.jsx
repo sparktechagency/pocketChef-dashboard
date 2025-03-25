@@ -19,6 +19,7 @@ const ResetPassword = () => {
       console.log(response);
       if (response?.success) {
         message.success("Password updated successfully!");
+        localStorage.removeItem("Authorization");
         navigate(`/auth/login`);
       } else {
         message.error(response?.message || "Failed to update password.");
@@ -107,7 +108,7 @@ const ResetPassword = () => {
               height: 45,
               fontWeight: "400px",
               fontSize: "18px",
-              background: "#8b0000",
+              background: "#F28705",
               marginTop: 20,
               borderRadius: "8px",
               color: "white",
