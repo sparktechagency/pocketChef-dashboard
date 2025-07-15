@@ -22,7 +22,7 @@ const RecipeManagement = () => {
       </div>
     );
 
-  const recipeData = allRecipes?.data;
+  const recipeData = allRecipes?.data?.data;
 
   console.log(recipeData);
 
@@ -40,7 +40,7 @@ const RecipeManagement = () => {
           toast.error(error.data?.message || "Failed to delete recipe");
         }
       },
-      onCancel: () => {},
+      onCancel: () => { },
     });
   };
 
@@ -63,9 +63,7 @@ const RecipeManagement = () => {
         <Space>
           <Image
             src={
-              record?.image[0]?.startsWith("http")
-                ? record?.image[0]
-                : `${imageUrl}${record?.image[0]}`
+              record?.image?.[0] ? record?.image?.[0].startsWith("http") ? record?.image?.[0] : `${imageUrl}${record?.image?.[0]}` : ""
             }
             alt={record.recipeName}
             className="!w-16 !h-16 rounded-lg object-cover"
@@ -76,9 +74,8 @@ const RecipeManagement = () => {
     },
     {
       title: "Category",
-      dataIndex: "category",
+      dataIndex: ["category", "name"],
       key: "category",
-      render: (text, record) => record?.category[0]?.name,
     },
     {
       title: "Level",
@@ -100,6 +97,11 @@ const RecipeManagement = () => {
               Edit
             </Button>
           </Link> */}
+          <Link to={`/recipe/${record._id}`}>
+            <Button className="bg-primary text-white px-7 rounded-xl py-4">
+              View
+            </Button>
+          </Link>
           <Button
             onClick={() => handleDelete(record._id)}
             className="bg-button text-white px-7 rounded-xl py-4"
@@ -133,6 +135,7 @@ const RecipeManagement = () => {
         columns={columns}
         dataSource={filteredRecipes}
         pagination={{ pageSize: 10 }}
+        rowKey="_id"
       />
     </div>
   );

@@ -70,7 +70,7 @@ const RunningOrdersTable = () => {
     <div className="border bg-white h-[300px] p-5 rounded-2xl">
       <div className="flex items-center justify-between">
         <h1 className="font-bold mb-2">Trending Recipes</h1>
-        <Link to={"/analytics"}>
+        <Link to={"/recipe"}>
           <Button className="bg-secondary border-secondary">View All</Button>
         </Link>
       </div>

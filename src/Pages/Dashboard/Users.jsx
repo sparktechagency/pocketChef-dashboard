@@ -27,175 +27,12 @@ const Users = () => {
   const [messageContent, setMessageContent] = useState("");
 
   // Dummy data for users
-  const users = {
-    data: {
-      data: [
-        {
-          id: "1",
-          name: "John Doe",
-          email: "john@example.com",
-          phoneNumber: "+123456789",
-          address: "123 Main St, Springfield",
-          totalServices: 12,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/men/1.jpg",
-          fine: 50,
-        },
-        {
-          id: "2",
-          name: "Jane Smith",
-          email: "jane@example.com",
-          phoneNumber: "+987654321",
-          address: "456 Elm St, Springfield",
-          totalServices: 5,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/2.jpg",
-        },
-        {
-          id: "3",
-          name: "Sam Wilson",
-          email: "sam@example.com",
-          phoneNumber: "+192837465",
-          address: "789 Oak St, Springfield",
-          totalServices: 3,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/men/3.jpg",
-          fine: 30,
-        },
-        {
-          id: "4",
-          name: "Emily Johnson",
-          email: "emily@example.com",
-          phoneNumber: "+456789123",
-          address: "321 Pine St, Springfield",
-          totalServices: 8,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/4.jpg",
-          fine: 0,
-        },
-        {
-          id: "5",
-          name: "Michael Brown",
-          email: "michael@example.com",
-          phoneNumber: "+789456123",
-          address: "654 Maple St, Springfield",
-          totalServices: 6,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/men/5.jpg",
-        },
-        {
-          id: "6",
-          name: "Sophia Davis",
-          email: "sophia@example.com",
-          phoneNumber: "+123987654",
-          address: "987 Birch St, Springfield",
-          totalServices: 7,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/6.jpg",
-          fine: 40,
-        },
-        {
-          id: "7",
-          name: "David Wilson",
-          email: "david@example.com",
-          phoneNumber: "+456321789",
-          address: "321 Cedar St, Springfield",
-          totalServices: 10,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/men/7.jpg",
-        },
-        {
-          id: "8",
-          name: "Olivia Miller",
-          email: "olivia@example.com",
-          phoneNumber: "+789123456",
-          address: "654 Walnut St, Springfield",
-          totalServices: 9,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/8.jpg",
-        },
-        {
-          id: "9",
-          name: "Liam Martinez",
-          email: "liam@example.com",
-          phoneNumber: "+123456987",
-          address: "987 Cedar St, Springfield",
-          totalServices: 4,
-          status: "Inactive",
-          profileImg: "https://randomuser.me/api/portraits/men/9.jpg",
-          fine: 25,
-        },
-        {
-          id: "10",
-          name: "Ava Hernandez",
-          email: "ava@example.com",
-          phoneNumber: "+456987123",
-          address: "321 Birch St, Springfield",
-          totalServices: 11,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/10.jpg",
-        },
-        {
-          id: "11",
-          name: "James Anderson",
-          email: "james@example.com",
-          phoneNumber: "+789123789",
-          address: "654 Pine St, Springfield",
-          totalServices: 5,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/men/11.jpg",
-        },
-        {
-          id: "12",
-          name: "Isabella Garcia",
-          email: "isabella@example.com",
-          phoneNumber: "+123789456",
-          address: "987 Maple St, Springfield",
-          totalServices: 13,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/12.jpg",
-        },
-        {
-          id: "13",
-          name: "Lucas Martinez",
-          email: "lucas@example.com",
-          phoneNumber: "+456321654",
-          address: "321 Walnut St, Springfield",
-          totalServices: 6,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/men/13.jpg",
-        },
-        {
-          id: "14",
-          name: "Emma Harris",
-          email: "emma@example.com",
-          phoneNumber: "+789654321",
-          address: "654 Cedar St, Springfield",
-          totalServices: 7,
-          status: "Active",
-          profileImg: "https://randomuser.me/api/portraits/women/14.jpg",
-          fine: 35,
-        },
-        {
-          id: "15",
-          name: "Ethan Thompson",
-          email: "ethan@example.com",
-          phoneNumber: "+123321456",
-          address: "987 Pine St, Springfield",
-          totalServices: 8,
-          status: "Inactive",
-          profileImg: "https://randomuser.me/api/portraits/men/15.jpg",
-        },
-      ],
-    },
-  };
 
-  const data = users?.data?.data;
 
-  const filteredUsers = data.filter(
+  const filteredUsers = userData?.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user?.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const showModal = () => {
@@ -230,13 +67,12 @@ const Users = () => {
       const response = await banUser(id).unwrap();
       console.log(response);
       if (response?.success) {
-        toast.success("User banned successfully!");
-        navigate(`/user/${id}`);
+        toast.success(response?.message || "User banned successfully!");
       } else {
         toast.error(response?.message || "Failed to ban user.");
       }
     } catch (error) {
-      message.error(
+      toast.error(
         error?.data?.message || "An error occurred. Please try again."
       );
     }
@@ -299,11 +135,10 @@ const Users = () => {
           </Link>
           <Button
             onClick={() => handleBan(record._id)}
-            className={`border px-5 border-button ${
-              record.userBan === false
-                ? "bg-button"
-                : "bg-green-900 !hover:bg-green-900 border-green-900"
-            } hover:!bg-red-900 text-white`}
+            className={`border px-5 border-button ${record.userBan === false
+              ? "bg-button"
+              : "bg-green-900 !hover:bg-green-900 border-green-900"
+              } hover:!bg-red-900 text-white`}
           >
             {record.userBan === false ? "Ban" : "Unban"}
           </Button>
@@ -348,7 +183,7 @@ const Users = () => {
       <Table
         columns={columns}
         loading={isLoading}
-        dataSource={userData}
+        dataSource={filteredUsers}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}
         rowKey="_id"

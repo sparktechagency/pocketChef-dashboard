@@ -5,7 +5,7 @@ const aboutUsSlice = api.injectEndpoints({
     updateAboutUs: builder.mutation({
       query: (data) => {
         return {
-          url: `/about`,
+          url: `/about/create`,
           method: "POST",
           body: data,
         };
@@ -14,7 +14,7 @@ const aboutUsSlice = api.injectEndpoints({
     aboutUs: builder.query({
       query: () => {
         return {
-          url: "/about",
+          url: "/about/all",
           method: "GET",
         };
       },

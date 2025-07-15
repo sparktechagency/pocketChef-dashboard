@@ -5,7 +5,7 @@ const bannerSlice = api.injectEndpoints({
     allBanner: builder.query({
       query: () => {
         return {
-          url: `/carusel`,
+          url: `/carusel/all`,
           method: "GET",
         };
       },

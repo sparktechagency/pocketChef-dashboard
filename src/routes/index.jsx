@@ -28,6 +28,7 @@ import Template from "../Pages/Dashboard/Template";
 import PrivateRoute from "./PrivateRoute";
 import Ingredients from "../Pages/Dashboard/Ingredients/Ingredients";
 import AboutPocketChef from "../Pages/Dashboard/AboutPocketChef";
+import SingleRecipe from "../Pages/Dashboard/Recipe/SingleRecipe";
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "/recipe",
         element: <RecipeManagement />,
+      },
+      {
+        path: "/recipe/:id",
+        element: <SingleRecipe />,
       },
       {
         path: "/category",

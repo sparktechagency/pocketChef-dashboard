@@ -60,6 +60,7 @@ const Template = () => {
   };
 
   const handleDelete = async (id) => {
+    console.log("id", id);
     Modal.confirm({
       title: "Are you sure you want to delete this banner?",
       content: "This action cannot be undone.",
@@ -73,7 +74,7 @@ const Template = () => {
           toast.error(err.data?.message || "Error deleting banner");
         }
       },
-      onCancel: () => {},
+      onCancel: () => { },
     });
   };
 
@@ -118,13 +119,14 @@ const Template = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (record) => (
+      render: (_, record) => (
         <div>
           <FaTrash
-            onClick={() => handleDelete(record._id)}
+            onClick={() => handleDelete(record?._id)}
             size={20}
             className="text-red-600 cursor-pointer"
           />
+
         </div>
       ),
     },

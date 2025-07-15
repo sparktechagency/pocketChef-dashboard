@@ -6,7 +6,7 @@ const ingredientsSlice = api.injectEndpoints({
       query: () => {
         return {
           method: "GET",
-          url: "/ingredients",
+          url: "/ingredients/all",
         };
       },
       providesTags: ["ingredients"],

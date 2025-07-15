@@ -12,6 +12,16 @@ const recipeSlice = api.injectEndpoints({
       providesTags: ["getAllRecipes"],
     }),
 
+    getRecipeById: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/recipe/${id}`,
+        };
+      },
+      providesTags: ["getRecipeById"],
+    }),
+
     createRecipe: builder.mutation({
       query: (body) => ({
         method: "POST",
@@ -61,6 +71,7 @@ const recipeSlice = api.injectEndpoints({
 
 export const {
   useGetAllRecipesQuery,
+  useGetRecipeByIdQuery,
   useCreateRecipeMutation,
   useDeleteRecipeMutation,
 

@@ -20,11 +20,13 @@ import {
 import { useCreateRecipeMutation } from "../../../redux/apiSlices/recipeSlice";
 import toast from "react-hot-toast";
 import { useGetIngredientsQuery } from "../../../redux/apiSlices/ingredientsSlice";
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const AddRecipe = () => {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [imageFiles, setImageFiles] = React.useState([]);
   const [videoFile, setVideoFile] = React.useState(null);
@@ -70,14 +72,20 @@ const AddRecipe = () => {
   const handleSubmit = async (values) => {
     const formData = new FormData();
 
+    // Convert HH:MM to total minutes
+    const convertToMinutes = (timeStr) => {
+      const [hours, minutes] = timeStr.split(":").map(Number);
+      return (hours || 0) * 60 + (minutes || 0);
+    };
+
     // Basic fields
     formData.append("recipeName", values.recipeName);
     formData.append("description", values.description);
     formData.append("portionSize", values.portionSize);
     formData.append("selectLevel", values.selectLevel);
     formData.append("category", values.category);
-    formData.append("prepTime", values.prepTime);
-    formData.append("cookTime", values.cookTime);
+    formData.append("prepTime", convertToMinutes(values.prepTime));
+    formData.append("cookTime", convertToMinutes(values.cookTime));
     formData.append("tags", JSON.stringify(values.tags || []));
     formData.append("subCategory", values.subCategory);
 
@@ -89,15 +97,37 @@ const AddRecipe = () => {
     }));
     formData.append("ingredientName", JSON.stringify(ingredientsData));
 
-    // Instructions
-    values.instructions?.forEach((instruction, index) => {
-      formData.append(`instructions[${index}]`, instruction);
+    // Instructions (now formatted per backend expectation)
+    // Instructions with images
+    const instructionTexts = [];
+    const instructionImages = [];
+
+    values.instructions?.forEach((item) => {
+      if (item.text) {
+        formData.append("text", item.text);
+      } else {
+        instructionTexts.push(item.text);
+      }
+
+
+      if (item.image instanceof File) {
+        formData.append("instructionImage", item.image);
+      } else {
+        instructionImages.push("");
+      }
     });
+
+    const instructionsPayload = {
+      text: instructionTexts,
+      instructionImage: [],
+    };
+
+    formData.append("instructions", JSON.stringify(instructionsPayload));
 
     // Nutritional Values
     const nutritionalData = values.nutritionalValues?.map((nv) => ({
       name: nv.name,
-      Kcal: nv.Kcal || "", // Keep Kcal field name but store string value
+      Kcal: nv.Kcal || "",
     }));
     formData.append("NutritionalValue", JSON.stringify(nutritionalData));
 
@@ -116,6 +146,7 @@ const AddRecipe = () => {
         form.resetFields();
         setImageFiles([]);
         setVideoFile(null);
+        navigate("/recipe");
       }
     } catch (error) {
       message.error(error.data?.message || "Failed to create recipe");
@@ -346,23 +377,41 @@ const AddRecipe = () => {
                 {(fields, { add, remove }) => (
                   <>
                     {fields.map(({ key, name, ...restField }) => (
-                      <div key={key} className="flex gap-4 mb-2">
+                      <div key={key} className="mb-4 space-y-2">
+                        <div className="flex gap-4">
+                          <Form.Item
+                            {...restField}
+                            name={[name, "text"]}
+                            rules={[{ required: true, message: "Instruction text required" }]}
+                            className="flex-1"
+                          >
+                            <Input placeholder={`Instruction ${key + 1}`} />
+                          </Form.Item>
+
+                          <Button
+                            type="text"
+                            danger
+                            onClick={() => remove(name)}
+                            icon={<Trash2 className="w-4 h-4" />}
+                          />
+                        </div>
+
                         <Form.Item
-                          {...restField}
-                          name={[name]}
-                          rules={[
-                            { required: true, message: "Instruction required" },
-                          ]}
-                          className="flex-1"
+                          name={[name, "image"]}
+                          valuePropName="file"
+                          getValueFromEvent={(e) =>
+                            Array.isArray(e) ? e : e?.fileList?.[0]?.originFileObj
+                          }
                         >
-                          <Input placeholder="Instruction step" />
+                          <Upload
+                            beforeUpload={() => false}
+                            maxCount={1}
+                            accept="image/*"
+                            listType="picture"
+                          >
+                            <Button icon={<FaImage />}>Upload Instruction Image</Button>
+                          </Upload>
                         </Form.Item>
-                        <Button
-                          type="text"
-                          danger
-                          onClick={() => remove(name)}
-                          icon={<Trash2 className="w-4 h-4" />}
-                        />
                       </div>
                     ))}
                     <Button
