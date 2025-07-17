@@ -92,7 +92,7 @@ const RecipeManagement = () => {
       key: "action",
       render: (text, record) => (
         <Space>
-          {/* <Link to={`/edit-recipe/${record.key}`}>
+          {/* <Link to={`/edit-recipe/${record._id}`}>
             <Button className="bg-primary text-white px-7 rounded-xl py-4">
               Edit
             </Button>

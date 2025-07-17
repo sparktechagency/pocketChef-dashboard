@@ -7,27 +7,34 @@ import { IoMdAdd } from "react-icons/io";
 import { BiSolidMessageDetail } from "react-icons/bi";
 import {
   useBanUserMutation,
+  useGetMessageByUserQuery,
+  useSendMessageMutation,
   useUsersQuery,
 } from "../../redux/apiSlices/userSlice";
 import { imageUrl } from "../../redux/api/baseApi";
 import toast from "react-hot-toast";
+import moment from "moment/moment";
 
 const Users = () => {
-  const { data: getUsers, isLoading } = useUsersQuery();
-  const [banUser] = useBanUserMutation();
-  const userData = getUsers?.data;
-
-  console.log(userData);
-
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMessageModalVisible, setIsMessageModalVisible] = useState(false);
   const [messageContent, setMessageContent] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const { data: getUsers, isLoading } = useUsersQuery();
+  const { data: getMessageByUser, isLoading: getMessageByUserLoading } =
+    useGetMessageByUserQuery(selectedUser?._id);
+  const [banUser] = useBanUserMutation();
+  const [sendMessage] = useSendMessageMutation();
+  const userData = getUsers?.data;
+  const messageData = getMessageByUser?.data;
+
+  console.log(userData);
 
   // Dummy data for users
-
 
   const filteredUsers = userData?.filter(
     (user) =>
@@ -50,12 +57,6 @@ const Users = () => {
 
   const showMessageModal = () => {
     setIsMessageModalVisible(true);
-  };
-
-  const handleMessageOk = () => {
-    console.log("Message Sent: ", messageContent);
-    setIsMessageModalVisible(false);
-    setMessageContent("");
   };
 
   const handleMessageCancel = () => {
@@ -135,16 +136,20 @@ const Users = () => {
           </Link>
           <Button
             onClick={() => handleBan(record._id)}
-            className={`border px-5 border-button ${record.userBan === false
-              ? "bg-button"
-              : "bg-green-900 !hover:bg-green-900 border-green-900"
-              } hover:!bg-red-900 text-white`}
+            className={`border px-5 border-button ${
+              record.userBan === false
+                ? "bg-button"
+                : "bg-green-900 !hover:bg-green-900 border-green-900"
+            } hover:!bg-red-900 text-white`}
           >
             {record.userBan === false ? "Ban" : "Unban"}
           </Button>
           <div
             className="border border-primary p-1 rounded-lg cursor-pointer"
-            onClick={showMessageModal}
+            onClick={() => {
+              setIsMessageModalVisible(true);
+              setSelectedUser(record);
+            }}
           >
             <BiSolidMessageDetail
               size={24}
@@ -155,6 +160,27 @@ const Users = () => {
       ),
     },
   ];
+
+  const handleSendMessage = async () => {
+    const data = {
+      receiver: selectedUser._id,
+      message: messageContent,
+    };
+
+    try {
+      const response = await sendMessage(data).unwrap();
+      console.log(response);
+      if (response?.success) {
+        toast.success(response?.message || "Message sent successfully!");
+      } else {
+        toast.error(response?.message || "Failed to send message.");
+      }
+    } catch (error) {
+      toast.error(
+        error?.data?.message || "An error occurred. Please try again."
+      );
+    }
+  };
 
   return (
     <div className=" bg-white p-5 rounded-2xl">
@@ -247,29 +273,76 @@ const Users = () => {
       </Modal>
 
       <Modal
-        title="Send Message"
+        title={`Send Message to ${selectedUser?.name}`}
         open={isMessageModalVisible}
         onCancel={handleMessageCancel}
         footer={null}
         className="custom-modal"
       >
-        <Form layout="vertical" onFinish={handleMessageOk}>
+        <Form layout="vertical" onFinish={handleSendMessage}>
           <Form.Item
             name="message"
             label="Message"
             rules={[{ required: true, message: "Please input your message!" }]}
           >
-            <Input.TextArea rows={4} placeholder="Type your message here" />
+            <Input.TextArea
+              rows={3}
+              placeholder="Type your message here"
+              value={messageContent}
+              onChange={(e) => setMessageContent(e.target.value)}
+            />
           </Form.Item>
           <Form.Item>
             <Button
               className="bg-primary py-5 w-[40%] text-white"
               htmlType="submit"
+              disabled={!messageContent.trim()}
             >
               Send
             </Button>
           </Form.Item>
         </Form>
+
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-3">Previous Messages</h2>
+          <div className="max-h-[40vh] overflow-y-auto space-y-4 bg-gray-50 p-4 rounded-md border border-gray-200">
+            {getMessageByUserLoading ? (
+              <p>Loading messages...</p>
+            ) : messageData?.length > 0 ? (
+              [...messageData]
+                ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((msg, index) => {
+                  const isFromAdmin = msg?.sender !== selectedUser?._id;
+                  return (
+                    <div
+                      key={msg._id}
+                      className="border p-3 rounded-md bg-white shadow-sm"
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span
+                          className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                            isFromAdmin
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {isFromAdmin ? "From Admin" : "From User"}
+                        </span>
+                        <span className="text-[11px] text-gray-500">
+                          {moment(msg.createdAt).fromNow()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-800">
+                        {index + 1}. {msg.message}
+                      </p>
+                    </div>
+                  );
+                })
+            ) : (
+              <p className="text-gray-500">No previous messages found.</p>
+            )}
+          </div>
+        </div>
       </Modal>
     </div>
   );

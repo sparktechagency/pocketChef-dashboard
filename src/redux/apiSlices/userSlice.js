@@ -51,6 +51,27 @@ const userSlice = api.injectEndpoints({
       }),
       invalidatesTags: ["users"],
     }),
+
+    // send message to user
+    sendMessage: builder.mutation({
+      query: (data) => {
+        console.log("in redux", data);
+        return {
+          method: "POST",
+          url: "/adminmessage/create",
+          body: data,
+        };
+      },
+    }),
+
+    getMessageByUser: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/adminmessage/${id}`,
+        };
+      },
+    }),
   }),
 });
 
@@ -61,4 +82,6 @@ export const {
   useVendorsQuery,
   useUserByIdQuery,
   useBanUserMutation,
+  useSendMessageMutation,
+  useGetMessageByUserQuery,
 } = userSlice;
