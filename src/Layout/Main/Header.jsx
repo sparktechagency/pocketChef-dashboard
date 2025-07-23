@@ -6,11 +6,14 @@ import { Badge } from "antd";
 import logo from "../../assets/randomProfile2.jpg";
 import { useFetchAdminProfileQuery } from "../../redux/apiSlices/authSlice";
 import { imageUrl } from "../../redux/api/baseApi";
+import { useNotificationQuery } from "../../redux/apiSlices/notificationSlice";
 
 const Header = () => {
   const { data: userData, isLoading } = useFetchAdminProfileQuery();
+  const { data: notifications, isLoading: notificationLoading } =
+    useNotificationQuery();
 
-  if (isLoading) {
+  if (isLoading || notificationLoading) {
     return (
       <div className="flex justify-center items-center my-20 text-lg text-secondary">
         Loading...
@@ -19,12 +22,16 @@ const Header = () => {
   }
 
   const profile = userData?.data;
-  // console.log("svfdsf", profile);
+  const notificationData = notifications?.data;
 
   return (
     <div className="flex items-center gap-5 justify-end">
       <Link to="/notification" className="h-fit mt-[10px]">
-        <Badge count={5}>
+        <Badge
+          count={
+            notificationData?.filter((item) => item?.read === false).length
+          }
+        >
           <FaRegBell color="#4E4E4E" size={24} />
         </Badge>
       </Link>

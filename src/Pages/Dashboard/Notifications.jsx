@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { ConfigProvider, Pagination } from "antd";
+import { ConfigProvider, Pagination, Tag } from "antd";
 import Title from "../../components/common/Title";
 import logo from "../../assets/logo.png";
+import {
+  useNotificationQuery,
+  useReadNotificationMutation,
+} from "../../redux/apiSlices/notificationSlice";
+import toast from "react-hot-toast";
 
 const notificationsData = [
   {
@@ -73,8 +78,9 @@ const notificationsData = [
 const Notifications = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const isLoading = false;
-  // const { data: notifications, isLoading } = useNotificationQuery();
+
+  const { data: notifications, isLoading } = useNotificationQuery();
+  const [readNotification] = useReadNotificationMutation();
 
   if (isLoading) {
     return (
@@ -83,49 +89,54 @@ const Notifications = () => {
       </div>
     );
   }
-  const notifications = [];
+
   const notificationData = notifications.data;
 
-  console.log(notificationData);
-
-  const paginatedData = notificationsData.slice(
+  const paginatedData = notificationData.slice(
     (page - 1) * pageSize,
     page * pageSize
   );
+
+  const handleReadNotification = async (id) => {
+    try {
+      const res = await readNotification(id).unwrap();
+
+      if (res?.success) {
+        toast.success(res?.message || "Notification read successfully");
+      } else {
+        toast.error(res?.message || "Failed to read notification");
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to read notification");
+    }
+  };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <Title className="text-[22px]">All Notifications</Title>
-        <button className="bg-[#5c2579cc] text-white h-10 px-4 rounded-md">
-          Read All
-        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-5 bg-white p-4 rounded-lg">
-        {paginatedData.map((notification) => (
+        {paginatedData?.map((notification) => (
           <div
-            key={notification.id}
-            className="border-b-[1px] pb-2 border-[#d9d9d9] flex items-center gap-3"
+            key={notification._id}
+            className={`border-b-[1px] pb-2 border-[#d9d9d9] flex cursor-pointer p-2 items-center gap-3 ${
+              notification?.read === false ? "bg-gray-200" : ""
+            }`}
+            onClick={() => handleReadNotification(notification._id)}
           >
-            <img
-              style={{
-                height: "50px",
-                width: "50px",
-                borderRadius: "100%",
-                border: "2px solid gray",
-              }}
-              src={notification.avatar}
-              alt={`${notification.sender} avatar`}
-            />
-            <div>
-              <p>
-                <span className="font-bold">{notification.sender}</span>:{" "}
-                {notification.message}
-              </p>
-              <p style={{ color: "gray", marginTop: "4px" }}>
-                {notification.timestamp}
-              </p>
+            <div className="w-full">
+              <div className="flex justify-between items-center">
+                <h1 className="font-bold">
+                  {notification?.title} from{" "}
+                  {notification?.sender?.name || "a user"}
+                </h1>
+                <Tag className="bg-secondary text-black py-1 px-2 rounded-md">
+                  {notification?.type}
+                </Tag>
+              </div>
+              <p>{notification?.message}</p>
             </div>
           </div>
         ))}
@@ -144,7 +155,7 @@ const Notifications = () => {
         >
           <Pagination
             current={page}
-            total={notificationsData.length}
+            total={notificationData.length}
             pageSize={pageSize}
             onChange={(page) => setPage(page)}
             showQuickJumper={false}

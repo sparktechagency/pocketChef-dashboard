@@ -87,6 +87,7 @@ export const api = createApi({
     "termsAndCondition",
     "requestedRecipes",
     "users",
+    "notification",
   ],
   endpoints: () => ({}),
 });
