@@ -9,6 +9,7 @@ import {
   Spin,
   Tooltip,
   Modal,
+  Select,
 } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import {
@@ -19,6 +20,7 @@ import {
 import { imageUrl } from "../../redux/api/baseApi";
 import toast from "react-hot-toast";
 import { FaTrash } from "react-icons/fa6";
+import { useCategoriesQuery } from "../../redux/apiSlices/categorySlice";
 
 const { TextArea } = Input;
 
@@ -29,6 +31,8 @@ const Template = () => {
   // console.log("fileList", fileList);
 
   const { data: bannerData, isLoading } = useAllBannerQuery();
+  const { data: categoryData, isLoading: categoryLoading } =
+    useCategoriesQuery();
   const [addBanner] = useAddBannerMutation();
   const [deleteBanner] = useDeleteBannerMutation();
 
@@ -74,7 +78,7 @@ const Template = () => {
           toast.error(err.data?.message || "Error deleting banner");
         }
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -126,13 +130,12 @@ const Template = () => {
             size={20}
             className="text-red-600 cursor-pointer"
           />
-
         </div>
       ),
     },
   ];
 
-  if (isLoading) {
+  if (isLoading || categoryLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spin />
@@ -159,7 +162,13 @@ const Template = () => {
               name="category"
               rules={[{ required: true, message: "Please enter category!" }]}
             >
-              <Input placeholder="Category" />
+              <Select placeholder="Category">
+                {categoryData?.data?.map((item) => (
+                  <Option key={item._id} value={item._id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
 
             <Form.Item

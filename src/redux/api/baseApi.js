@@ -5,8 +5,8 @@ import Cookies from "js-cookie";
 // Enhanced base query to handle token refresh
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   const baseQuery = fetchBaseQuery({
-    // baseUrl: "http://92.205.234.255:5000/api/v1",
-    baseUrl: "http://10.10.7.46:5000/api/v1",
+    baseUrl: "http://92.205.234.255:5000/api/v1",
+    // baseUrl: "http://10.10.7.46:5001/api/v1",
     prepareHeaders: (headers) => {
       const token =
         localStorage.getItem("authToken") ||
@@ -93,5 +93,5 @@ export const api = createApi({
 });
 
 // Export the image URL as a constant
-// export const imageUrl = "http://92.205.234.255:5000";
-export const imageUrl = "http://10.10.7.46:5000";
+export const imageUrl = "http://92.205.234.255:5000";
+// export const imageUrl = "http://10.10.7.46:5001";

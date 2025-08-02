@@ -22,7 +22,7 @@ const RecipeManagement = () => {
       </div>
     );
 
-  const recipeData = allRecipes?.data?.data;
+  const recipeData = allRecipes?.data;
 
   console.log(recipeData);
 
@@ -40,7 +40,7 @@ const RecipeManagement = () => {
           toast.error(error.data?.message || "Failed to delete recipe");
         }
       },
-      onCancel: () => { },
+      onCancel: () => {},
     });
   };
 
@@ -63,7 +63,11 @@ const RecipeManagement = () => {
         <Space>
           <Image
             src={
-              record?.image?.[0] ? record?.image?.[0].startsWith("http") ? record?.image?.[0] : `${imageUrl}${record?.image?.[0]}` : ""
+              record?.image?.[0]
+                ? record?.image?.[0].startsWith("http")
+                  ? record?.image?.[0]
+                  : `${imageUrl}${record?.image?.[0]}`
+                : ""
             }
             alt={record.recipeName}
             className="!w-16 !h-16 rounded-lg object-cover"
