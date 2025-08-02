@@ -64,15 +64,15 @@ const RecipeManagement = () => {
           <Image
             src={
               record?.image?.[0]
-                ? record?.image?.[0].startsWith("http")
+                ? record?.image?.[0]?.startsWith("http")
                   ? record?.image?.[0]
                   : `${imageUrl}${record?.image?.[0]}`
                 : ""
             }
-            alt={record.recipeName}
+            alt={record?.recipeName}
             className="!w-16 !h-16 rounded-lg object-cover"
           />
-          <span>{record.recipeName}</span>
+          <span>{record?.recipeName}</span>
         </Space>
       ),
     },
@@ -101,13 +101,13 @@ const RecipeManagement = () => {
               Edit
             </Button>
           </Link> */}
-          <Link to={`/recipe/${record._id}`}>
+          <Link to={`/recipe/${record?._id}`}>
             <Button className="bg-primary text-white px-7 rounded-xl py-4">
               View
             </Button>
           </Link>
           <Button
-            onClick={() => handleDelete(record._id)}
+            onClick={() => handleDelete(record?._id)}
             className="bg-button text-white px-7 rounded-xl py-4"
           >
             Delete
