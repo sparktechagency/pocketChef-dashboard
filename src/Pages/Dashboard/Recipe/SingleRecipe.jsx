@@ -45,7 +45,7 @@ const SingleRecipe = () => {
 
       {/* Recipe Images */}
       <div className="flex gap-4 overflow-x-auto mb-6">
-        {recipeData.image.map((img, index) => (
+        {recipeData?.image?.map((img, index) => (
           <Image
             alt={`recipe-${index}`}
             key={index}
@@ -86,7 +86,7 @@ const SingleRecipe = () => {
       <div className="mb-6">
         <strong className="text-gray-800">Tags:</strong>
         <div className="flex flex-wrap gap-2 mt-1">
-          {recipeData.tags.map((tag, i) => (
+          {recipeData?.tags?.map((tag, i) => (
             <span
               key={i}
               className="px-3 py-1 rounded-full bg-orange-100 text-[var(--theme)] font-medium"
@@ -103,7 +103,7 @@ const SingleRecipe = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-2">
           Ingredients
         </h2>
-        {recipeData.ingredientName.map((ingredient) => (
+        {recipeData?.ingredientName?.map((ingredient) => (
           <div
             key={ingredient._id}
             className="flex items-center gap-4 p-4 bg-orange-50 border border-orange-200 rounded-lg mb-4"
@@ -137,12 +137,12 @@ const SingleRecipe = () => {
           Instructions
         </h2>
         <ul className="list-decimal list-inside text-gray-700 space-y-2 mb-4">
-          {recipeData.instructions.text.map((instruction, index) => (
+          {recipeData?.instructions?.text?.map((instruction, index) => (
             <li key={index}>{instruction}</li>
           ))}
         </ul>
         <div className="flex gap-4 overflow-x-auto">
-          {recipeData.instructions.instructionImage.map((img, index) => (
+          {recipeData?.instructions?.instructionImage?.map((img, index) => (
             <img
               key={index}
               src={`${imageUrl}${img}`}
@@ -159,7 +159,7 @@ const SingleRecipe = () => {
           Nutritional Values
         </h2>
         <div className="grid grid-cols-4 h-[80px] gap-4 text-sm text-gray-700">
-          {recipeData.NutritionalValue.map((n) => (
+          {recipeData?.NutritionalValue?.map((n) => (
             <div
               key={n._id}
               className="bg-orange-100 p-2 flex items-center justify-center rounded-xl shadow-sm"
